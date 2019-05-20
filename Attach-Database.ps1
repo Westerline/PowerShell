@@ -1,8 +1,0 @@
-Invoke-sqlcmd -S .\
-USE [master]
-GO
-CREATE DATABASE [DATABASENAME] ON 
-( FILENAME = N'PATH' ),
-( FILENAME = N'PATH' )
- FOR ATTACH ;
-GO
