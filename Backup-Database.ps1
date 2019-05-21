@@ -1,0 +1,1 @@
+SQLCMD -S localhost -Q "BACKUP DATABASE [DATABASE] TO DISK = 'C:\Temp\Database.BAK'"
