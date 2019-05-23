@@ -1,0 +1,1 @@
+﻿Get-WMIObject -List| Where{$_.name -match "^Win32_"} | Sort Name | Format-Table Name
