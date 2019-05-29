@@ -1,11 +1,21 @@
-#Disable Automatic Proxy Detect
-$RegKey = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Connections'
-$Settings = (Get-ItemProperty -Path $RegKey).DefaultConnectionSettings
-$Settings[8] = 1
-Set-ItemProperty -path $regKey -name DefaultConnectionSettings -value $Settings
-if ($Settings[8] -eq 1) {
-    Write-Host "Proxy settings changed sucessfully"
+Try {
+    $regKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+    Set-ItemProperty -path $regKey ProxyEnable -value 1 -ErrorAction Stop
+    $regKey_Status = Get-ItemProperty -path $regKey ProxyEnable -ErrorAction Stop
+    $Properties = [Ordered] @{
+        ComputerName = ($Env:COMPUTERNAME)
+        ProxyEnable  = ($regKey_Status.ProxyEnable)
+    }
 }
-else {
-    Write-Host ("Failed to change Proxy setting(s)") -ForegroundColor Red
+Catch {
+
+    $Properties = [Ordered] @{
+        ComputerName = ($Env:COMPUTERNAME)
+        Property2    = 'Test Failed'
+    }
+}
+
+Finally {
+
+    ($Object = New-Object -TypeName PSObject -Property $Properties) | Out-File $LogPath1
 }

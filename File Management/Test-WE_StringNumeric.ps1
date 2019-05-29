@@ -1,4 +1,4 @@
 ﻿#Tests if the string value is numeric
-function Is-Numeric ($Value) {
+function Test-WE_StringNumeric ($Value) {
     return $Value -match "^[\d\.]+$"
 }

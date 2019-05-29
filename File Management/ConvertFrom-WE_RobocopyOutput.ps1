@@ -3,7 +3,7 @@ $Global:Robo_Content = $null
 $Global:Properties = $null
 $Global:Robo_Formatted = $null
 
-Function Format-RobocopyOutput {
+Function ConvertFrom-WE_RobocopyOutput {
 
     Param($File, $Robo_Computer, $LogPath)
    
