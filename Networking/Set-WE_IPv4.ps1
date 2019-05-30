@@ -1,46 +1,85 @@
-﻿Start-Transcript -Path 'C:\temp\Set-IPv4.txt'  -Append -Force
+﻿<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
+.DESCRIPTION
+    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
 
-Try {
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
 
-    #Define Variables
-	
-	$IPv4_Address = ""
-	
-	$Subnet = ""
-	
-	$Default_Gateway = ""
-	
-	$Primary_DNS = ""
-	
-	$Secondary_DNS = ""
+.EXAMPLE
+    Scriptname.ps1
 
+    Description
+    ----------
+    This would be the description for the example.
 
-    #Set IPv4 details for local net adapter
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+#>
 
-    If ($EthernetAdapter) {
+[CmdletBinding()]
 
-        netsh.exe int ip set address $EthernetAdapter.InterfaceIndex static $IPv4_Address $Subnet $Default_Gateway 1
+Param (
 
-        netsh.exe int ip set dnsservers $EthernetAdapter.InterfaceIndex static $Primary_DNS primary
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
 
-        netsh.exe int ip add dnsservers $EthernetAdapter.InterfaceIndex Index=2 $Secondary_DNS
+)
 
-        Write-Verbose 'The IP address settings were applied successfully.' -Verbose
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+    $IPv4_Address = ""
+    $Subnet = ""
+    $Default_Gateway = ""
+    $Primary_DNS = ""
+    $Secondary_DNS = ""
+
+}
+
+Process {
+
+    Try {
+
+        If ($EthernetAdapter) {
+
+            netsh.exe int ip set address $EthernetAdapter.InterfaceIndex static $IPv4_Address $Subnet $Default_Gateway 1
+
+            netsh.exe int ip set dnsservers $EthernetAdapter.InterfaceIndex static $Primary_DNS primary
+
+            netsh.exe int ip add dnsservers $EthernetAdapter.InterfaceIndex Index=2 $Secondary_DNS
+
+            Write-Verbose 'The IP address settings were applied successfully.' -Verbose
+
+        }
+       
+    }
+
+    Catch [SpecificException] {
+        
+    }
+
+    Catch {
+
+        Write-Warning 'The IP address settings were not applied successfully.'
 
     }
 
+    Finally {
 
-
-}
-
-
-
-Catch {
-
-    Write-Warning 'The IP address settings were not applied successfully.'
+    }
 
 }
 
+End {
 
-Stop-Transcript | Out-Null
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
+}

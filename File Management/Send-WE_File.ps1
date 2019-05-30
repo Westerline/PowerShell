@@ -1,20 +1,86 @@
-﻿#Turn this into a parameterized script for transferring files
+﻿<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
-$Group1 = @("Test1a", "Test1b")
-$Group2 = @("Test2a", "Test2b")
+.DESCRIPTION
+    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
 
-$Source = ""
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
 
-$Destination = ""
+.EXAMPLE
+    Scriptname.ps1
 
-ForEach ($Test in $Group1) {
+    Description
+    ----------
+    This would be the description for the example.
 
-    robocopy $Source ($Test + $Destination) /MT /NP /R:1 /w:5 /E  >> "C:\temp\$Test.txt"
-   
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+#>
+
+[CmdletBinding()]
+
+Param (
+
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
+
+)
+
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+
 }
 
-ForEach ($Test in $Group2) {
+Process {
 
-    robocopy $Source ($Test + $Destination) /MT /NP /R:1 /w:5 /E  >> "C:\temp\$Test.txt"
+    Try {
+       
+        $Group1 = @("Test1a", "Test1b")
+        $Group2 = @("Test2a", "Test2b")
 
+        $Source = ""
+
+        $Destination = ""
+
+        ForEach ($Test in $Group1) {
+
+            robocopy $Source ($Test + $Destination) /MT /NP /R:1 /w:5 /E  >> "C:\temp\$Test.txt"
+   
+        }
+
+        ForEach ($Test in $Group2) {
+
+            robocopy $Source ($Test + $Destination) /MT /NP /R:1 /w:5 /E  >> "C:\temp\$Test.txt"
+
+        }
+
+    }
+
+    Catch [SpecificException] {
+        
+    }
+
+    Catch {
+
+
+    }
+
+    Finally {
+
+    }
+
+}
+
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
 }

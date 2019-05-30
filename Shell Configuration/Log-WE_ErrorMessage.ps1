@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     This is a very short summary of the script.
 
@@ -42,15 +42,31 @@ Begin {
 Process {
 
     Try {
-     
-        Get-ChildItem 'C:\test\folders' -Folders | ForEach-Object -Process {
+       
+        $ErrorMessage = "$ScriptName caught an exception on $($ENV:COMPUTERNAME):"
+        $ErrorMessage += "`n" + "`n"
+        $ErrorMessage += "Exception Type: $($_.Exception.GetType().FullName)"
+        $ErrorMessage += "`n" + "`n"
+        $ErrorMessage += "Exception Message: $($_.Exception.Message)"
 
-            $Number = $_.Name
-
-            $Name = $HashTable_Names.[int]$Number
-
-            Rename-Item -Path $_.FullName -NewName $Name
-
+        Write-Error $ErrorMessage -ErrorAction Continue
+        Write-Verbose "Logging the script's error..."
+        #An event log parameter needs to be preconfigured to use this.
+        Write-EventLog `
+            -EventId $AlertNumber `
+            -LogName $LogName `
+            -Source $EventSource `
+            -Message $ErrorMessage `
+            -EntryType Error
+        # Log error - Email
+        # This will attempt to send an immediate alert about the error.
+        # The EventLog also needs to log the error because this one may not be sent.
+        #use Send-MailMessage
+        #>
+        Start-Sleep -Seconds 3
+        Write-Debug $ErrorMessage
+        If ( $UseExitCode ) {
+            exit 1
         }
 
     }

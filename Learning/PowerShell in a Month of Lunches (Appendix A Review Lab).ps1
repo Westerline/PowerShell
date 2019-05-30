@@ -64,7 +64,7 @@ Set-ItemProperty
 #Chapters 1-14
 
 #1
-Get-Process | Format-Table -AutoSize -Property Id,Name
+Get-Process | Format-Table -AutoSize -Property Id, Name
 
 #2
 Get-WmiObject -Class win32_systemdriver | Select-Object -Property Name, DisplayName, @{Label = 'Path'; Expression = { $_.PathName } }, StartMode, State | Format-List
@@ -73,7 +73,7 @@ Get-WmiObject -Class win32_systemdriver | Select-Object -Property Name, DisplayN
 Invoke-Command -ComputerName LocalHost, Localhost -ScriptBlock { Get-PSProvider }
 
 #4
-$Content = 'LocalHost','LocalHost'
+$Content = 'LocalHost', 'LocalHost'
 Set-Content -Value $Content -Path C:\temp\Computers.txt
 Get-Serivce -ComputerName (Get-Content C:\temp\Computers.txt)
 

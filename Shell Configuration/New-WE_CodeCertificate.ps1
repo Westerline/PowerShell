@@ -1,13 +1,77 @@
-﻿$Today = Get-Date
+﻿<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
-$File = C:\temp\test.ps1
+.DESCRIPTION
+    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
 
-$Cert_Duration = $([datetime]::now.AddYears(5))
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
 
-$Cert = New-SelfSignedCertificate -Subject "PowerShell Code Signing Certificate" -Type CodeSigningCert -NotAfter $Cert_Duration -CertStoreLocation cert:\LocalMachine\My
+.EXAMPLE
+    Scriptname.ps1
 
-Move-Item -Path $cert.PSPath -Destination "Cert:\LocalMachine\Root"
+    Description
+    ----------
+    This would be the description for the example.
 
-Set-AuthenticodeSignature -FilePath $File -Certificate $cert
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+#>
 
-Export-Certificate -Cert $Cert -FilePath C:\scripts -Type CERT
+[CmdletBinding()]
+
+Param (
+
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
+
+)
+
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+    $Today = Get-Date
+    $File = C:\temp\test.ps1
+    $Cert_Duration = $([datetime]::now.AddYears(5))
+    $Cert = New-SelfSignedCertificate -Subject "PowerShell Code Signing Certificate" -Type CodeSigningCert -NotAfter $Cert_Duration -CertStoreLocation cert:\LocalMachine\My
+
+}
+
+Process {
+
+    Try {
+       
+        Move-Item -Path $cert.PSPath -Destination "Cert:\LocalMachine\Root"
+
+        Set-AuthenticodeSignature -FilePath $File -Certificate $cert
+
+        Export-Certificate -Cert $Cert -FilePath C:\scripts -Type CERT
+
+    }
+
+    Catch [SpecificException] {
+        
+    }
+
+    Catch {
+
+
+    }
+
+    Finally {
+
+    }
+
+}
+
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
+}

@@ -1,36 +1,89 @@
-#Script to automatically attach the required database and configure required users.
+<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
-Start-Transcript 'C:\temp\Attach-Database.txt' -Append -Force
+.DESCRIPTION
+    Script to automatically attach the required database and configure required users.
 
-Try {
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
 
-    If (Test-Path 'C:\Database\Data\data.mdf') {
+.EXAMPLE
+    Scriptname.ps1
 
-        Write-Output "Database file found." -Verbose
+    Description
+    ----------
+    This would be the description for the example.
 
-        Invoke-Sqlcmd -Query "CREATE DATABASE AKPOS ON (FILENAME = 'C:\Database\Data\data.mdf'), (FILENAME = 'C:\Database\Data\log.ldf') FOR ATTACH;" -Verbose
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+#>
 
-        Invoke-Sqlcmd -Query "CREATE LOGIN User WITH PASSWORD = $SecureString;" -Verbose
+[CmdletBinding()]
 
-        Invoke-Sqlcmd -Query "EXEC master..sp_addsrvrolemember @loginame = N'User', @rolename = N'public';" -Verbose
+Param (
 
-        Write-Output "Database setup and configured." -Verbose
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
+
+)
+
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+
+}
+
+Process {
+
+    Try {
+       
+        If (Test-Path 'C:\Database\Data\data.mdf') {
+
+            Write-Output "Database file found." -Verbose
+
+            Invoke-Sqlcmd -Query "CREATE DATABASE AKPOS ON (FILENAME = 'C:\Database\Data\data.mdf'), (FILENAME = 'C:\Database\Data\log.ldf') FOR ATTACH;" -Verbose
+
+            Invoke-Sqlcmd -Query "CREATE LOGIN User WITH PASSWORD = $SecureString;" -Verbose
+
+            Invoke-Sqlcmd -Query "EXEC master..sp_addsrvrolemember @loginame = N'User', @rolename = N'public';" -Verbose
+
+            Write-Output "Database setup and configured." -Verbose
+
+        }
+
+        Else {
+
+            Write-Warning "Database file not found." -Verbose
+
+        }
 
     }
 
-    Else {
+    Catch [SpecificException] {
+        
+    }
 
-        Write-Warning "Database file not found." -Verbose
+    Catch {
+
+        Write-Warning 'A generic error occurred when attaching and configuring the database.' -Verbose
+    }
+
+
+    Finally {
 
     }
 
 }
 
+End {
 
-Catch {
-
-    Write-Warning 'A generic error occurred when attaching and configuring the database.' -Verbose
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
+    
 }
-
-
-Stop-Transcript | Out-Null

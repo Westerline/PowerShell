@@ -1,34 +1,94 @@
-﻿#Remote Endpoint Configuration
-    
-    #Step 1: Local Account Token
-    New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -PropertyType DWord -Value 1
+﻿<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
-    #Step 2: Enable-PSRemoting
-    Enable-PsRemoting -Force
+.DESCRIPTION
+    Remote Endpoint Configuration
+    Step 1: Local Account Token
+    Step 2: Enable-PSRemoting
+    Step 3: Enable Legacy HTTP Listener on Port 80 (Optional)
+    Client-side
+    Configure the machines you the client can remote to.
 
-    #Step 3: Enable Legacy HTTP Listener on Port 80 (Optional)
-    Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -value True
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
 
-    
+.EXAMPLE
+    Scriptname.ps1
 
-#Client-side
+    Description
+    ----------
+    Example Non-domain Connection
 
-    #Configure the machines you the client can remote to.
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+#>
 
-    Set-Item WSMan:\localhost\Client\TrustedHosts -Value "10.10.10.3"
+[CmdletBinding()]
 
-    Set-Item WSMan:\localhost\Client\TrustedHosts -Value "PC4" -Concatenate
+Param (
 
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
+
+)
+
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+
+}
+
+Process {
+
+    Try {       
+       
+        New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -PropertyType DWord -Value 1
+
+        Set-ItemProperty -Name LocalAccountTokenFilterPolicy -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Value 0
+
+        Enable-PsRemoting -Force
+
+        Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -value True  
+
+        Set-Item WSMan:\localhost\Client\TrustedHosts -Value "10.10.10.3"
+
+        Set-Item WSMan:\localhost\Client\TrustedHosts -Value "PC4" -Concatenate
  
+        $SERVER = 'REMOTE_SERVER'
 
-#Example Non-domain Connection
+        $USER = 'REMOTE_USER'
 
-    $SERVER = 'REMOTE_SERVER'
+        New-PSSession -ComputerName $Server -Name 'PC3' -Credential (get-credential "$USER") -Port 80
 
-    $USER   = 'REMOTE_USER'
+        Enter-PSSession -ComputerName $SERVER
 
-    New-PSSession -ComputerName $Server -Name 'PC3' -Credential (get-credential "$USER") -Port 80
+        Invoke-Command -Computer $SERVER -Credential (get-credential "$USER") { Get-ChildItem C:\ } -port 80
 
-    Enter-PSSession -ComputerName $SERVER
+    }
 
-    Invoke-Command -Computer $SERVER -Credential (get-credential "$USER") { ls C:\ } -port 80
+    Catch [SpecificException] {
+        
+    }
+
+    Catch {
+
+
+    }
+
+    Finally {
+
+    }
+
+}
+
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
+}

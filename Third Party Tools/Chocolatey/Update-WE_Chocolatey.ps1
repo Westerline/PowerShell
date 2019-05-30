@@ -1,49 +1,74 @@
-﻿#Install Chocolately if required...
+﻿<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
-#Non-Proxy Install
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+.DESCRIPTION
+    Install/Upgrade all software of choice
 
-#Installing Behind a Proxy
-[System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
+
+.EXAMPLE
+    Scriptname.ps1
+
+    Description
+    ----------
+    This would be the description for the example.
+
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+#>
+
+[CmdletBinding()]
+
+Param (
+
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
+
+)
+
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+
+}
+
+Process {
+
+    Try {
+        
+        Foreach ($Software in $Softwares) {
+                  
+            . .\Install-WE_Chocolatey.ps1
+
+            Choco Upgrade $Software -y
+
+        }
+    }
+
+    Catch [SpecificException] {
+        
+    }
+
+    Catch {
 
 
+    }
 
-#Install/Upgrade the Following Software: 
+    Finally {
 
-#Chrome
-Choco Upgrade Chrome -y
+    }
 
-#CCleaner
-Choco Upgrade CCleaner -Y
+}
 
-#Install/Update KeePass
-Choco Upgrade KeePass -Y
+End {
 
-#Install/Update Revo
-Choco Upgrade  -Y    
-
-#Install/Update 7-Zip
-Choco Upgrade 7zip -Y
-
-#Install/Update Putty
-Choco Upgrade putty -Y
-
-#Install/Update PowerShell
-Choco Upgrade Powershell -Y
-
-#Install/Update Sysinternals
-Choco Upgrade Sysinternals -Y
-
-#Paint.Net
-choco upgrade paint.net -y
-
-#Python
-Choco Upgrade python -Y
-
-#SQL
-Choco Upgrade sql-server-management-studio
-
-#WSUS Offline Update
-Choco Upgrade wsus-offline-update
-
-#Choco 
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
+}
