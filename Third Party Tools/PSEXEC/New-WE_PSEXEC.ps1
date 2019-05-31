@@ -1,31 +1,94 @@
-﻿#PSEXEC PowerShell Module
+﻿<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
-$Computer = '0.0.0.0'
-$Computers = Get-Content C:\Temp\Test.txt
+.DESCRIPTION
+    PSEXEC PowerShell Module; will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS. 
+    Recommend adding the entire Sysinternals suite to your "Path" environment variable so all Sysinternals tools can be called from a relative path.
 
-#Create PS Drive
-    $Drive = New-PSDrive -Name "ComputerName" -PSProvider FileSystem -Root "\\IPAddressorHostName\c$" -Credential Username
-	
-#Remove PS Drive
-    Remove-PSDrive -Name $Drive
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
 
-#Copy Script to remote computer
+.EXAMPLE
+
+
+    Example 1: Copy Script to remote computer
+    ----------------------------------------------------------
     Copy-Item -Path C:\temp\test.txt -Destination \\$Computer
 
-#Call PSEXEC will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS
-	$PSEXEC = & $Env:Sysinternals\psexec.exe \\$Computer
-	
+    Example 2: Open Command Prompt on Remote Computer
+    --------------------------------------------------
+    $Env:Sysinternals\psexec.exe \\$Computer CMD
 
-#CMD
-    $CMD_Copy = $PSEXEC cmd /c C:\Temp\ChromeStandaloneSetup32.exe /Silent /Install
-    $CMD_RemoteConsole =  "$PSEXEC cmd"
+    Example 3: Run command prompt command on Remote Computer
+    -----------------------------------------------------------------------------------------------------
+    $Env:Sysinternals\psexec.exe \\$Computer CMD /c C:\Temp\ChromeStandaloneSetup32.exe /Silent /Install
 
-#PS Scripts
-    $PS = $PSEXEC -i -s PowerShell C:\temp\test.ps1
+    Example 4: Run PowerShell script via Command Prompt on Remote Computer
+    ----------------------------------------------------------------------------
+    $Env:Sysinternals\psexec.exe \\$Computer -i -s PowerShell C:\temp\test.ps1
 
-#SQLCMD
-    $SQLCMD = $PSEXEC SQLCMD -s .\MSSQL -i "C:\temp\test.sql"
-	$SQLCMD2 = $PSEXEC SQLCMD -S localhost -Q "BACKUP DATABASE [Master] TO DISK = "C:\Temp\$Computer.BAK""
-	
-#Regedit
-	$Regedit = $PSEXEC reg add HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell /v ExecutionPolicy /t REG_SZ /d Restricted /f
+    Example 5: Run SQL CMD command on remote computer
+    ------------------------------------------------------------------------------------------------------------------------------
+    $Env:Sysinternals\psexec.exe \\$Computer SQLCMD -S localhost -Q "BACKUP DATABASE [Master] TO DISK = "C:\Temp\$Computer.BAK""
+
+    Example 6: Run SQL Script via SQL CMD on remote computer
+    ---------------------------------------------------------------------------------
+    $Env:Sysinternals\psexec.exe \\$Computer SQLCMD -s .\MSSQL -i "C:\temp\test.sql"
+
+    Example 6: Regedit on remote computer
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    $Env:Sysinternals\psexec.exe \\$Computer reg add HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell /v ExecutionPolicy /t REG_SZ /d Restricted /f
+
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_pasteutm_campaign=growth
+#>
+
+[CmdletBinding()]
+
+Param (
+
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
+
+)
+
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+    $Computer = '0.0.0.0'
+    $Computers = Get-Content C:\Temp\Test.txt
+    $Drive = New-PSDrive -Name "ComputerName" -PSProvider FileSystem -Root "\\IPAddressorHostName\c$" -Credential Username
+}
+
+Process {
+
+    Try {
+
+    }
+
+    Catch [SpecificException] {
+        
+    }
+
+    Catch {
+
+
+    }
+
+    Finally {
+
+    }
+
+}
+
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
+}

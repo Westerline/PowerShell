@@ -1,16 +1,80 @@
-﻿$Computers = 
-$Credentials = (Get-Credential -Message 'Please enter the required credentials.')
+﻿<#
+.SYNOPSIS
+    This is a very short summary of the script.
 
-Invoke-Command -Session $Sessions -ScriptBlock {
+.DESCRIPTION
+    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
 
-        $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%Test%'"
+.PARAMETER UseExitCode
+    This is a detailed description of the parameters.
 
-        $Name = $Process.Name
+.EXAMPLE
+    Scriptname.ps1
 
-        $Owner = $Process.GetOwner() | Select-Object -ExpandProperty User
+    Description
+    ----------
+    This would be the description for the example.
+
+.NOTES
+    Author: Wesley Esterline
+    Resources: 
+    Updated:     
+    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+#>
+
+[CmdletBinding()]
+
+Param (
+
+    [Parameter(Mandatory = $False)]
+    [Alias('Transcript')]
+    [string]$TranscriptFile
+
+)
+
+Begin {
+    Start-Transcript $TranscriptFile  -Append -Force
+    $StartErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Stop'
+    $Computers = 'Test'
+    $Credentials = (Get-Credential -Message 'Please enter the required credentials.')
+}
+
+Process {
+
+    Invoke-Command -Session $Sessions -ScriptBlock {
+
+        Try {
+        
+            $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%Test%'"
+
+            $Name = $Process.Name
+
+            $Owner = $Process.GetOwner() | Select-Object -ExpandProperty User
     
-        Write-Output "","$Env:Computername is running $Name with the owner $Owner",""
+            Write-Output "", "$Env:Computername is running $Name with the owner $Owner", ""
+        }
+
+        Catch [SpecificException] {
+        
+        }
+
+        Catch {
+
+
+        }
+
+        Finally {
+
+        }
 
     }
 
-Remove-PSSession -Session $Sessions
+}
+
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference
+    Stop-Transcript | Out-Null
+    Remove-PSSession -Session $Sessions
+}
