@@ -28,57 +28,72 @@
     Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
 #>
 
-[CmdletBinding()]
+Function Set-WE_RemoteDesktop {
 
-Param (
+    [CmdletBinding()]
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    Param (
 
-)
+        [Parameter(Mandatory = $False)]
+        [Alias('Transcript')]
+        [string]$TranscriptFile,
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-    $ComputerName = "Localhost"
+        [Parameter(Mandatory = $True)]
+        [Alias('HostName')]
+        [ValidateNotNullorEmpty()]
+        [string[]]$ComputerName,
 
-}
+        [Parameter(Mandatory = $False)]
+        [Alias('HostName')]
+        [ValidateNotNullorEmpty()]
+        [Boolean]$TerminalServices
 
-Process {
+    )
 
-    Try {
-        #Section 1
-        $RDP = Get-WmiObject -Class Win32_TerminalServiceSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
-        $RDP.SetAllowTSConnections(1, 1)
+    Begin {
 
-        #Section 2
-        $NLA = Get-WmiObject -Class Win32_TSGeneralSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
-        $NLA.SetUserAuthenticationRequired(1)
-
-        #Section 3
-        $NLA = Get-WmiObject -Class Win32_TSGeneralSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
+        Start-Transcript $TranscriptFile  -Append -Force
+        $StartErrorActionPreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Stop'
+        $ComputerName = "Localhost"
 
     }
 
-    Catch [SpecificException] {
+    Process {
+
+        Try {
+            #Section 1
+            $RDP = Get-WmiObject -Class Win32_TerminalServiceSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
+            $RDP.SetAllowTSConnections(1, 1)
+
+            #Section 2
+            $NLA = Get-WmiObject -Class Win32_TSGeneralSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
+            $NLA.SetUserAuthenticationRequired(1)
+
+            #Section 3
+            $NLA = Get-WmiObject -Class Win32_TSGeneralSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
+
+        }
+
+        Catch [SpecificException] {
         
+        }
+
+        Catch {
+
+
+        }
+
+        Finally {
+
+        }
+
     }
 
-    Catch {
+    End {
 
-
+        $ErrorActionPreference = $StartErrorActionPreference
+        Stop-Transcript | Out-Null
     }
 
-    Finally {
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
 }
