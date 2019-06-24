@@ -62,16 +62,12 @@ Function Set-WE_RemoteDesktop {
     Process {
 
         Try {
-            #Section 1
-            $RDP = Get-WmiObject -Class Win32_TerminalServiceSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
-            $RDP.SetAllowTSConnections(1, 1)
+            
+            Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\‘ -Name “fDenyTSConnections” -Value 0
 
-            #Section 2
-            $NLA = Get-WmiObject -Class Win32_TSGeneralSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
-            $NLA.SetUserAuthenticationRequired(1)
+            Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\‘ -Name “UserAuthentication” -Value 1
 
-            #Section 3
-            $NLA = Get-WmiObject -Class Win32_TSGeneralSetting -ComputerName $ComputerName -Namespace root\CIMV2\TerminalServices -Authentication PacketPrivacy
+            Enable-NetFirewallRule -DisplayGroup “Remote Desktop”
 
         }
 
