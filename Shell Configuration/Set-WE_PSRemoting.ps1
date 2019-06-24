@@ -47,10 +47,6 @@ Begin {
 Process {
 
     Try {       
-       
-        New-ItemProperty -Name LocalAccountTokenFilterPolicy -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -PropertyType DWord -Value 1
-
-        Set-ItemProperty -Name LocalAccountTokenFilterPolicy -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Value 0
 
         Enable-PsRemoting -Force
 
