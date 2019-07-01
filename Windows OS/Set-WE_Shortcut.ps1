@@ -1,77 +1,18 @@
-﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
+﻿param ( 
 
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
+    [string]$Target, 
+    [string]$Argument, 
+    [string]$Path,
+    [String]$FileName 
 
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
+)
 
-.EXAMPLE
+$Shell = New-Object -ComObject WScript.Shell
 
-    Example 1
-    -------------------------------------------
-    Set-Shortcut "C:\temp\.lnk" "C:\test.exe"
+$Shortcut = $Shell.CreateShortcut($Path + '\' + $FileName + '.lnk')
 
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
-#>
+$Shortcut.TargetPath = $Target
 
-Function Set-Shortcut {
+$Shortcut.Arguments = $Argument
 
-    [CmdletBinding()]
-
-    Param (
-
-        [Parameter(Mandatory = $False)]
-        [Alias('Transcript')]
-        [string]$TranscriptFile
-
-    )
-
-    Begin {
-        Start-Transcript $TranscriptFile  -Append -Force
-        $StartErrorActionPreference = $ErrorActionPreference
-        $ErrorActionPreference = 'Stop'
-
-    }
-
-    Process {
-
-        Try {
-            
-            param ( [string]$SourceExe, [string]$ArgumentsToSourceExe, [string]$DestinationPath )
-            $WshShell = New-Object -comObject WScript.Shell
-            $Shortcut = $WshShell.CreateShortcut($DestinationPath)
-            $Shortcut.TargetPath = $SourceExe
-            $Shortcut.Arguments = $ArgumentsToSourceExe
-            $Shortcut.Save()
-            
-        }
-
-        Catch [SpecificException] {
-            
-        }
-
-        Catch {
-
-
-        }
-
-        Finally {
-
-        }
-
-    }
-
-    End {
-
-        $ErrorActionPreference = $StartErrorActionPreference
-        Stop-Transcript | Out-Null
-    }
-
-}
+$Shortcut.Save()
