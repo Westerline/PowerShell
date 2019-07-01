@@ -1,69 +1,27 @@
-<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    Function to get the logical disks attached to LocalHost. Rewrite using WMI and CIM.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
-#>
-
-[CmdletBinding()]
-
-Param (
-
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
-
-)
-
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-
-}
-
-Process {
+ForEach ($Computer in $ComputerName) {
 
     Try {
-       
-        wmic.exe logicaldisk get caption, drivetype, volumename, description, mediatype
+
+        $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
+        $LogicalDisk = Get-CimInstance -CimSession $Session -ClassName Win32_DiskDrive
+        $CD = Get-CimInstance -CimSession $Session -ClassName Win32_CDROMDrive
+
+        $Property = @{
+            Computername = $ComputerName
+            Stauts       = 'Connected'
+            SPVersion    = $OS.ServicePackMajorVersion
+            OSVersion    = $OS.Version
+            Model        = $CS.Model
+        }
 
     }
 
-    Catch [SpecificException] {
+    Catch { }
+    
+    Finally { 
+
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
         
     }
-
-    Catch {
-
-
-    }
-
-    Finally {
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
 }
