@@ -1,0 +1,3 @@
+CD "C:\Program Files\Microsoft Office\Office14\"
+CScript OSPP.VBS /inpkey:XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
+CScript OSPP.VBS /act
