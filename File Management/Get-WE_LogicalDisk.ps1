@@ -1,5 +1,5 @@
 <#
-To do: format output, see if output can still be done without the $DiskArray
+To do: format output, see if output can still be done without the $DiskArray. Limit to one Try/Catch.
 #>
 Param (
 
