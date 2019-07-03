@@ -1,3 +1,17 @@
-﻿$File = Get-ChildItem -File -Path 'C:\temp'
+﻿param (
+    [String]$Path
+)
 
-Write-output $File.VersionInfo
+$FileName = Get-ChildItem -File -Path $Path | Where-Object { $_.VersionInfo.FileVersion -ne $Null }
+
+Foreach ($File in $FileName) {
+
+    $Property = @{               
+        FullName    = $File.FullName
+        FileVersion = $File.VersionInfo.FileVersion
+    }
+
+    $Object = New-Object -TypeName PSObject -Property $Property
+    Write-Output $Object
+
+}

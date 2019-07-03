@@ -1,3 +1,6 @@
+<#
+To do: format output, see if output can still be done without the $DiskArray
+#>
 Param (
 
     [String[]] $ComputerName
