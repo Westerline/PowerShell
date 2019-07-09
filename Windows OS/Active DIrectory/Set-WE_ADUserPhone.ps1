@@ -1,24 +1,5 @@
 ﻿<#
-.SYNOPSIS
-    Updates phone number fields for AD users including home, mobile, and office.
-.DESCRIPTION
-    Updates phone number fields for AD users including home, mobile, and office.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+Requires GroupPolicy Module
 #>
 
 [CmdletBinding()]

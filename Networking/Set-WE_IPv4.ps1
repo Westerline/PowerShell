@@ -1,85 +1,65 @@
 ﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+Requires Runas Administrator
+Requires NIC connected
+Code modified from: http://powershelldistrict.com/set-ip-address-using-powershell/
+To-do, add static vs dhcp options
 #>
 
-[CmdletBinding()]
+Function Replace-WE_NetIpAddress {
 
-Param (
+    [cmdletbinding()]
+    Param(
+        [String] $AdapterName,
+        [IPAddress] $IPAddress,
+        [int] $Prefix,
+        [IPAddress] $DefaultGateway,
+        [IPAddress] $PrimaryDNS,
+        [IPAddress] $SecondaryDNS
+    )
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    Begin {
 
-)
+    }
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-    $IPv4_Address = ""
-    $Subnet = ""
-    $Default_Gateway = ""
-    $Primary_DNS = ""
-    $Secondary_DNS = ""
+    Process {
 
-}
+        Try {
+           
+            $Adapter = Get-NetAdapter -Name $AdapterName
 
-Process {
+            $InterfaceAlias = $AdapterName.InterfaceAlias
+            
+            $IPConfig = Get-NetIPConfiguration -InterfaceAlias $InterfaceAlias
+            
+            $DisableDHCP = Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0
+            
+            $OldGateway = $IPConfig.IPv4DefaultGateway.NextHop
+            
+            $Remove = Remove-NetRoute -InterfaceAlias $InterfaceAlias -NExtHop $OldGateway -Confirm:$False
+            
+            $Remove = Remove-NetIPAddress -InterfaceAlias $InterfaceAlias -Confirm:$False
+            
+            $IPNew = New-NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IPAddress -PrefixLength $Prefix -DefaultGateway $DefaultGateway
 
-    Try {
+            $DNS = Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $PrimaryDNS, $SecondaryDNS
 
-        If ($EthernetAdapter) {
+            $Property = @{ 
+                InterfaceAlias = $IPNew.InterfaceAlias  
+                NewIPaddress   = $IPNew.IPaddress
+                DefaultGateway = $IPNew.DefaultGateway
+            }
 
-            netsh.exe int ip set address $EthernetAdapter.InterfaceIndex static $IPv4_Address $Subnet $Default_Gateway 1
-
-            netsh.exe int ip set dnsservers $EthernetAdapter.InterfaceIndex static $Primary_DNS primary
-
-            netsh.exe int ip add dnsservers $EthernetAdapter.InterfaceIndex Index=2 $Secondary_DNS
-
-            Write-Verbose 'The IP address settings were applied successfully.' -Verbose
 
         }
-       
-    }
 
-    Catch [SpecificException] {
-        
-    }
+        Catch { }
 
-    Catch {
-
-        Write-Warning 'The IP address settings were not applied successfully.'
+        Finally { }
 
     }
 
-    Finally {
-
-    }
+    End { }
 
 }
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+}
 }
