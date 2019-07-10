@@ -1,72 +1,43 @@
 ﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    Generate the desired error - that'll be the egg... then use this little statement to get the exception type - the chicken. You can use the full error name in Catch statements.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+Used to find the exception name for errors. The exception name can be used in a catch [ErrorName] statement.
 #>
+Function Get-WE_ErrorName {
 
-[CmdletBinding()]
+    Param (
+        [Int] $ErrorIndex = 0
+    )
 
-Param (
+    Begin { }
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    Process {
 
-)
+        Try {
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
+            $ErrorName = $error[$ErrorIndex]
+            $Property = @{
+                ErrorName = $ErrorName.exception.gettype().fullname
+                Activity  = $ErrorName.CategoryInfo.Activity
+            }
+    
+        }
 
-}
+        Catch { 
 
-Process {
+            Write-Verbose "Unable to capture Error Name"
+            $Property = @{
+                ErrorName = 'Null'
+                Activity  = 'Null'
+            }
 
-    Try {
-       
-        Get-Service -Name Service1
-
-        Get-AudioDevice
-        $error[0].exception.gettype().fullname
-
-    }
-
-    Catch [SpecificException] {
-        
-    }
-
-    Catch {
-
-
-    }
-
-    Finally {
+        }
+    
+        Finally {
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+        }
 
     }
 
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+    End { }
+    
 }
