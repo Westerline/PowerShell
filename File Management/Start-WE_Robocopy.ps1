@@ -5,7 +5,7 @@
 -IPG: Inter-packet gap (ms), to free bandwidth on slow lines
 -MT: Do multi-threaded copies with $MT threads (default 8). $MT must be at least 1 and not greater than 128.
 
-To-do, base robocopy statement which is appended with parameters based on switch statement. Create separate validate sets for IPG and MT. Other optional parameters.
+To-do: Add $LastExitCode variable for error handling (https://blogs.msdn.microsoft.com/kebab/2013/06/09/an-introduction-to-error-handling-in-powershell/). Base robocopy statement which is appended with parameters based on switch statement. Create separate validate sets for IPG and MT. Other optional parameters.
 #>
 
 Param (
@@ -22,11 +22,11 @@ Try {
     $Parameter = @()
 
     Switch ( $Type ) {
-        'MIR_IPG' { $Parameter += "/MIR", "/IPG:$IPG"}
-        'MIR_MT' { $Parameter += "/MIR", "/MT:$MT"}
-        'COPY_IPG' { $Parameter += "/COPY:DAT", "/IPG:$IPG"}
-        'COPY_MT' { $Parameter += "/COPY:DAT", "/MT:$MT"}
-        'MOVE_IPG' { $Parameter += "/MOVE", "/IPG:$IPG"}
+        'MIR_IPG' { $Parameter += "/MIR", "/IPG:$IPG" }
+        'MIR_MT' { $Parameter += "/MIR", "/MT:$MT" }
+        'COPY_IPG' { $Parameter += "/COPY:DAT", "/IPG:$IPG" }
+        'COPY_MT' { $Parameter += "/COPY:DAT", "/MT:$MT" }
+        'MOVE_IPG' { $Parameter += "/MOVE", "/IPG:$IPG" }
         'MOVE_MT' { $Parameter += "/MOVE", "/MT:$MT" }
     }
 
