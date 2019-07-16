@@ -3,7 +3,7 @@ To-do: Add email logging option, generate alert numbers based on error info. Wri
 #>
 
 Param (
-
+    [Int] $EventID
 )
 
 Try {
@@ -19,8 +19,9 @@ Try {
         ErrorDetails          = $Error.ErrorDetails
     }
 
-    New-EventLog -Source $Host.Name -LogName 'Windows PowerShell'
-    Write-EventLog -EventId 69 -LogName 'Windows PowerShell' -Source $Host.Name -Message $Property -EntryType Error
+    $Object = New-Object -TypeName PSObject -Property $Property
+    #New-EventLog -Source $Host.Name -LogName 'Windows PowerShell'
+    Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source $Host.Name -Message (Write-Output $Object) -EntryType Error
 
 }
 

@@ -13,7 +13,7 @@ Function Get-WE_ErrorName {
 
         Try {
 
-            $ErrorName = $error[$ErrorIndex]
+            $ErrorName = $Error[$ErrorIndex]
             $Property = @{
                 ErrorName = $ErrorName.exception.gettype().fullname
                 Activity  = $ErrorName.CategoryInfo.Activity

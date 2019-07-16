@@ -1,5 +1,5 @@
 <#
-To-do: (1) Create Subnet Calculator Tool (2) Tie calculator to ping script (3) scan range based on subnet mask
+To-do: (1) Create Subnet Calculator Tool (2) Tie calculator to ping script (3) scan range based on subnet mask (4) redirect warning output to $Property variable
 Fix parameter input on $Range. Doesn't accept 1..10 as input
 #>
 Param (
