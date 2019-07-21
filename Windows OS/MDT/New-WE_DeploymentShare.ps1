@@ -1,72 +1,39 @@
-<#
-.SYNOPSIS
-    This is a very short summary of the script.
+[Cmdletbinding()]
 
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
-#>
-
-[CmdletBinding()]
-
-Param (
-
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
-
+Param(
+    [String] $Path,
+    [String] $Name,
+    [String] $Description,
+    [String] $FullAccess = 'Adinistrators'
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-
+Try {
+    Import-Module "C:\Program Files\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
+    $Directory = New-Item -Path $Path -ItemType directory
+    $SMBShare = New-SmbShare -Name $Name -Path $Path -FullAccess $FullAccess
+    $PSDrive = New-PSDrive -Name $Name -PSProvider "MDTProvider" -Root $Path -Description $Description -NetworkPath "\\$Env:ComputerName\$Name"
+    $MDTDrive = Add-MDTPersistentDrive -Name $Name -InputObjetc $PSDrive
+    $Property = @{
+        Status     = 'Successful'
+        Directory  = $Directory.Directory
+        ShareState = $SMBShare.ShareState
+        PSDrive    = $PSDrive.Name
+        MDTDrive   = $MDTDrive.$Name
+    }
 }
 
-Process {
-
-    Try {
-       
-        New-Item -Path "D:\MDT" -ItemType directory
-        New-SmbShare -Name "DeploymentShare$" -Path "D:\MDT" -FullAccess Administrators
-        Import-Module "C:\Program Files\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
-        new-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "D:\MDT" -Description "MDT Deployment Share (Tutorial)" -NetworkPath "\\$Env:ComputerName\DeploymentShare$" -Verbose | add-MDTPersistentDrive -Verbose
-
+Catch { 
+    Write-Verbose "Unable to create the MDT Deployment Share $Name."
+    $Property = @{
+        Status     = 'Unsuccessful'
+        Directory  = 'Null'
+        ShareState = 'Null'
+        PSDrive    = 'Null'
+        MDTDrive   = 'Null'
     }
-
-    Catch [SpecificException] {
-        
-    }
-
-    Catch {
-
-
-    }
-
-    Finally {
-
-    }
-
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+Finally {
+    $Object = New-Object -TypeName PSObject -Property $Property
+    Write-Output $Object
 }

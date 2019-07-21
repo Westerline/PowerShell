@@ -1,76 +1,50 @@
 ﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    Example CSV column names are Number, Username, and Password
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+To do: expand function to allow CSV import as input
 #>
 
-[CmdletBinding()]
-
-Param (
-
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
-
+Param(
+    [String] $HostName,
+    [String] $UserName,
+    [String] $Password,
+    [String] $Type
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-    $ConnectionDetails = Import-Csv -Path C:\Temp\Test.txt
-
-}
+Begin { }
 
 Process {
-    
-    Foreach ($ConnectionDetail in $ConnectionDetails) {
-        
-        Try {
-        
-            $IP = $ConnectionDetail.Number
-            $Username = $ConnectionDetail.Username
-            $Password = $ConnectionDetail.Password
-            $LocalGroup = 'Test'
-            Write-Host "Adding $ConnectionDetail.Number"
-            & cmdkey /add:$IP /user:($UserName) /pass:$Password
-            & net localgroup $LocalGroup $Username /Add
-            Write-Host ""
+
+    Try {
+
+        Switch ($Type) {
+
+            Domain { $CmdKey = & CmdKey /Add:$HostName /User:$UserName /Pass:$Password }
+            SmartCard { $CmdKey = & CmdKey /Add:$HostName /SmartCard }
+            Generic { $CmdKey = & CmdKey /Generic:$HostName /User:$UserName /Pass:$Password }
 
         }
 
-        Catch [SpecificException] {
-            
-        }
-
-        Catch {
-
-            Write-Host "$ConnectionDetail.Number connection failed."
-
-        }
-
-        Finally {
-
+        $Property = @{
+            Status             = $CmdKey
+            CredentialHostName = & CmdKey /List | findstr $HostName
         }
 
     }
 
+    Catch {
+
+        $Property = @{
+            Status             = "$CmdKey Null"
+            CredentialHostName = & CmdKey /List | findstr $HostName
+        }
+
+    }
+
+    Finally {
+    
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
+    }
+
 }
+
+End { }
