@@ -1,1 +1,0 @@
-$EthernetAdapter = Get-WmiObject -Class win32_networkadapter -Filter "AdapterType like 'Ethernet%'" | Select-Object -ExpandProperty NetConnectionID
