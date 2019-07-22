@@ -1,1 +1,0 @@
-Get-CIMInstance -CimSession Win32_OperatingSystem
