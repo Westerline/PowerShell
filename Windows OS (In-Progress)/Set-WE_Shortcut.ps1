@@ -7,12 +7,30 @@
 
 )
 
-$Shell = New-Object -ComObject WScript.Shell
+Try {
 
-$Shortcut = $Shell.CreateShortcut($Path + '\' + $FileName + '.lnk')
+    $Shell = New-Object -ComObject WScript.Shell
+    $Shortcut = $Shell.CreateShortcut($Path + '\' + $FileName + '.lnk')
+    $Shortcut.TargetPath = $Target
+    $Shortcut.Arguments = $Argument
+    $Shortcut.Save()
+    $Property = @{
+        FullName   = $Shortcut.FullName
+        TargetPath = $Shortcut.TargetPath
+        Arguments  = $Shortcut.Arguments
+    }
 
-$Shortcut.TargetPath = $Target
+}
 
-$Shortcut.Arguments = $Argument
+Catch { 
+    $Property = @{
+        FullName   = 'Null'
+        TargetPath = 'Null'
+        Arguments  = 'Null'
+    }
+}
 
-$Shortcut.Save()
+Finally {
+    $Object = New-Object -TypeName PSObject -Property $Property
+    Write-Output $Object
+}
