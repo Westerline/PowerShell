@@ -1,9 +1,7 @@
 <#
 .DESCRIPTION
     Section 1: Enable High Performance
-    Section 2: 
-.Requirements
-    PowerCFG.exe CommandLine Utility
+    Section 2: Configure monitor, disk, standby, and hibernate timeout.
 #>
 
 [CmdletBinding()]
