@@ -1,6 +1,9 @@
+<#
+#>
 [Cmdletbinding()]
 Param (
     
+    [validateset('Ethernet', 'Wi-Fi', 'Bluetooth', 'Virtual')]  
     [String] $Type
 )
 
@@ -20,7 +23,7 @@ Process {
     }
 
     Catch { 
-        Write-Verbose "Unable to find $Type network adapter."
+        $Adapter = Write-Verbose "Unable to find $Type network adapter."
     }
 
     Finally {
