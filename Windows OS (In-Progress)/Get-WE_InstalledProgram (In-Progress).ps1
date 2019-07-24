@@ -12,7 +12,11 @@ Process {
     Catch { }
 
     Finally {
-        Write-Output $Program
+        Write-Output "--------------------------"64-bit Programs"-----------------------------------"
+        Write-Output $x64Program
+        Write-Output "", "---------------------------32-bit Programs----------------------------------"
+        Write-Output $x86Program
+        Write-Output "---------------------------------------------------------------------------------------------------------"
     }
 }
 

@@ -32,7 +32,7 @@ Process {
                 SMTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 25 }
                 HTTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 80 }
                 HTTPS { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 443 }
-                FTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 21, 22 }
+                FTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 20, 21 }
                 Telnet { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 23 }
                 IMAP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 143 }
                 RDP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 3389 }

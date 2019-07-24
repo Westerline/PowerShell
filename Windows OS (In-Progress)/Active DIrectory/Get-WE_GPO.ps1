@@ -26,11 +26,17 @@ Process {
 
             }
 
+            $TrimmedResult = $Result | Where-Object { $_.trim() -ne "" }
+
         }
 
         Catch { }
 
-        Finally { }
+        Finally { 
+            
+            Write-Output $TrimmedResult
+
+        }
     
     }
 

@@ -1,11 +1,8 @@
 ﻿<#
 .SYNOPSIS
-    Configure an existing VM Switch
+
 
 .DESCRIPTION
-    The following details how to create an isolated NAT'd network between your LAN, VM Server, and VM Clients
-    The newly created VM switch is assigned an IP in a different network than your LAN, i.e. 192.168.0.1, we then create a NAT between the physical NIC and this virtual NIC.
-    NAT rules can be configured as well.
     In the simple NAT rule example, 0.0.0.0 is used to specify all NIC IP addresses on the host. To connect to the VM from a different PC on the same LAN as your VM host:
     enter the VM host's IP address and the external port used. Note: this limits the virtual switch to a single, in this example, web server listening on TCP port 80.
     In the RDP example, 0.0.0.0 is used to specify all NIC IP addresses on the host. To connect to the VM from a different PC on the same LAN as your VM host:
@@ -26,57 +23,91 @@
  
 .NOTES
     Author: Wesley Esterline
-    Resources: 
+    Resources: https://www.petri.com/create-nat-rules-hyper-v-nat-virtual-switch
     Updated:     
     Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
 #>
 
-[CmdletBinding()]
-
 Param (
-
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
 
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-
-}
+Begin { }
 
 Process {
 
     Try {
 
-        New-VMSwitch -SwitchName “NATSwitch” -SwitchType Internal
+        Switch ($CommonPort) {
+            SMTP {
+                $Port = 25
+                $Protocol = 'TCP' 
+            }
+            HTTP {
+                $Port = 80
+                $Protocol = 'TCP' 
+            }
+            HTTPS {
+                $Port = 443
+                $Protocol = 'TCP' 
+            }
+            FTP {
+                $Port = 21 
+                $Protocol = 'TCP' 
+            }
+            Telnet {
+                $Port = 23 
+                $Protocol = 'TCP' 
+            }
+            IMAP {
+                $Port = 143 
+                $Protocol = 'TCP' 
+            }
+            RDP {
+                $Port = 3389 
+                $Protocol = 'TCP'
+            }
+            SSH {
+                $Port = 22
+                $Protocol = 'TCP' 
+            }
+            DNS {
+                $Port = 53 
+                $Protocol = 'UDP' 
+            }
+            DHCP {
+                $Port = 68 
+                $Protocol = 'UDP' 
+            }
+            POP3 {
+                $Port = 110 
+                $Protocol = 'TCP' 
+            }
+        }
 
-        New-NetIPAddress -IPAddress 192.168.0.1 -PrefixLength 24 -InterfaceAlias “vEthernet (NATSwitch)”
-
-        New-NetNAT -Name “NATNetwork” -InternalIPInterfaceAddressPrefix 192.168.0.0/24
-       
-    }
-
-    Catch [SpecificException] {
-        
+        $NetNatStaticMapping = Add-NetNatStaticMapping -ExternalIPAddress $ExternalIPAddress -ExternalPort $Port -Protocol $Protocol -InternalIPAddress $InternalIPAddress -InternalPort $Port -NatName $NatName
+        $Property = @{
+            Status              = 'Successful'
+            NetNatStaticMapping = $NetNatStaticMapping
+        }
     }
 
     Catch {
 
+        $Property = @{
+            Status              = 'Unsucessful'
+            NetNatStaticMapping = 'Null'
+        }
 
     }
 
-    Finally {
+    Finally { 
+
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
 
     }
 
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
-}
+End { }

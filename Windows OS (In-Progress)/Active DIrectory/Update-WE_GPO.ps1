@@ -18,12 +18,10 @@ Process {
     
         $Update = & gpupdate.exe $Logoff $Boot $Target:Computer $Target:User
         $TrimmedUpdate = $Update | Where-Object { $_.trim() -ne "" }
-        $Property = @{ }
     }
 
     Catch { 
         Write-Verbose "Unable to update group policy on $Env:ComputerName"
-        $Property = @{ }
     }
 
     Finally {
