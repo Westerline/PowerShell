@@ -1,6 +1,6 @@
-Param(
-    
-)
+[CmdletBinding()]
+
+Param( )
 
 $ErrorActionPreference = 'SilentlyContinue'
 

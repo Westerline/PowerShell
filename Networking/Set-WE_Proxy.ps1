@@ -1,11 +1,21 @@
 <#
 .To Do
     Parameter sets for enable/disable
+
 #>
 
+[CmdletBinding(SupportsShouldProcess)]
+
 Param(
-    [Switch] $Enable,
-    [Switch] $Disable
+
+    [Parameter(Mandatory = $True, ParameterSetName = "Enable")]
+    [Switch] 
+    $Enable,
+
+    [Parameter(Mandatory = $True, ParameterSetName = "Disable")]
+    [Switch] 
+    $Disable
+
 )
 
 Try {

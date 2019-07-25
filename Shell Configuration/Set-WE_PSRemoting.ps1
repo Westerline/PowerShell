@@ -8,26 +8,40 @@
     Configure the machines you the client can remote to.
     To do: set-netconnectionprofile private
 #>  
-[Cmdletbinding()]
+
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
-    [String] $TrustedHosts,
-    [Boolean] $HttpListener,
-    [Boolean] $HttpsListener
+
+    [Parameter(Mandatory = $False,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('HostName', 'ComputerName')]
+    [String[]]
+    $TrustedHosts,
+    
+    [Switch]
+    $HttpListener,
+    
+    [Switch]
+    $HttpsListener
+
 )
 
 Try {
     
-    $PSRemoting = Enable-PsRemoting -Force
+    $PSRemoting = Enable-PsRemoting
 
-    If ($TrustedHosts) {
-        Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate -Force
+    If ($TrustedHosts.IsPresent) {
+        Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate
     }
 
-    If ($HttpListener = $True) {
+    If ($HttpListener.IsPresent) {
         Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Value True -Confirm:$False
     }
 
-    If ($HttpsListener = $True) {
+    If ($HttpsListener.IsPresent) {
         Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False
     }
 

@@ -1,5 +1,14 @@
-﻿param (
-    [String]$Path
+﻿[CmdletBinding()]
+
+param (
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [validatenotnullorempty()] 
+    [Alias('FileName')]    
+    [String[]]
+    $Path
 )
 
 $FileName = Get-ChildItem -File -Path $Path | Where-Object { $_.VersionInfo.FileVersion -ne $Null }

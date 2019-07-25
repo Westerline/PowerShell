@@ -7,8 +7,18 @@
     Net adapter configured with Public DNS server such as Google public DNS 8.8.8.8
 #>
 
+[CmdletBinding(SupportsShouldProcess)]
+
 Param (
-    [String[]] $NTPPeerList = "0.nz.pool.ntp.org, 1.nz.pool.ntp.org, 2.nz.pool.ntp.org, 3.nz.pool.ntp.org"
+
+    [Parameter(ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('ServerName', 'NTPServer', 'TimeServer')]
+    [String[]] 
+    $NTPPeerList = "0.nz.pool.ntp.org, 1.nz.pool.ntp.org, 2.nz.pool.ntp.org, 3.nz.pool.ntp.org"
+
 )
 
 Begin { }

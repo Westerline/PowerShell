@@ -1,14 +1,25 @@
-﻿Param(
-    [String[]] $Pattern    
+﻿[CmdletBinding()]
+
+Param(
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [validatenotnullorempty()] 
+    [Alias('Pattern')]
+    [String[]]
+    $String 
 )
 
-Foreach ($Pat in $Pattern) {
+Foreach ($Str in $String) {
 
-    $Boolean = "$Pat" -match "^[\d\.]+$"
+    $Boolean = "$Str" -match "^[\d\.]+$"
     $Property = @{
-        String  = "$Pat"
+        String  = "$Str"
         Numeric = "$Boolean"
     }
+
     $Object = New-Object -TypeName PSObject -Property $Property
     Write-Output $Object
+
 }

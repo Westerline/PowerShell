@@ -19,10 +19,12 @@
     <Example goes here. Repeat this attribute for more than one example>
 
 .NOTES
-  Version:        1.0
-  Author(s):         Wesley Esterline
-  Creation Date:  <Date>
+  Version: 1.0
+  Author(s): Wesley Esterline
+  Creation Date: <Date>
   Purpose/Change: Initial script development
+  Resources:
+  To Do:
 #>
 
     #SupportsShouldProcess enables -whatif and -confirm parameters.
@@ -43,7 +45,8 @@
         [ValidateUserDrive()]
         To use default values with the mandatory option, use [validatenotnullorempty()] instead.
     Switch parameters are easy to use and are preferred over Boolean parameters, which have a more difficult syntax.
-
+    HelpMessage = "Help. Message. Here.",
+            Position = 0)
     #>
     Param (
         [Parameter(Mandatory = $True,
@@ -51,9 +54,9 @@
             ValueFromPipelineByPropertyName = $True,
             HelpMessage = "Help. Message. Here.",
             Position = 0)]
-        [validatenotnullorempty()] 
+        [ValidateNotNullOrEmpty()] 
         [Alias('Test')]
-        [String] 
+        [String[]] 
         $Parameter1
     )
 

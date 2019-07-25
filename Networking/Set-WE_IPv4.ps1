@@ -7,17 +7,54 @@ Code modified from: http://powershelldistrict.com/set-ip-address-using-powershel
     Add Support for IPv6
 #>
 
-Function Replace-WE_NetIpAddress {
+Function Set-WE_NetIpAddress {
 
-    [cmdletbinding()]
+    [cmdletbinding(SupportsShouldProcess)]
+
     Param(
+
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()] 
         [Alias('AdapterName')]
-        [String] $InterfaceAlias,
-        [IPAddress] $IPAddress,
-        [int] $Prefix,
-        [IPAddress] $DefaultGateway,
-        [IPAddress] $PrimaryDNS,
-        [IPAddress] $SecondaryDNS
+        [String] 
+        $InterfaceAlias,
+
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress]
+        $IPAddress,
+
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [Int] 
+        $Prefix,
+
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress] 
+        $DefaultGateway,
+
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress] 
+        $PrimaryDNS,
+
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress] 
+        $SecondaryDNS
+
     )
 
     Begin {
@@ -70,6 +107,4 @@ Function Replace-WE_NetIpAddress {
 
     End { }
 
-}
-}
 }

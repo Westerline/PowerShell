@@ -5,9 +5,18 @@ Example: Get-WE_DirectorySize -Directory (Get-ChildItem -Path C:\ -Directory | S
 
 FUnction Get-WE_DirectorySize {
     
+    [CmdletBinding()]
+
     Param (
 
-        [String[]] $Directory 
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()] 
+        [Alias('Path')]
+        [String[]] 
+        $Directory 
 
     )
 

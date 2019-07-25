@@ -1,12 +1,20 @@
 <#
-Requires -runasadministratorcls
+Requires -runasadministrator
 #>
+
+[CmdletBinding()]
+
 Param(
+
     [Parameter(Mandatory = $true,
         ValueFromPipeline = $true,
         HelpMessage = 'Product key must match the format XXXXX-XXXXX-XXXXX-XXXXX-XXXXX')]
     [ValidatePattern('\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')]
-    [String] $ProductKey
+    [ValidateNotNullOrEmpty()]
+    [Alias('LicenseKey')]
+    [String[]] 
+    $ProductKey
+
 )
 
 $ErrorActionPreference = 'SilentlyContinue'

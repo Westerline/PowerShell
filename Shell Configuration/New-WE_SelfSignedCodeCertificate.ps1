@@ -5,10 +5,22 @@
     Certificate must be moved to the local machine's trusted root and trusted publisher stores for the code to be executed.
 #>
 
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param(
-    [Int] $Duration,
-    [String] $Subject = "PowerShell Code Signing Certificate",
-    [String] $CertStoreLocation = "Cert:\LocalMachine\My"
+
+    [ValidateNotNullOrEmpty]
+    [Int] 
+    $Duration = 3,
+    
+    [ValidateNotNullOrEmpty]
+    [String] 
+    $Subject = "PowerShell Code Signing Certificate",
+    
+    [ValidateNotNullOrEmpty]
+    [String]
+    $CertStoreLocation = "Cert:\LocalMachine\My"
+
 )
 
 

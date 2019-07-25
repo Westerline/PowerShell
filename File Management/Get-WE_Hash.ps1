@@ -5,9 +5,18 @@ To do:
 
 Param(
     
-    [String []] $InputFile,
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [validatenotnullorempty()] 
+    [String []] 
+    $InputFile,
+
+    [Parameter(Mandatory = $False)]
     [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')] 
-    [String []] $Algorithm = 'All'
+    [String] 
+    $Algorithm = 'All'
 
 )
 

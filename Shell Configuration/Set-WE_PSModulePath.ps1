@@ -7,10 +7,25 @@
     To add a persistent environment variable
     To remove a path, include a second \ in the path, e.g. C:\\temp
 #>
+
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
-    [String] $ModulePath,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Path')]
+    [String] 
+    $ModulePath,
+
+    [Parameter(Mandatory = $True)]
     [validateset('Temporary', 'Profile-AllUsersAllHosts', 'Profile-AllUsersCurrentHost', 'Profile-CurrentUserCurrentHost', 'Profile-CurrentUsersAllHosts')]
-    [String] $Scope
+    [String] 
+    $Scope
+
 )
 
 Begin { }

@@ -3,8 +3,14 @@ Used to find the exception name for errors. The exception name can be used in a 
 #>
 Function Get-WE_ErrorName {
 
+    [Cmdletbinding()]
+
     Param (
-        [Int] $ErrorIndex = 0
+
+        [ValidateNotNullOrEmpty]
+        [Int] 
+        $ErrorIndex = 0
+    
     )
 
     Begin { }

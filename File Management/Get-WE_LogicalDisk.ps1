@@ -1,9 +1,19 @@
 <#
 To do: format output, see if output can still be done without the $DiskArray. Limit to one Try/Catch. Get rid of array, add to hash table instead.
 #>
+
+[CmdletBinding()]
+
 Param (
 
-    [String[]] $ComputerName
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [validatenotnullorempty()] 
+    [Alias('HostName', 'MachineName')]
+    [String[]] 
+    $ComputerName
 
 )
 

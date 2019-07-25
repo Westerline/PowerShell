@@ -28,7 +28,14 @@ To-Do: Adjust to accept pipeline input. Allow multiple file inputs.
 
 [CmdletBinding()]
 Param(
-    [String[]]$File
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [validatenotnullorempty()] 
+    [Alias('FileName', 'FullName')]
+    [String[]] 
+    $Path
 )
     
 Begin { }
@@ -36,7 +43,7 @@ Begin { }
 Process {
 
     Try {
-        $Robo_Content = $File -match '^(?= *?\b(Source|Dest|Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$'
+        $Robo_Content = $Path -match '^(?= *?\b(Source|Dest|Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$'
 
         $Property = [Ordered] @{
             Status      = 'Connected'

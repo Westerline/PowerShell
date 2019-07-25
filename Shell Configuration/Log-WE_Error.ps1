@@ -2,8 +2,18 @@
 To-do: Add email logging option, generate alert numbers based on error info. Write to the event log of a remote computer.
 #>
 
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
-    [Int] $EventID
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()]
+    [Int]
+    $EventID
+
 )
 
 Try {

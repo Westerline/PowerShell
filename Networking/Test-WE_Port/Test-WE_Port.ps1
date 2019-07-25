@@ -9,14 +9,44 @@
 .To Do
 #>
 
+[Cmdletbinding(DefaultParameterSetName = 'Default')]
+
 Param(
-    [String[]] $HostName,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0,
+        ParameterSetName = 'Default')]
+    [Parameter(ParameterSetName = 'CommonPort')]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('ComputerName')]
+    [String[]] 
+    $HostName,
+
+    [Parameter(Mandatory = $True,
+        ParameterSetName = 'Default')] 
     [ValidateSet('TCP', 'UDP', 'Both')]
-    [String] $Protocol,
+    [String] 
+    $Protocol,
+
+    [Parameter(Mandatory = $True,
+        ParameterSetName = 'Default')] 
     [ValidateRange(0, 65535)]
-    [Int] $Port,
+    [Int] 
+    $Port,
+
+    [Parameter(Mandatory = $False,
+        ParameterSetName = 'CommonPort')] 
+    [ValidateRange(0, 65535)]
+    [Int] 
+    $SourcePort = (Get-Random -Maximum 65535),
+
+    [Parameter(Mandatory = $True,
+        ParameterSetName = 'CommonPort')] 
     [ValidateSet('SMTP', 'HTTP', 'HTTPS', 'FTP', 'Telnet', 'IMAP', 'RDP', 'SSH', 'DNS', 'DHCP', 'POP3', 'PortRange', 'SourcePort')]
-    [String] $CommonPort
+    [String]
+    $CommonPort
 
 )
 
@@ -41,7 +71,7 @@ Process {
                 DHCP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -o 67, 68 }
                 POP3 { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -o 110 }
                 PortRange { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -r $Port }
-                SourcePort { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -o $Port }
+                SourcePort { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -sp $SourcePort -p 'UDP' -o $Port }
                 Default { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p $Protocol -o $Port }
             }
 

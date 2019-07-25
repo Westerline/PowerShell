@@ -1,5 +1,9 @@
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
+
     [Switch] $Proxy
+
 )
 
 Begin { }

@@ -1,10 +1,17 @@
 <#
+
 #>
+
 [Cmdletbinding()]
+
 Param (
     
+    [Parameter(Mandatory = $True,
+        Position = 0)]
     [validateset('Ethernet', 'Wi-Fi', 'Bluetooth', 'Virtual')]  
-    [String] $Type
+    [String] 
+    $Type
+
 )
 
 Begin { }

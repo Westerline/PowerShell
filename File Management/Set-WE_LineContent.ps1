@@ -2,10 +2,30 @@
 Pattern parameter will append wildcards to either side of the input.
 #>
 
-Param(
-    [String] $Path,
-    [String] $Pattern,
-    [String] $Value
+[CmdletBinding(SupportsShouldProcess)]
+
+Param (
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [validatenotnullorempty()] 
+    [Alias('FileName')]
+    [String[]] 
+    $Path,
+
+    [Parameter(Mandatory = $True)]
+    [validatenotnullorempty()] 
+    [String] 
+    $Pattern,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [validatenotnullorempty()] 
+    [String]
+    $Value
 )
 
 Try {

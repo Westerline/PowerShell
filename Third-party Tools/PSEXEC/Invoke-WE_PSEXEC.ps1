@@ -37,13 +37,33 @@
     Add support for other PS Tools
 #>
 
-[Cmdletbinding()]
+[Cmdletbinding(DefaultParameterSetname = 'Default',
+    SupportsShouldProcess)]
 
 Param (
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('HostName')]
+    [Parameter(ParameterSetName = 'Default')]
+    [Parameter(ParameterSetName = 'Installer')]
+    [Parameter(ParameterSetName = 'PSScript')]
+    [Parameter(ParameterSetName = 'SQLQuery')]
+    [Parameter(ParameterSetName = 'SQLScript')]
+    [Parameter(ParameterSetName = 'Regedit')]
     [String[]] $ComputerName,
 
+    [Parameter(ParameterSetName = 'Default')]
+    [Parameter(ParameterSetName = 'Installer')]
+    [Parameter(ParameterSetName = 'PSScript')]
+    [Parameter(ParameterSetName = 'SQLQuery')]
+    [Parameter(ParameterSetName = 'SQLScript')]
+    [Parameter(ParameterSetName = 'Regedit')]
     [ValidateSet('CMD', 'Installer', 'PowerShell', 'PSScript', 'SQLQuery', 'SQLScript', 'Regedit')]
-    [String[]] $Type,
+    [String] $Type,
 
     [Parameter(ParameterSetName = 'Installer')]
     [String] $ProgramPath,
