@@ -3,6 +3,11 @@ Source: modified from https://devblogs.microsoft.com/scripting/use-powershell-to
 .Notes
     To Do: (1) Custom Format File for alphabetical sorting of output (2) Select default properties in output PS Module Manifest
 #>
+
+[Cmdletbinding()]
+
+Param ( )
+
 Begin { }
 
 Process {

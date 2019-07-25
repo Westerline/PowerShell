@@ -2,6 +2,10 @@
 To do: format output of property and method arrays to be more readable
 #>
 
+[Cmdletbinding()]
+
+Param ()
+
 Begin { }
 
 Process {

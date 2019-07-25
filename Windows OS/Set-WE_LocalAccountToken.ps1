@@ -8,7 +8,7 @@
     Set to 1 for Disable (no remote admin share allowed), Set to 0 for Enable (remote admin share allowed).
 #>
 
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 
 Param ()
 

@@ -3,6 +3,10 @@
     Add Remove-WE_Credentials function
 #>
 
+[Cmdletbinding()]
+
+Param ( )
+
 Try {
        
     $ShadowCopies = & Vssadmin Delete Shadows /All

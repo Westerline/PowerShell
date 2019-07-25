@@ -1,5 +1,15 @@
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
-    [String] $Name
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('ProgramName')]
+    [String[]] $Name
+
 )
 
 Try {

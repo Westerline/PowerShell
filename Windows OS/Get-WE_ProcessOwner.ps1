@@ -1,5 +1,15 @@
-﻿Param (
+﻿[Cmdletbinding()]
+
+Param (
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('ProcessName', 'Process')]
     [String[]] $Name
+
 )
 
 Begin { }

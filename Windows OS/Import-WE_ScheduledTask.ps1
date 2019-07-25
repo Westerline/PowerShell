@@ -2,15 +2,51 @@
 .Resources
     Adapted from: https://www.windowscentral.com/how-export-and-import-scheduled-tasks-windows-10
 .To Do
-    Add Switch {} statement for non-user/password version of command.
+    Add Switch {} statement for non-user/password version of command. (2) Password parameter secure string conversion to plain text.
 #>
+
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
-    [String] $Path,
-    [String] $Name,
-    [String] $TaskPath,
-    [String] $DomainName,
-    [String] $User,
-    [String] $Password
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $Path,
+
+    [Parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $Name,
+
+    [Parameter(Mandatory = $False)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $TaskPath,
+
+    [Parameter(ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $DomainName = '.',
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $User,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $Password
+
 )
 
 Begin { }

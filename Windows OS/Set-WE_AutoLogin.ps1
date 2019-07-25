@@ -6,9 +6,27 @@
 [CmdletBinding()]
 
 Param (
-    [String] $DomainName = '.',
-    [String] $UserName,
-    [String] $Password
+
+    [Parameter(ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $DomainName = '.',
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $UserName,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $Password
+
 )
 
 Begin { }

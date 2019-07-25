@@ -2,6 +2,10 @@
 Requirements: Windows 10
 #>
 
+[Cmdletbinding()]
+
+Param( )
+
 Begin { }
 
 Process {

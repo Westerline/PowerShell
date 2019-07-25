@@ -1,9 +1,36 @@
 ﻿param ( 
 
-    [string]$Target, 
-    [string]$Argument, 
-    [string]$Path,
-    [String]$FileName 
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [string]
+    $Target, 
+
+    [Parameter(Mandatory = $False,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [string]
+    $Argument, 
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [string]
+    $Path,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [String]
+    $FileName 
 
 )
 

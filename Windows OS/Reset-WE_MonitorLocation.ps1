@@ -8,16 +8,16 @@ Process {
 
     Try {
         
-        $Path1 = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Configuration'
-        $Path2 = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Connectivity'
-        Remove-ItemProperty -Path $Path1, $Path2
+        $Configuration = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Configuration'
+        $Connectivity = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Connectivity'
+        Remove-ItemProperty -Path $Configuration, $Connectivity
 
     }
 
 
     Catch {
 
-        "$Path1 or $Path2 does not exist" 
+        "$Configuration or $Connectivity doesn't exist" 
 
     }
 

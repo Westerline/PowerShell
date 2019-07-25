@@ -1,6 +1,21 @@
-﻿[Cmdletbinding()]
+﻿<#
+.Notes
+    To do: Parameters for Syspart size, letter, winpart letter, label.
+#>
+
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param(
-    [String] $FriendlyName
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('DiskName', 'Name')]
+    [String]
+    $FriendlyName
+
 )
 
 Begin { }
@@ -11,7 +26,7 @@ Process {
 
         $WINTOGO_Drive = Get-Disk -FriendlyName $FriendlyName | Select-Object -ExpandProperty Number
 
-        $Initialization = Initialize-Disk -FriendlyName $FriendlyName -PartitionStyle MBR
+        $Initialization = Initialize-Disk -Number $WINTOGO_Drive -PartitionStyle MBR
 
         $SystemPartition = New-Partition - -Size 350MB -DriveLetter 'S' -IsActive
 
@@ -56,3 +71,7 @@ Process {
         Write-Output $Object
 
     }
+
+}
+
+End { }

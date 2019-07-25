@@ -11,19 +11,21 @@
 
 Function Set-WE_RemoteDesktop {
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
 
     Param (
 
         [Parameter(Mandatory = $True)]
         [Alias('HostName')]
         [ValidateNotNullorEmpty()]
-        [string[]]$ComputerName,
+        [string[]]
+        $ComputerName,
 
         [Parameter(Mandatory = $False)]
         [Alias('HostName')]
         [ValidateNotNullorEmpty()]
-        [Boolean]$TerminalServices
+        [Boolean]
+        $TerminalServices
 
     )
 

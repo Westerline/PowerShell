@@ -2,40 +2,55 @@
 To do: expand function to allow CSV import as input
 #>
 
+[Cmdletbinding()]
+
 Param(
-    [String] $Name
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('UserName')]
+    [String[]]
+    $Name
+
 )
 
 Begin { }
 
 Process {
 
-    Try {
+    Foreach ($N in $Name) {
 
-        $CmdKey = & CmdKey /Delete:$Name
+        Try {
+
+            $CmdKey = & CmdKey /Delete:$N
 
 
-        $Property = @{
-            Status             = $CmdKey
-            CredentialHostName = & CmdKey /List | findstr $Name
+            $Property = @{
+                Status             = $CmdKey
+                CredentialHostName = & CmdKey /List | findstr $N
+            }
+
         }
 
-    }
+        Catch {
 
-    Catch {
+            $Property = @{
+                Status             = "$CmdKey Null"
+                CredentialHostName = & CmdKey /List | findstr $N
+            }
 
-        $Property = @{
-            Status             = "$CmdKey Null"
-            CredentialHostName = & CmdKey /List | findstr $Name
         }
 
-    }
-
-    Finally {
+        Finally {
     
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
 
+        }
+    
     }
 
 }

@@ -1,11 +1,19 @@
 ﻿<#
 Requirements, WinRM service should be configured to accept requests.
 #>
-[CmdletBinding()]
+
+[CmdletBinding(SupportsShouldProcess)]
 
 Param (
 
-    [String[]] $ComputerName
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('HostName')]
+    [String[]] 
+    $ComputerName
 
 )
 

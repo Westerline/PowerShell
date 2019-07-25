@@ -4,13 +4,26 @@
     Section 2: Configure monitor, disk, standby, and hibernate timeout.
 #>
 
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 
 Param (
-    [Int] $MonitorTimeout,
-    [Int] $DiskTimeout,
-    [Int] $StandbyTimeout,
-    [Int] $HibernateTimeout
+
+    [ValidateNotNullOrEmpty()]
+    [Int]
+    $MonitorTimeout = 15,
+    
+    [ValidateNotNullOrEmpty()]
+    [Int] 
+    $DiskTimeout = 20,
+    
+    [ValidateNotNullOrEmpty()]
+    [Int] 
+    $StandbyTimeout = 30,
+
+    [ValidateNotNullOrEmpty()]
+    [Int] 
+    $HibernateTimeout = 30
+    
 )
 
 Begin { }
