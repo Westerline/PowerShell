@@ -8,11 +8,11 @@
 
 Param(
 
-    [Parameter(Mandatory = $True, ParameterSetName = "Enable")]
+    [Parameter(ParameterSetName = "Enable")]
     [Switch] 
     $Enable,
 
-    [Parameter(Mandatory = $True, ParameterSetName = "Disable")]
+    [Parameter(ParameterSetName = "Disable")]
     [Switch] 
     $Disable
 

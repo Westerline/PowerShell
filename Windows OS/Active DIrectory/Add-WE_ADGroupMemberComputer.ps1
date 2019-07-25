@@ -2,8 +2,19 @@
 Requires GroupPolicy Module
 To do: (1) Update property array (2) Tidy up Members parameter to accept input for various OU and DC locations.
 #>
+
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
-    [String] $ComputerName
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('HostName')]
+    [String[]] $ComputerName
+
 )
 
 Try {

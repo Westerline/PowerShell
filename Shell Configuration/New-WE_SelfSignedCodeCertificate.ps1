@@ -9,15 +9,15 @@
 
 Param(
 
-    [ValidateNotNullOrEmpty]
+    [ValidateNotNullOrEmpty()]
     [Int] 
     $Duration = 3,
     
-    [ValidateNotNullOrEmpty]
+    [ValidateNotNullOrEmpty()]
     [String] 
     $Subject = "PowerShell Code Signing Certificate",
     
-    [ValidateNotNullOrEmpty]
+    [ValidateNotNullOrEmpty()]
     [String]
     $CertStoreLocation = "Cert:\LocalMachine\My"
 

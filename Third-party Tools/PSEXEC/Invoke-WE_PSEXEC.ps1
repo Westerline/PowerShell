@@ -34,7 +34,7 @@
     PS Tools available https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
     Updated:
     To Do:
-    Add support for other PS Tools
+    Break each type of PSEXEC into its own module.
 #>
 
 [Cmdletbinding(DefaultParameterSetname = 'Default',
@@ -45,53 +45,98 @@ Param (
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()] 
-    [Alias('HostName')]
-    [Parameter(ParameterSetName = 'Default')]
+        Position = 0,
+        ParameterSetName = 'Default')]
     [Parameter(ParameterSetName = 'Installer')]
     [Parameter(ParameterSetName = 'PSScript')]
     [Parameter(ParameterSetName = 'SQLQuery')]
     [Parameter(ParameterSetName = 'SQLScript')]
     [Parameter(ParameterSetName = 'Regedit')]
-    [String[]] $ComputerName,
+    [ValidateNotNullOrEmpty()] 
+    [Alias('HostName')]
+    [String[]] 
+    $ComputerName,
 
-    [Parameter(ParameterSetName = 'Default')]
+    [Parameter(Mandatory = $True,
+        ParameterSetName = 'Default')]
     [Parameter(ParameterSetName = 'Installer')]
     [Parameter(ParameterSetName = 'PSScript')]
     [Parameter(ParameterSetName = 'SQLQuery')]
     [Parameter(ParameterSetName = 'SQLScript')]
     [Parameter(ParameterSetName = 'Regedit')]
     [ValidateSet('CMD', 'Installer', 'PowerShell', 'PSScript', 'SQLQuery', 'SQLScript', 'Regedit')]
-    [String] $Type,
+    [String] 
+    $Type,
 
-    [Parameter(ParameterSetName = 'Installer')]
-    [String] $ProgramPath,
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'Installer')]
+    [ValidateNotNullOrEmpty()] 
+    [String] 
+    $ProgramPath,
 
-    [Parameter(ParameterSetName = 'Installer')]
-    [String] $InstallationParameters,
+    [Parameter(Mandatory = $False,
+        ParameterSetName = 'Installer')]
+    [String]
+    $InstallationParameters,
 
-    [Parameter(ParameterSetName = 'PSScript')]
-    [String] $PSScriptPath,
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'PSScript')]
+    [ValidateNotNullOrEmpty()] 
+    [String]
+    $PSScriptPath,
 
-    [Parameter(ParameterSetName = 'SQLQuery')]
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'SQLQuery')]
     [Parameter(ParameterSetName = 'SQLScript')]
-    [String] $SQLServer,
+    [ValidateNotNullOrEmpty()] 
+    [String]
+    $SQLServer,
 
-    [Parameter(ParameterSetName = 'SQLScript')]
-    [String] $SQLScriptPath,
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'SQLScript')]
+    [ValidateNotNullOrEmpty()]
+    [String]
+    $SQLScriptPath,
 
-    [Parameter(ParameterSetName = 'Regedit')]
-    [String] $RegKeyName,
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'Regedit')]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $RegKeyName,
 
-    [Parameter(ParameterSetName = 'Regedit')]
-    [String] $RegKeyType,
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'Regedit')]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $RegKeyType,
 
-    [Parameter(ParameterSetName = 'Regedit')]
-    [String] $RegValueName,
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'Regedit')]
+    [ValidateNotNullOrEmpty()]
+    [String]
+    $RegValueName,
 
-    [Parameter(ParameterSetName = 'Regedit')]
-    [String] $RegValueData
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'Regedit')]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $RegValueData
 
 )
 

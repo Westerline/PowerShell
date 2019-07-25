@@ -7,7 +7,7 @@ Function Get-WE_ErrorName {
 
     Param (
 
-        [ValidateNotNullOrEmpty]
+        [ValidateNotNullOrEmpty()]
         [Int] 
         $ErrorIndex = 0
     
