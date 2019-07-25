@@ -2,7 +2,7 @@
 Requires -runasadministrator
 #>
 
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 
 Param(
 

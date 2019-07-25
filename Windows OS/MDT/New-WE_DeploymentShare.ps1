@@ -1,10 +1,32 @@
-[Cmdletbinding()]
+[Cmdletbinding(SupportsShouldProcess)]
 
 Param(
-    [String] $Path,
-    [String] $Name,
-    [String] $Description,
-    [String] $FullAccess = 'Adinistrators'
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [String] 
+    $Path,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [String] 
+    $Name,
+
+    [Parameter(Mandatory = $False)]
+    [ValidateNotNullOrEmpty()] 
+    [String] 
+    $Description,
+
+    [ValidateNotNullOrEmpty()] 
+    [String] 
+    $FullAccess = 'Adinistrators'
+
+
 )
 
 Try {

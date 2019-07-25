@@ -17,15 +17,43 @@
     Resources: https://www.petri.com/create-nat-rules-hyper-v-nat-virtual-switch
     Updated:     
     Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+    To Do: Add NewSwitch logic if switch paramter enabled.
 #>
 
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param (
-    [String] $InterfaceAlias,
-    [String] $Name,
-    [String] $IPAddress,
-    [String] $NetworkAddress,
-    [String] $PrefixLength,
-    [Switch] $NewSwitch
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('AdapterName', 'InterfaceName')]
+    [String] 
+    $InterfaceAlias,
+
+    [Parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Name')]
+    [String] 
+    $NATName,
+
+    [Parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [IPAddress] 
+    $IPAddress,
+
+    [Parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [IPAddress] 
+    $NetworkAddress,
+
+    [Parameter(Mandatory = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Int] 
+    $PrefixLength
+
 )
 
 Begin { }
@@ -35,7 +63,7 @@ Process {
     Try {
 
         $NATAdapterIP = New-NetIPAddress -IPAddress $IPAddress -PrefixLength $PrefixLength -InterfaceAlias $InterfaceAlias
-        $NAT = New-NetNAT -Name $Name -InternalIPInterfaceAddressPrefix ($NetworkAddress + '/' + $PrefixLength)
+        $NAT = New-NetNAT -Name $NATName -InternalIPInterfaceAddressPrefix ($NetworkAddress + '/' + $PrefixLength)
         $Property = @{
             Status       = 'Successful'
             NATAdapterIP = $NATAdapterIP

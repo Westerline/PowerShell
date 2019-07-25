@@ -1,12 +1,41 @@
 ﻿<#
-To do: expand function to allow CSV import as input
+To do: expand function to allow CSV import as input (2) secure string parameter and then convert back to plaintext for CmdKey.
 #>
 
+[Cmdletbinding(SupportsShouldProcess)]
+
 Param(
-    [String] $HostName,
-    [String] $UserName,
-    [String] $Password,
-    [String] $Type
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('ComputerName')]
+    [String]
+    $HostName,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [String] 
+    $UserName,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [String] 
+    $Password,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateSet('Domain', 'SmartCard', 'Generic')] 
+    [String]
+    $Type
+
 )
 
 Begin { }
