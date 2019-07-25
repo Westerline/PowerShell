@@ -1,71 +1,52 @@
 <#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    Will ping a /24 subnet. To iterate through a larger subnet such as a /16 or /18...
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+To-do: (1) Set NetworkAddress Parameter to IP type. (2) Create Subnet Calculator Tool (3) Tie calculator to ping script (4) scan range based on subnet mask (5) redirect warning output to $Property variable
+Fix parameter input on $Range. Doesn't accept 1..10 as input
 #>
 
 [CmdletBinding()]
 
 Param (
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [ValidateNotNullOrEmpty()] 
+    [String]
+    $NetworkAddress = '192.168.1',
+    
+    [ValidateRange(0, 255)]
+    [Int]
+    $Range = 1..40
 
 )
 
 Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
+    $Old_ErrorActionPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Stop'
-
 }
 
 Process {
 
-    Try {
-       
-        $ping = New-Object System.Net.Networkinformation.Ping
-        100..254 | Where-Object { $ping.send(“192.168.100.$_”) | Select-Object -Property Address, Status }
+    Foreach ($R in $Range) {
 
-
-    }
-
-    Catch [SpecificException] {
-        
-    }
-
-    Catch {
-
-
-    }
-
-    Finally {
-
+        Try { 
+            $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet
+            $Property = @{
+                ComputerName  = "$NetworkAddress.$R"
+                PingSucceeded = $Ping
+            }
+        }
+        Catch {
+            $Property = @{
+                ComputerName  = "$NetworkAddress.$R"
+                PingSucceeded = 'NULL'
+            }
+        }
+        Finally {
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+        }
     }
 
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+End { 
+    $ErrorActionPreference = $Old_ErrorActionPreference
 }

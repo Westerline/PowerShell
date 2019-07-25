@@ -1,77 +1,63 @@
-﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
+﻿param ( 
 
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [string]
+    $Target, 
 
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
+    [Parameter(Mandatory = $False,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [string]
+    $Argument, 
 
-.EXAMPLE
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [string]
+    $Path,
 
-    Example 1
-    -------------------------------------------
-    Set-Shortcut "C:\temp\.lnk" "C:\test.exe"
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Test')]
+    [String]
+    $FileName 
 
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
-#>
+)
 
-Function Set-Shortcut {
+Try {
 
-    [CmdletBinding()]
-
-    Param (
-
-        [Parameter(Mandatory = $False)]
-        [Alias('Transcript')]
-        [string]$TranscriptFile
-
-    )
-
-    Begin {
-        Start-Transcript $TranscriptFile  -Append -Force
-        $StartErrorActionPreference = $ErrorActionPreference
-        $ErrorActionPreference = 'Stop'
-
+    $Shell = New-Object -ComObject WScript.Shell
+    $Shortcut = $Shell.CreateShortcut($Path + '\' + $FileName + '.lnk')
+    $Shortcut.TargetPath = $Target
+    $Shortcut.Arguments = $Argument
+    $Shortcut.Save()
+    $Property = @{
+        FullName   = $Shortcut.FullName
+        TargetPath = $Shortcut.TargetPath
+        Arguments  = $Shortcut.Arguments
     }
 
-    Process {
+}
 
-        Try {
-            
-            param ( [string]$SourceExe, [string]$ArgumentsToSourceExe, [string]$DestinationPath )
-            $WshShell = New-Object -comObject WScript.Shell
-            $Shortcut = $WshShell.CreateShortcut($DestinationPath)
-            $Shortcut.TargetPath = $SourceExe
-            $Shortcut.Arguments = $ArgumentsToSourceExe
-            $Shortcut.Save()
-            
-        }
-
-        Catch [SpecificException] {
-            
-        }
-
-        Catch {
-
-
-        }
-
-        Finally {
-
-        }
-
+Catch { 
+    $Property = @{
+        FullName   = 'Null'
+        TargetPath = 'Null'
+        Arguments  = 'Null'
     }
+}
 
-    End {
-
-        $ErrorActionPreference = $StartErrorActionPreference
-        Stop-Transcript | Out-Null
-    }
-
+Finally {
+    $Object = New-Object -TypeName PSObject -Property $Property
+    Write-Output $Object
 }

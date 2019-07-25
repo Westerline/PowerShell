@@ -1,79 +1,78 @@
 <#
-.SYNOPSIS
-    This is a very short summary of the script.
-
 .DESCRIPTION
-    Configure Autologon for the standard user account and disable the builtin administrator account.
-    For security reasons, the built-in administrator is removed at the end of the task sequence.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+    Configure Autologon for Windows user account.
 #>
 
 [CmdletBinding()]
 
 Param (
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [Parameter(ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $DomainName = '.',
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $UserName,
+
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()]
+    [String] 
+    $Password
 
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-
-}
+Begin { }
 
 Process {
 
     Try {
         
-        Remove-Item -Path 'C:\Users\Public\Desktop\*Intel*' -Force -Verbose
-        Disable-LocalUser -Name Administrator -Verbose
-        Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoAdminLogon -Value '1' -Force -Verbose
-        Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoLogonCount -Value '999' -Force -Verbose
-        Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultDomainName -Value '.' -Force -Verbose
-        New-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultPassword -Value '' -PropertyType String -Force -Verbose
-        Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultUserName -Value 'Userr' -Force -Verbose
-        Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DisableCAD -Value '1' -Force -Verbose
+        $AutoAdminLogon = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoAdminLogon -Value '1'
+        $AutoLogonCount = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoLogonCount -Value '999'
+        $DefaultDomainName = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultDomainName -Value "$DomainName"
+        $DefaultUserName = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultUserName -Value "$UserName" 
+        $DefaultPassword = New-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultPassword -Value "$Password"  -PropertyType String
+        $DisableCAD = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DisableCAD -Value '1' 
+        $Property = @{
+            AutoAdminLogon    = $AutoAdminLogon
+            AutoLogonCount    = $AutoLogonCount
+            DefaultDomainName = $DefaultDomainName
+            DefaultUserName   = $DefaultUserName
+            DefaultPassword   = $DefaultPassword
+            DisableCAD        = $DisableCAD
+        }
 
-    }
-
-    Catch [SpecificException] {
-        
     }
 
     Catch {
 
         Write-Warning 'The user accounts were not configured successfully.' -Verbose
+        $Property = @{
+            AutoAdminLogon    = 'Null'
+            AutoLogonCount    = 'Null'
+            DefaultDomainName = 'Null'
+            DefaultUserName   = 'Null'
+            DefaultPassword   = 'Null'
+            DisableCAD        = 'Null'
+        }
 
     }
 
     Finally {
 
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
+
     }
 
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
-    
-} 
+End { } 

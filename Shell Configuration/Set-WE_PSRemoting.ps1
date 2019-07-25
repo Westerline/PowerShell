@@ -1,7 +1,4 @@
 ﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
 .DESCRIPTION
     Remote Endpoint Configuration
     Step 1: Local Account Token
@@ -9,82 +6,74 @@
     Step 3: Enable Legacy HTTP Listener on Port 80 (Optional)
     Client-side
     Configure the machines you the client can remote to.
+    To do: set-netconnectionprofile private
+#>  
 
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    Example Non-domain Connection
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
-#>
-
-[CmdletBinding()]
+[Cmdletbinding(SupportsShouldProcess)]
 
 Param (
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [Parameter(Mandatory = $False,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('HostName', 'ComputerName')]
+    [String[]]
+    $TrustedHosts,
+    
+    [Switch]
+    $HttpListener,
+    
+    [Switch]
+    $HttpsListener
 
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
+Try {
+    
+    $PSRemoting = Enable-PsRemoting
 
+    If ($TrustedHosts.IsPresent) {
+        Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate
+    }
+
+    If ($HttpListener.IsPresent) {
+        Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Value True -Confirm:$False
+    }
+
+    If ($HttpsListener.IsPresent) {
+        Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False
+    }
+
+
+    $PSRemotingHosts = Get-Item WSMan:\localhost\Client\TrustedHosts
+    $AllowRemoteAccess = Get-Item WSMan:\localhost\Service\AllowRemoteAccess
+    $PSRemotingHTTP = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener
+    $PSRemotingHTTPS = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener
+
+    $Property = @{
+        Status            = 'Successful'
+        PSRemoting        = $PSRemoting
+        AllowRemoteAccess = $AllowRemoteAccess.Value
+        TrustedHosts      = $PSRemotingHosts.Value
+        HTTPListener      = $PSRemotingHTTP.Value
+        HTTPSListener     = $PSRemotingHTTPS.Value
+    }
 }
 
-Process {
-
-    Try {       
-
-        Enable-PsRemoting -Force
-
-        Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -value True  
-
-        Set-Item WSMan:\localhost\Client\TrustedHosts -Value "10.10.10.3"
-
-        Set-Item WSMan:\localhost\Client\TrustedHosts -Value "PC4" -Concatenate
- 
-        $SERVER = 'REMOTE_SERVER'
-
-        $USER = 'REMOTE_USER'
-
-        New-PSSession -ComputerName $Server -Name 'PC3' -Credential (get-credential "$USER") -Port 80
-
-        Enter-PSSession -ComputerName $SERVER
-
-        Invoke-Command -Computer $SERVER -Credential (get-credential "$USER") { Get-ChildItem C:\ } -port 80
-
+Catch [System.InvalidOperationException] {
+    Write-Verbose "Network connection profile is set to Public. Please change your network connection profile to private and try again."
+    $Property = @{
+        Status            = 'Unsuccessful: Public Network Profile'
+        PSRemoting        = $PSRemoting
+        AllowRemoteAccess = $AllowRemoteAccess.Value
+        TrustedHosts      = $PSRemotingHosts.Value
+        HTTPListener      = $PSRemotingHTTP.Value
+        HTTPSListener     = $PSRemotingHTTPS.Value
     }
-
-    Catch [SpecificException] {
-        
-    }
-
-    Catch {
-
-
-    }
-
-    Finally {
-
-    }
-
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+Finally {
+    $Object = New-Object -TypeName PSObject -Property $Property
+    Write-Output $Object
 }

@@ -1,76 +1,77 @@
 ﻿<#
-.SYNOPSIS
-    Updates phone number fields for AD users including home, mobile, and office.
-.DESCRIPTION
-    Updates phone number fields for AD users including home, mobile, and office.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+.Notes
+    To Do: (1) Allow setting of multiple accounts.
 #>
 
-[CmdletBinding()]
+[Cmdletbinding(SupportsShouldProcess)]
 
 Param (
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('LoginName', 'DisplayName')]
+    [String[]]
+    $UserName,
+
+    [Parameter(Mandatory = $False,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('CellPhone')]
+    [String[]]
+    $MobilePhone,
+
+    [Parameter(Mandatory = $False,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('Landline')]
+    [String[]]
+    $HomePhone,
+
+    [Parameter(Mandatory = $False,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('WorkPhone')]
+    [String[]]
+    $OfficePhone
 
 )
 
 Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-    Get-ADUser -Filter * -Properties * | Export-Csv C:\Temp\ADUsers_BAK.csv -Force
 
 }
 
 Process {
 
     Try {
-
-        Foreach ($user in (import-csv "c:\temp\test.csv")) {
-            $DisplayName = Get-ADUser -Filter "(DisplayName -eq '$($user.DisplayName)')"
-            $DisplayName | Set-ADUser -MobilePhone $User.MobilePhone -Verbose
-            $DisplayName | Set-ADUser -HomePhone $User.HomePhone -Verbose
-            $DisplayName | Set-ADUser -OfficePhone $User.OfficePhone -Verbose
+        $ADUser = Set-ADUser -DisplayName $UserName -MobilePhone $MobilePhone -HomePhone $HomePhone -OfficePhone $OfficePhone
+        $Property = @{
+            Status      = 'Successful'
+            User        = $ADUser.DisplayName
+            MobilePhone = $ADUser.MobilePhone
+            HomePhone   = $ADUser.HomePhone
+            OfficePhone = $ADUser.OfficePhone
         }
-
     }
 
-    Catch [SpecificException] {
-        
-    }
-
-    Catch {
-
-
+    Catch { 
+        $Property = @{
+            Status      = 'Unsuccessful'
+            User        = $ADUser.DisplayName
+            MobilePhone = $ADUser.MobilePhone
+            HomePhone   = $ADUser.HomePhone
+            OfficePhone = $ADUser.OfficePhone
+        }
     }
 
     Finally {
-
-        Get-ADUser -Filter * -Properties TelephoneNumber, MobilePhone, HomePhone, OfficePhone | Select-Object -Property Name, TelephoneNumber, MobilePhone, HomePhone, OfficePhone
-
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
     }
-
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
-}
+End { }

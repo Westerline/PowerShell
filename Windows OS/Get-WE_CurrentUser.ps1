@@ -1,69 +1,56 @@
 ﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    Use the below function to get the name of a currently logged on user.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+Requirements, WinRM service should be configured to accept requests.
 #>
 
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 
 Param (
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('HostName')]
+    [String[]] 
+    $ComputerName
 
 )
 
 Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
     $StartErrorActionPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Stop'
-    $Name = "Test"
-    $Computers = Get-ADComputer -Filter Name -Like $Name | Sort-Object -Property Name | Select-Object -ExpandProperty Name
 
 }
 
 Process {
 
-    ForEach ($Computer in $Computers) {
+    ForEach ($Computer in $ComputerName) {
 
         Try {
+            $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
+            $ComputerSystem = Get-CimInstance -CimSession $Session -ClassName Win32_ComputerSystem
+            $Property = @{
+                Status   = 'Successful'
+                Computer = $Computer
+                UserName = $ComputerSystem.UserName
+            }
 
-            Get-WmiObject -ComputerName $Computer -Class Win32_ComputerSystem | Select-Object Name, Username, DNSHostName
-
-            Write-Output "$Computer not found."
-            
-        }
-
-        Catch [SpecificException] {
-        
         }
 
         Catch {
 
+            $Property = @{
+                Status   = 'Unsuccessful'
+                Computer = $Computer
+                UserName = 'Null'
+            }
 
         }
 
         Finally {
-
+            $Object = New-Object -TypeName psobject -Property $Property
+            Write-Output $Object
         }
     }
 
@@ -72,5 +59,5 @@ Process {
 End {
 
     $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+
 }

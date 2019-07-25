@@ -1,73 +1,25 @@
 <#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    Check for Public IP.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+Requires -runasadministrator
 #>
 
 [CmdletBinding()]
 
-Param (
+Param ( )
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+Try {
+    $IPify = Invoke-RestMethod -Uri 'https://api.ipify.org'
+    $OpenDNS = ((nslookup myip.opendns.com. resolver1.opendns.com 2>$Null)[4]).substring(10)
+    $Property = @{
+        'IPify-PublicIP'   = $IPify
+        'OpenDNS-PublicIP' = $OpenDNS 
+    }
+}
 
-)
-
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
+Catch {
 
 }
 
-Process {
-
-    Try {
-       
-        for /f %%a in ('powershell Invoke-RestMethod api.ipify.org') do set PublicIP=%%a
-        echo Public IP: %PublicIP%  
-
-    }
-
-    Catch [SpecificException] {
-        
-        nslookup myip.opendns.com. resolver1.opendns.com
-
-    }
-
-    Catch {
-
-
-
-    }
-
-    Finally {
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+FInally {
+    $Object = New-Object -TypeName PSObject -Property $Property
+    Write-Output $Object
 }

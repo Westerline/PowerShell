@@ -1,69 +1,61 @@
 <#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    Function to check the system information on a remote machine. rewrite to use powershell syntax
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
 #>
 
 [CmdletBinding()]
 
-Param (
+param (
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [Parameter(Mandatory = $True,
+        ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        HelpMessage = "The. Computer. Name.")]
+    [Alias('HostName', 'CN')]
+    [String[]]$ComputerName
 
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-
-}
+Begin { }
 
 Process {
 
-    Try {
+    ForEach ($Computer in $ComputerName) {
 
-        Invoke-Command -ScriptBlock { $Env:ComputerName }
-       
-    }
+        Try {
 
-    Catch [SpecificException] {
+            $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
+            $OS = Get-CimInstance -CimSession $Session -ClassName Win32_OperatingSystem
+            $CS = Get-CimInstance -CimSession $Session -ClassName Win32_ComputerSystem
         
+            $Property = @{Computername = $ComputerName
+                Stauts                 = 'Connected'
+                SPVersion              = $OS.ServicePackMajorVersion
+                OSVersion              = $OS.Version
+                Model                  = $CS.Model
+
+            }
+        
+        }
+
+        Catch {
+            
+            Write-Verbose "Unable to establish CIM instance to $Computer"
+
+            $Property = @{Computername = $ComputerName
+                Status                 = 'Disconnected'
+                SPVersion              = 'Null'
+                OSVersion              = 'Null'
+                Model                  = 'Null'
+            }
+
+        }
+
+        Finally {
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+        }
+
     }
-
-    Catch {
-
-
-    }
-
-    Finally {
-
-    }
-
+    
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
-}
+End { }

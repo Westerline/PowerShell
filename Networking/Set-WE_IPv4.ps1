@@ -1,85 +1,110 @@
 ﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+Requires Runas Administrator
+Requires NIC connected
+Code modified from: http://powershelldistrict.com/set-ip-address-using-powershell/
+.TO Do
+    Add DHCP Option
+    Add Support for IPv6
 #>
 
-[CmdletBinding()]
+Function Set-WE_NetIpAddress {
 
-Param (
+    [cmdletbinding(SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    Param(
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()] 
+        [Alias('AdapterName')]
+        [String] 
+        $InterfaceAlias,
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-    $IPv4_Address = ""
-    $Subnet = ""
-    $Default_Gateway = ""
-    $Primary_DNS = ""
-    $Secondary_DNS = ""
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress]
+        $IPAddress,
 
-}
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [Int] 
+        $Prefix,
 
-Process {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress] 
+        $DefaultGateway,
 
-    Try {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress] 
+        $PrimaryDNS,
 
-        If ($EthernetAdapter) {
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()] 
+        [IPAddress] 
+        $SecondaryDNS
 
-            netsh.exe int ip set address $EthernetAdapter.InterfaceIndex static $IPv4_Address $Subnet $Default_Gateway 1
+    )
 
-            netsh.exe int ip set dnsservers $EthernetAdapter.InterfaceIndex static $Primary_DNS primary
+    Begin {
 
-            netsh.exe int ip add dnsservers $EthernetAdapter.InterfaceIndex Index=2 $Secondary_DNS
+    }
 
-            Write-Verbose 'The IP address settings were applied successfully.' -Verbose
+    Process {
+
+        Try {
+            
+            $DisableDHCP = Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0
+            
+            $OldGateway = (Get-NetIPConfiguration -InterfaceAlias $InterfaceAlias).IPv4DefaultGateway.NextHop
+            
+            $RemoveNetRoute = Remove-NetRoute -InterfaceAlias $InterfaceAlias -NExtHop $OldGateway -Confirm:$False
+            
+            $RemoveIPAddress = Remove-NetIPAddress -InterfaceAlias $InterfaceAlias -Confirm:$False
+            
+            $NewIPAddress = New-NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IPAddress -PrefixLength $Prefix -DefaultGateway $DefaultGateway
+
+            $DNS = Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $PrimaryDNS, $SecondaryDNS
+
+            $Property = @{ 
+                InterfaceAlias = $NewIPAddress.InterfaceAlias  
+                IPaddress      = $NewIPAddress.IPaddress
+                Prefix         = $NewIPAddress.Prefix
+                DefaultGateway = $NewIPAddress.DefaultGateway
+                DNS            = $DNS.ServerAddresses
+            }
 
         }
-       
+
+        Catch {
+            Write-Verbose "Couldn't configure IP settings for $InterfaceAlias."
+            $Property = @{ 
+                InterfaceAlias = 'Null'
+                IPaddress      = 'Null'
+                Prefix         = 'Null'
+                DefaultGateway = 'Null'
+                DNS            = 'Null'
+            }
+        }
+
+        Finally { 
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+        }
+
     }
 
-    Catch [SpecificException] {
-        
-    }
+    End { }
 
-    Catch {
-
-        Write-Warning 'The IP address settings were not applied successfully.'
-
-    }
-
-    Finally {
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
 }

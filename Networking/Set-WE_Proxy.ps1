@@ -1,79 +1,62 @@
 <#
-.SYNOPSIS
-    This is a very short summary of the script.
+.To Do
+    Parameter sets for enable/disable
 
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
 #>
 
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 
-Param (
+Param(
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [Parameter(ParameterSetName = "Enable")]
+    [Switch] 
+    $Enable,
+
+    [Parameter(ParameterSetName = "Disable")]
+    [Switch] 
+    $Disable
 
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
+Try {
 
-}
+    $ProxyRegKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 
-Process {
-
-    Try {
-        $regKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-        Set-ItemProperty -path $regKey ProxyEnable -value 1 -ErrorAction Stop
-        $regKey_Status = Get-ItemProperty -path $regKey ProxyEnable -ErrorAction Stop
-        $Properties = [Ordered] @{
-            ComputerName = ($Env:COMPUTERNAME)
-            ProxyEnable  = ($regKey_Status.ProxyEnable)
-        }
+    If ($Enable.IsPresent) {
+        Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1
     }
 
-    Catch [SpecificException] {
-        
+    ElseIf ($Disable.IsPresent) {
+        Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0
     }
 
-    Catch {
+    $Proxy = Get-ItemProperty -path $ProxyRegKey
 
-        $Properties = [Ordered] @{
-            ComputerName = ($Env:COMPUTERNAME)
-            Property2    = 'Test Failed'
-        }
-
+    Switch ($Proxy.ProxyEnable) {
+        1 { $ProxyStatus = 'Enabled' }
+        0 { $ProxyStatus = 'Disabled' }
+        Default { $ProxyStatus = 'Invalid Registry Value' }
     }
 
-    Finally {
-
-        ($Object = New-Object -TypeName PSObject -Property $Properties) | Out-File $LogPath1
-
+    $Property = @{
+        ProxyStatus   = $ProxyStatus
+        ProxyOverride = $Proxy.ProxyOverride
     }
 
 }
 
-End {
+Catch {
 
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+    $Property = @{
+        ProxyStatus   = 'Null'
+        ProxyOverride = 'Null'
+    }
+
+}
+
+Finally { 
+
+    $Object = New-Object -TypeName PSObject -Property $Property
+    Write-Output $Object
+
 }

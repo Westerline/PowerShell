@@ -1,79 +1,28 @@
 <#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
-    To Do: Translate to PowerShell Script to run prior to using sysprep on a VM image build
+.To Do
+    Add Remove-WE_Credentials function
 #>
 
-[CmdletBinding()]
+[Cmdletbinding()]
 
-Param (
+Param ( )
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
-
-)
-
-Begin {
-    
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-
-}
-
-Process {
-
-    Try {
+Try {
        
-        & vssadmin delete shadows /All /Quiet
-        Remove-Item c:\Windows\SoftwareDistribution\Download\*.* /f /s /q
-        Remove-Item %windir%\$NT* /f /s /q /a:h
-        Remove-Item c:\Windows\Prefetch\*.* /f /s /q
-        c:\windows\system32\cleanmgr /sagerun:1
-        & wevtutil el 1>%Temp%\cleaneventlog.txt
-        for /f %%x in (%Temp%\cleaneventlog.txt) do wevtutil cl %%x
-        Remove-Item %Temp%\cleaneventlog.txt
-        ipconfig /flushdns
+    $ShadowCopies = & Vssadmin Delete Shadows /All
+    $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse
+    $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse
+    $DiskCleanup = C:\windows\system32\cleanmgr.exe /sagerun:1
+    $ClearEventLog = Get-EventLog -LogName * | ForEach-Object { Clear-EventLog $_.Log }
+    $DNSCache = Clear-DnsClientCache
+    $Property = @{ }
+}
 
-    }
+Catch {
 
-    Catch [SpecificException] {
-        
-    }
-
-    Catch {
-
-
-    }
-
-    Finally {
-
-    }
 
 }
 
-End {
+Finally {
 
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
 }

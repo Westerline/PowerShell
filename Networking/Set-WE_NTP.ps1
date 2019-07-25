@@ -1,94 +1,60 @@
 ﻿<#
-.SYNOPSIS
-    This is a very short summary of the script.
-
-.DESCRIPTION
-    This is a more detailed description of the script. # The starting ErrorActionPreference will be saved and the current sets it to 'Stop'.
-
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
-
-.EXAMPLE
-    Scriptname.ps1
-
-    Description
-    ----------
-    This would be the description for the example.
-
-.NOTES
-    Author: Wesley Esterline
-    Resources: 
-    Updated:     
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
+.Description
+    Useful for managing NTP servers for non-domain computers.
+.Example
+    For NTPPeerList parameter, don't separate the server
+.Requirements
+    Net adapter configured with Public DNS server such as Google public DNS 8.8.8.8
 #>
 
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 
 Param (
 
-    [Parameter(Mandatory = $False)]
-    [Alias('Transcript')]
-    [string]$TranscriptFile
+    [Parameter(ValueFromPipeline = $True,
+        ValueFromPipelineByPropertyName = $True,
+        Position = 0)]
+    [ValidateNotNullOrEmpty()] 
+    [Alias('ServerName', 'NTPServer', 'TimeServer')]
+    [String[]] 
+    $NTPPeerList = "0.nz.pool.ntp.org, 1.nz.pool.ntp.org, 2.nz.pool.ntp.org, 3.nz.pool.ntp.org"
 
 )
 
-Begin {
-    Start-Transcript $TranscriptFile  -Append -Force
-    $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
-    $Computers = ""
-    $NTP_PeerList = "0.nz.pool.ntp.org 1.nz.pool.ntp.org 2.nz.pool.ntp.org 3.nz.pool.ntp.org" 
-    $PrimaryDNS = ""
-    $SecondaryDNS = ""
-
-}
+Begin { }
 
 Process {
 
-    Try {
-       
-        Foreach ($Computer in $Computers) {
+    Try {       
 
-            Invoke-Command -ComputerName $Computer {
-
-                $EthernetAdapter = Get-WmiObject -Class win32_networkadapter -Filter "AdapterType like 'Ethernet%'" | Select-Object -ExpandProperty NetConnectionID
-    
-                netsh int ip set dnsservers $EthernetAdapter static $PrimaryDNS primary
-    
-                netsh int ip add dnsservers $EthernetAdapter Index=2 $SecondaryDNS
-
-                Set-Service -Name W32Time -StartupType Automatic
-
-                Start-Service -Name W32Time
-
-                w32tm /config /syncfromflags:manual /manualpeerlist:$NTP_PeerList /update
-
-                w32tm /resync /rediscover
-
-                Get-Date
-
-            }
+        Set-Service -Name W32Time -StartupType Automatic
+        Start-Service -Name W32Time
+        $W32TimeService = Get-Service -Name W32Time
+        $W32TimeConfig = & w32tm.exe /config /syncfromflags:manual /manualpeerlist:$NTPPeerList /update
+        $W32TimeResync = & w32tm.exe /resync /rediscover
+        $Property = @{
+            Status         = 'Successful'
+            W32TimeService = $W32TimeService
+            W32TimeConfig  = $W32TimeConfig
+            W32TimeResync  = $W32TimeResync
         }
-
-    }
-
-    Catch [SpecificException] {
-        
     }
 
     Catch {
-
-
+        Write-Verbose "Unable to configure NTP settings for $Env:ComputerName, please check the network adapter DNS settings and try again."
+        $Property = @{
+            Status         = 'Unsuccessful'
+            W32TimeService = 'Null'
+            W32TimeConfig  = 'Null'
+            W32TimeResync  = 'Null'
+        }
     }
 
     Finally {
-
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
     }
 
 }
 
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
-}
+End { }
