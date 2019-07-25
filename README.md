@@ -14,8 +14,9 @@
 
 ### Coding/Indentation Style
 
+* Pascal Case
+* One line between parameter, begin/process/end, and try/catch/finally blocks.
 * Any comments should be located towards the top of the document. These comments should focus on items which aren't included in Microsoft's PowerShell help system.
-* Comments should be written as complete sentences.
 * The first letter of commands should be capitalized
 * K&R is the prefered indentation style, refer to https://en.wikipedia.org/wiki/Indentation_style#K&R_style for more details.
 
