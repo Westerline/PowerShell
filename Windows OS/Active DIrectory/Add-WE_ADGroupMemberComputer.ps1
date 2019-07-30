@@ -17,25 +17,41 @@ Param (
 
 )
 
-Try {
-    Foreach ($Computer in $ComputerName) {
+Begin {
 
-        $GroupMemberComputer = Add-ADGroupMember -Identity $Identity -Members "CN=$Computer,OU=Computers,OU=Computers,OU=MyBusiness,DC=domain,DC=local"
-        $Property = @{ 
-            Status              = 'Successful'
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
+
+Process {
+
+    Try {
+        Foreach ($Computer in $ComputerName) {
+
+            $GroupMemberComputer = Add-ADGroupMember -Identity $Identity -Members "CN=$Computer,OU=Computers,OU=Computers,OU=MyBusiness,DC=domain,DC=local"
+            $Property = @{ 
+                Status              = 'Successful'
+                GroupMemberComputer = $GroupMemberComputer
+            }
+        }
+    }
+
+    Catch { 
+        $Property = @{
+            Status              = 'Unsuccessful'
             GroupMemberComputer = $GroupMemberComputer
         }
     }
-}
 
-Catch { 
-    $Property = @{
-        Status              = 'Unsuccessful'
-        GroupMemberComputer = $GroupMemberComputer
+    Finally {
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
     }
+
 }
 
-Finally {
-    $Object = New-Object -TypeName PSObject -Property $Property
-    Write-Output $Object
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

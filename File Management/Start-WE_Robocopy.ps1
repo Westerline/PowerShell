@@ -54,23 +54,39 @@ Param (
 
 )
 
-Try {
+Begin {
 
-    $Parameter = @()
+    $StartErrorActionPreference = $ErrorActionPreference
 
-    Switch ( $Type ) {
-        'MIR_IPG' { $Parameter += "/MIR", "/IPG:$IPG" }
-        'MIR_MT' { $Parameter += "/MIR", "/MT:$MT" }
-        'COPY_IPG' { $Parameter += "/COPY:DAT", "/IPG:$IPG" }
-        'COPY_MT' { $Parameter += "/COPY:DAT", "/MT:$MT" }
-        'MOVE_IPG' { $Parameter += "/MOVE", "/IPG:$IPG" }
-        'MOVE_MT' { $Parameter += "/MOVE", "/MT:$MT" }
+}
+    
+Process {
+
+    Try {
+
+        $Parameter = @()
+
+        Switch ( $Type ) {
+            'MIR_IPG' { $Parameter += "/MIR", "/IPG:$IPG" }
+            'MIR_MT' { $Parameter += "/MIR", "/MT:$MT" }
+            'COPY_IPG' { $Parameter += "/COPY:DAT", "/IPG:$IPG" }
+            'COPY_MT' { $Parameter += "/COPY:DAT", "/MT:$MT" }
+            'MOVE_IPG' { $Parameter += "/MOVE", "/IPG:$IPG" }
+            'MOVE_MT' { $Parameter += "/MOVE", "/MT:$MT" }
+        }
+
+        Robocopy.exe $Source $Destination /E @Parameter
+
     }
 
-    Robocopy.exe $Source $Destination /E @Parameter
+    Catch { }
+
+    Finally { }
 
 }
 
-Catch { }
+End {
 
-Finally { }
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
+}

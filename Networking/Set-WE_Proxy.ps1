@@ -18,45 +18,61 @@ Param(
 
 )
 
-Try {
+Begin {
 
-    $ProxyRegKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+    $StartErrorActionPreference = $ErrorActionPreference
 
-    If ($Enable.IsPresent) {
-        Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1
+}
+
+Process {
+
+    Try {
+
+        $ProxyRegKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+
+        If ($Enable.IsPresent) {
+            Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1
+        }
+
+        ElseIf ($Disable.IsPresent) {
+            Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0
+        }
+
+        $Proxy = Get-ItemProperty -path $ProxyRegKey
+
+        Switch ($Proxy.ProxyEnable) {
+            1 { $ProxyStatus = 'Enabled' }
+            0 { $ProxyStatus = 'Disabled' }
+            Default { $ProxyStatus = 'Invalid Registry Value' }
+        }
+
+        $Property = @{
+            ProxyStatus   = $ProxyStatus
+            ProxyOverride = $Proxy.ProxyOverride
+        }
+
     }
 
-    ElseIf ($Disable.IsPresent) {
-        Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0
+    Catch {
+
+        $Property = @{
+            ProxyStatus   = 'Null'
+            ProxyOverride = 'Null'
+        }
+
     }
 
-    $Proxy = Get-ItemProperty -path $ProxyRegKey
+    Finally { 
 
-    Switch ($Proxy.ProxyEnable) {
-        1 { $ProxyStatus = 'Enabled' }
-        0 { $ProxyStatus = 'Disabled' }
-        Default { $ProxyStatus = 'Invalid Registry Value' }
-    }
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
 
-    $Property = @{
-        ProxyStatus   = $ProxyStatus
-        ProxyOverride = $Proxy.ProxyOverride
     }
 
 }
 
-Catch {
+End {
 
-    $Property = @{
-        ProxyStatus   = 'Null'
-        ProxyOverride = 'Null'
-    }
-
-}
-
-Finally { 
-
-    $Object = New-Object -TypeName PSObject -Property $Property
-    Write-Output $Object
-
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

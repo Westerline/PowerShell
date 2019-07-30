@@ -8,9 +8,14 @@ Source: modified from https://devblogs.microsoft.com/scripting/use-powershell-to
 
 Param ( )
 
-Begin { }
+Begin {
+
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
 
 Process {
+
     Try {
         $OSArchitecture = Get-WmiObject -Class WIn32_OperatingSystem | Select-Object -ExpandProperty OSArchitecture
 
@@ -32,6 +37,11 @@ Process {
         Write-Output $AllPrograms
 
     }
+    
 }
 
-End { }
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+
+}

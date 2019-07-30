@@ -1,6 +1,7 @@
 ﻿[CmdletBinding()]
 
 Param(
+
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
@@ -9,17 +10,34 @@ Param(
     [Alias('Pattern')]
     [String[]]
     $String 
+    
 )
 
-Foreach ($Str in $String) {
+Begin {
 
-    $Boolean = "$Str" -match "^[\d\.]+$"
-    $Property = @{
-        String  = "$Str"
-        Numeric = "$Boolean"
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
+    
+Process {
+
+    Foreach ($Str in $String) {
+
+        $Boolean = "$Str" -match "^[\d\.]+$"
+        $Property = @{
+            String  = "$Str"
+            Numeric = "$Boolean"
+        }
+
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
+
     }
 
-    $Object = New-Object -TypeName PSObject -Property $Property
-    Write-Output $Object
+}
 
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

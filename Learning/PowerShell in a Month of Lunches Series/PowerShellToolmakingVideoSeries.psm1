@@ -38,7 +38,11 @@ Function PowerShellToolmakingVideoSeries {
     )
 
     #Begin, Process, End supports the pipeline input run scenario. The ForEach supports the parameter input run scenario.
-    Begin { }
+    Begin {
+
+        $StartErrorActionPreference = $ErrorActionPreference
+
+    }
 
     Process {
         #Foreach used, rather than loading the objects and piping each one to the command, because it supports a broader range of input patterns.
@@ -82,6 +86,7 @@ Function PowerShellToolmakingVideoSeries {
             }
 
             Finally {
+                
                 <#Next, we create a PSObject that has either the try or catch properties we retrieved above. This is saved to a variable for a couple reasons 
             1. Lets us change $Object before outputting
             2. It's good practice to explicitly write your output, that way you can see where in your code to start investigating if there are output errors.
@@ -91,14 +96,19 @@ Function PowerShellToolmakingVideoSeries {
             #>
                 $Object = New-Object -TypeName PSObject -Property $Property
                 #It is possible to create a custom format view as part of your module. If you do this, you'll want to convert $Object to a different custom object name. This object name will then correlate to the name in your custom format XML.
-                $Object.PSObject.TypeNames.Insert(0,'My.Awesome.Object')
+                $Object.PSObject.TypeNames.Insert(0, 'My.Awesome.Object')
                 Write-Output $Object
+
             }
 
         }
     
     }
 
-    End { }
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference 
+    
+    }
 
 }

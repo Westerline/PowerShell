@@ -18,8 +18,9 @@ Param (
 )
 
 Begin {
-    $Old_ErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
+
+    $StartErrorActionPreference = $ErrorActionPreference
+
 }
 
 Process {
@@ -47,6 +48,8 @@ Process {
 
 }
 
-End { 
-    $ErrorActionPreference = $Old_ErrorActionPreference
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

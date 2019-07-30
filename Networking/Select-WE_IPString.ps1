@@ -12,16 +12,32 @@ Param (
 
 )
 
-Try {
+Begin {
 
-    $IPString = (Select-String -InputObject $String -Pattern "\d{1,3}(\.\d{1,3}){3}" -AllMatches).Matches.Value
+    $StartErrorActionPreference = $ErrorActionPreference
 
 }
 
-Catch { }
+Process {
 
-Finally {
+    Try {
 
-    Write-Output $IPString
+        $IPString = (Select-String -InputObject $String -Pattern "\d{1,3}(\.\d{1,3}){3}" -AllMatches).Matches.Value
 
+    }
+
+    Catch { }
+
+    Finally {
+
+        Write-Output $IPString
+
+    }
+
+}
+
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

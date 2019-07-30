@@ -2,7 +2,11 @@
 To do: registry exporting function. Registry importing function. Backup $Path1 and $Path2 prior to deletion.
 #>
 
-Begin { }
+Begin {
+
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
 
 Process {
 
@@ -29,6 +33,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference
-    Stop-Transcript | Out-Null
+    $ErrorActionPreference = $StartErrorActionPreference 
+
 }

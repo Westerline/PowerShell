@@ -6,7 +6,11 @@ Requirements: Windows 10
 
 Param( )
 
-Begin { }
+Begin {
+
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
 
 Process {
 
@@ -41,5 +45,7 @@ Process {
 }
 
 End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
 
 }
