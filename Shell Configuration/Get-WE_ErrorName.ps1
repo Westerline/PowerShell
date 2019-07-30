@@ -13,7 +13,11 @@ Function Get-WE_ErrorName {
     
     )
 
-    Begin { }
+    Begin {
+
+        $StartErrorActionPreference = $ErrorActionPreference
+
+    }
 
     Process {
 
@@ -44,6 +48,10 @@ Function Get-WE_ErrorName {
 
     }
 
-    End { }
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference 
+    
+    }
     
 }

@@ -23,28 +23,43 @@ Param(
 
 )
 
+Begin {
 
-Try {
-    $NotAfter = $([datetime]::now.AddYears($Duration))
-    $Certificate = New-SelfSignedCertificate -Subject $Subject -Type CodeSigningCert -NotAfter $NotAfter -CertStoreLocation $CertStoreLocation
-    $TrustedRoot = Copy-Item -Path $Certificate.PSPath -Destination "Cert:\LocalMachine\Root"
-    $TrustedPublisher = Move-Item -Path $Certificate.PSPath -Destination "Cert:\LocalMachine\TrustedPublisher"
-    $Property = @{
-        Thumbprint       = $Certificate.Thumbprint
-        TrustedRoot      = $TrustedRoot
-        TrustedPublisher = $TrustedPublisher
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
+    
+Process {
+
+    Try {
+        $NotAfter = $([datetime]::now.AddYears($Duration))
+        $Certificate = New-SelfSignedCertificate -Subject $Subject -Type CodeSigningCert -NotAfter $NotAfter -CertStoreLocation $CertStoreLocation
+        $TrustedRoot = Copy-Item -Path $Certificate.PSPath -Destination "Cert:\LocalMachine\Root"
+        $TrustedPublisher = Move-Item -Path $Certificate.PSPath -Destination "Cert:\LocalMachine\TrustedPublisher"
+        $Property = @{
+            Thumbprint       = $Certificate.Thumbprint
+            TrustedRoot      = $TrustedRoot
+            TrustedPublisher = $TrustedPublisher
+        }
     }
+
+    Catch { 
+        $Property = @{
+            Thumbprint       = 'Null'
+            TrustedRoot      = 'Null'
+            TrustedPublisher = 'Null'
+        }
+    }
+
+    Finally {
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
+    }
+
 }
 
-Catch { 
-    $Property = @{
-        Thumbprint       = 'Null'
-        TrustedRoot      = 'Null'
-        TrustedPublisher = 'Null'
-    }
-}
+End {
 
-Finally {
-    $Object = New-Object -TypeName PSObject -Property $Property
-    Write-Output $Object
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

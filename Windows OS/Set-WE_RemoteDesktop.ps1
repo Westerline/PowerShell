@@ -29,7 +29,11 @@ Function Set-WE_RemoteDesktop {
 
     )
 
-    Begin { }
+    Begin {
+
+        $StartErrorActionPreference = $ErrorActionPreference
+
+    }
 
     Process {
 
@@ -61,6 +65,10 @@ Function Set-WE_RemoteDesktop {
 
     }
 
-    End { }
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference 
+
+    }
 
 }

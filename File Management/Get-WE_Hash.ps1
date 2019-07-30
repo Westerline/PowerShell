@@ -20,21 +20,36 @@ Param(
 
 )
 
+Begin {
 
-Foreach ($File in $InputFile) {
+    $StartErrorActionPreference = $ErrorActionPreference
 
-    $Property = [Ordered]@{
-        File = $File
+}
+
+Process {
+
+    Foreach ($File in $InputFile) {
+
+        $Property = [Ordered]@{
+            File = $File
+        }
+
+        If ($Algorithm -eq 'All') { $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160' }
+
+        Foreach ($Alg in $Algorithm) {
+            $Hash = Get-FileHash -Path $File -Algorithm $Alg 
+            $Property.Add($Alg, $Hash.Hash)
+        }
+
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
+
     }
 
-    If ($Algorithm -eq 'All') { $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160' }
+}
 
-    Foreach ($Alg in $Algorithm) {
-        $Hash = Get-FileHash -Path $File -Algorithm $Alg 
-        $Property.Add($Alg, $Hash.Hash)
-    }
+End {
 
-    $Object = New-Object -TypeName PSObject -Property $Property
-    Write-Output $Object
-
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

@@ -43,6 +43,8 @@ Param (
 
 Begin {
 
+    $StartErrorActionPreference = $ErrorActionPreference
+
 }
 
 Process {
@@ -74,4 +76,8 @@ Process {
     }
 }
 
-End { }
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
+}

@@ -49,6 +49,7 @@
             Position = 0)
     #>
     Param (
+
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
@@ -58,6 +59,7 @@
         [Alias('Test')]
         [String[]] 
         $Parameter1
+        
     )
 
     <#
@@ -122,6 +124,10 @@
 
     }
 
-    End { }
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference 
+    
+    }
 
 }

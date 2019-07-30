@@ -59,6 +59,8 @@ Function Set-WE_NetIpAddress {
 
     Begin {
 
+        $StartErrorActionPreference = $ErrorActionPreference
+
     }
 
     Process {
@@ -105,6 +107,10 @@ Function Set-WE_NetIpAddress {
 
     }
 
-    End { }
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference 
+    
+    }
 
 }

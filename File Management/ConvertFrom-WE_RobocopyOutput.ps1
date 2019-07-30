@@ -28,6 +28,7 @@ To-Do: Adjust to accept pipeline input. Allow multiple file inputs.
 
 [CmdletBinding()]
 Param(
+
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
@@ -36,9 +37,14 @@ Param(
     [Alias('FileName', 'FullName')]
     [String[]] 
     $Path
+    
 )
     
-Begin { }
+Begin {
+
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
 
 Process {
 
@@ -79,4 +85,8 @@ Process {
 
 }
 
-End { }
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
+}

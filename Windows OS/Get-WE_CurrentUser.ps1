@@ -18,8 +18,8 @@ Param (
 )
 
 Begin {
+
     $StartErrorActionPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Stop'
 
 }
 
