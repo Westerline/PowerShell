@@ -21,8 +21,8 @@ FUnction Get-WE_DirectorySize {
     )
 
     Begin {
-        
-        $ErrorActionPreference = 'Stop'
+
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
@@ -61,6 +61,10 @@ FUnction Get-WE_DirectorySize {
 
     }
 
-    End { }
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference 
+    
+    }
 
 }

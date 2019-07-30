@@ -17,15 +17,34 @@ Param(
 
 )
 
-$ErrorActionPreference = 'SilentlyContinue'
+Begin {
 
-Try {
-    
-    $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS'
-    cscript.exe $OSPP.FullName /inpkey:$ProductKey
-    cscript.exe $OSPP.FullName /act
+    $StartErrorActionPreference = $ErrorActionPreference
+
 }
 
-Catch {
+Process {
 
+    Try {
+    
+        $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -ErrorAction SilentlyContinue
+        cscript.exe $OSPP.FullName /inpkey:$ProductKey
+        cscript.exe $OSPP.FullName /act
+        
+    }
+
+    Catch {
+
+    }
+
+    Finally {
+
+    }
+
+}
+
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

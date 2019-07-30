@@ -16,25 +16,41 @@ Param (
 
 )
 
-Try {
+Begin {
 
-    $Property = @{
-        PSMessageDetails      = $Error.PSMessageDetails
-        Exception             = $Error.Exception
-        TargetObject          = $Error.TargetObject
-        Category              = $Error.CategoryInfo.Category
-        Activity              = $Error.CategoryInfo.Activity
-        Reason                = $Error.CategoryInfo.Reason
-        FullyQualifiedErrorID = $Error.FullyQualifiedErrorID
-        ErrorDetails          = $Error.ErrorDetails
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
+    
+Process {
+
+    Try {
+
+        $Property = @{
+            PSMessageDetails      = $Error.PSMessageDetails
+            Exception             = $Error.Exception
+            TargetObject          = $Error.TargetObject
+            Category              = $Error.CategoryInfo.Category
+            Activity              = $Error.CategoryInfo.Activity
+            Reason                = $Error.CategoryInfo.Reason
+            FullyQualifiedErrorID = $Error.FullyQualifiedErrorID
+            ErrorDetails          = $Error.ErrorDetails
+        }
+
+        $Object = New-Object -TypeName PSObject -Property $Property
+        #New-EventLog -Source $Host.Name -LogName 'Windows PowerShell'
+        Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source $Host.Name -Message (Write-Output $Object) -EntryType Error
+
     }
 
-    $Object = New-Object -TypeName PSObject -Property $Property
-    #New-EventLog -Source $Host.Name -LogName 'Windows PowerShell'
-    Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source $Host.Name -Message (Write-Output $Object) -EntryType Error
+    Catch { }
+
+    Finally { }
 
 }
 
-Catch { }
+End {
 
-Finally { }
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
+}

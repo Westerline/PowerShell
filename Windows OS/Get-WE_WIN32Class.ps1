@@ -6,7 +6,11 @@ To do: format output of property and method arrays to be more readable
 
 Param ()
 
-Begin { }
+Begin {
+
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
 
 Process {
 
@@ -28,4 +32,8 @@ Process {
     
 }
 
-End { }
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+
+}

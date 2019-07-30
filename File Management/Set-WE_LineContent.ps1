@@ -26,31 +26,48 @@ Param (
     [validatenotnullorempty()] 
     [String]
     $Value
+
 )
 
-Try {
-    $Content = Get-Content -Path $Path
+Begin {
 
-    $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
+    $StartErrorActionPreference = $ErrorActionPreference
 
-    $Content[$LineIndex] = $Value
-
-    Set-Content -Path $Path -Value $Content
-
-    $Property = @{
-        Path       = $Path
-        NewContent = $Content[$LineIndex]
-    }
 }
 
-Catch {
-    $Property = @{
-        Path       = $Path
-        NewContent = 'Null'
+Process {
+    
+    Try {
+        $Content = Get-Content -Path $Path
+
+        $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
+
+        $Content[$LineIndex] = $Value
+
+        Set-Content -Path $Path -Value $Content
+
+        $Property = @{
+            Path       = $Path
+            NewContent = $Content[$LineIndex]
+        }
     }
+
+    Catch {
+        $Property = @{
+            Path       = $Path
+            NewContent = 'Null'
+        }
+    }
+
+    Finally {
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
+    }
+
 }
 
-Finally {
-    $Object = New-Object -TypeName PSObject -Property $Property
-    Write-Output $Object
+End {
+
+    $ErrorActionPreference = $StartErrorActionPreference 
+    
 }

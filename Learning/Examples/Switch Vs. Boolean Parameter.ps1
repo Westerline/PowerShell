@@ -4,7 +4,7 @@ https://blogs.technet.microsoft.com/bulentozkir/2017/06/20/the-difference-betwee
 #>
 
 #Switch Parameter
-cls
+
 function MyAwesomeFunction1 {
     [CMDLetBinding()]
     param
@@ -12,6 +12,7 @@ function MyAwesomeFunction1 {
         [string] $foo,
         [string] $bar,
         [switch] $someVariable
+        
     )
 
     Write-Host "someVariable = $someVariable" + $someVariable.GetType()

@@ -52,32 +52,48 @@ Function Convert-WE_Bytes {
         [Int]$Precision = 4   
 
     )       
+
+    Begin {
+
+        $StartErrorActionPreference = $ErrorActionPreference
+
+    }
+
+    Process {
          
-    Foreach ($Val in $Value) {
+        Foreach ($Val in $Value) {
 
-        Switch ($From) {    
+            Switch ($From) {    
 
-            'B' { $Val = $Val }            
-            'KB' { $Val = $Val * 1000 }            
-            'MB' { $Val = $Val * 1000000 }            
-            'GB' { $Val = $Val * 1000000000 }            
-            'TB' { $Val = $Val * 1000000000000 }     
+                'B' { $Val = $Val }            
+                'KB' { $Val = $Val * 1000 }            
+                'MB' { $Val = $Val * 1000000 }            
+                'GB' { $Val = $Val * 1000000000 }            
+                'TB' { $Val = $Val * 1000000000000 }     
 
-        }            
+            }            
             
-        Switch ($To) {   
+            Switch ($To) {   
 
-            'B' { $Val = $Val }            
-            'KB' { $Val = $Val / 1000 }            
-            'MB' { $Val = $Val / 1000000 }            
-            'GB' { $Val = $Val / 1000000000 }            
-            'TB' { $Val = $Val / 1000000000000 }            
+                'B' { $Val = $Val }            
+                'KB' { $Val = $Val / 1000 }            
+                'MB' { $Val = $Val / 1000000 }            
+                'GB' { $Val = $Val / 1000000000 }            
+                'TB' { $Val = $Val / 1000000000000 }            
             
-        }            
+            }            
             
-        $Math = [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)   
-        Write-Output $Math$To      
+            $Math = [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)   
+            Write-Output $Math$To      
             
-    }       
+        }       
+    
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference 
+    
+    }
 
 }

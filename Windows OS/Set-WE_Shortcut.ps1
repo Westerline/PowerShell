@@ -34,30 +34,46 @@
 
 )
 
-Try {
+Begin {
 
-    $Shell = New-Object -ComObject WScript.Shell
-    $Shortcut = $Shell.CreateShortcut($Path + '\' + $FileName + '.lnk')
-    $Shortcut.TargetPath = $Target
-    $Shortcut.Arguments = $Argument
-    $Shortcut.Save()
-    $Property = @{
-        FullName   = $Shortcut.FullName
-        TargetPath = $Shortcut.TargetPath
-        Arguments  = $Shortcut.Arguments
+    $StartErrorActionPreference = $ErrorActionPreference
+
+}
+
+Process {
+
+    Try {
+
+        $Shell = New-Object -ComObject WScript.Shell
+        $Shortcut = $Shell.CreateShortcut($Path + '\' + $FileName + '.lnk')
+        $Shortcut.TargetPath = $Target
+        $Shortcut.Arguments = $Argument
+        $Shortcut.Save()
+        $Property = @{
+            FullName   = $Shortcut.FullName
+            TargetPath = $Shortcut.TargetPath
+            Arguments  = $Shortcut.Arguments
+        }
+
+    }
+
+    Catch { 
+        $Property = @{
+            FullName   = 'Null'
+            TargetPath = 'Null'
+            Arguments  = 'Null'
+        }
+    }
+
+    Finally {
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
     }
 
 }
 
-Catch { 
-    $Property = @{
-        FullName   = 'Null'
-        TargetPath = 'Null'
-        Arguments  = 'Null'
-    }
-}
+End {
 
-Finally {
-    $Object = New-Object -TypeName PSObject -Property $Property
-    Write-Output $Object
+    $ErrorActionPreference = $StartErrorActionPreference 
+
 }
