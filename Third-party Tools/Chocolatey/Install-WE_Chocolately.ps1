@@ -1,52 +1,59 @@
-[Cmdletbinding(SupportsShouldProcess)]
+<#
+#>
 
-Param (
+Function Install-WE_Chocolatey {
 
-    [Switch] $Proxy
+    [Cmdletbinding(SupportsShouldProcess)]
 
-)
+    Param (
 
-Begin {
+        [Switch] $Proxy
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
+        $StartErrorActionPreference = $ErrorActionPreference
 
-    Try {
+    }
 
-        If ($Proxy.IsPresent) {
+    Process {
 
-            [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        Try {
+
+            If ($Proxy.IsPresent) {
+
+                [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+            }
+
+            Else {
+
+                $Chocolatey = Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+            }
 
         }
 
-        Else {
+        Catch {
 
-            $Chocolatey = Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+            Write-Verbose "Unable to install chocolatey on $Env:COMPUTERNAME."
+            $Chocolatey = "Unable to install chocolatey on $Env:COMPUTERNAME."
+
+        }
+
+        Finally {
+
+            Write-Output $Chocolatey
 
         }
 
     }
 
-    Catch {
+    End {
 
-        Write-Verbose "Unable to install chocolatey on $Env:COMPUTERNAME."
-        $Chocolatey = "Unable to install chocolatey on $Env:COMPUTERNAME."
-
-    }
-
-    Finally {
-
-        Write-Output $Chocolatey
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
 
 }

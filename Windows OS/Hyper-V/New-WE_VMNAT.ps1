@@ -20,84 +20,88 @@
     To Do: Add NewSwitch logic if switch paramter enabled.
 #>
 
-[Cmdletbinding(SupportsShouldProcess)]
+Function New-WE_VMNAT {
 
-Param (
+    [Cmdletbinding(SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('AdapterName', 'InterfaceName')]
-    [String]
-    $InterfaceAlias,
+    Param (
 
-    [Parameter(Mandatory = $True)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('Name')]
-    [String]
-    $NATName,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('AdapterName', 'InterfaceName')]
+        [String]
+        $InterfaceAlias,
 
-    [Parameter(Mandatory = $True)]
-    [ValidateNotNullOrEmpty()]
-    [IPAddress]
-    $IPAddress,
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('Name')]
+        [String]
+        $NATName,
 
-    [Parameter(Mandatory = $True)]
-    [ValidateNotNullOrEmpty()]
-    [IPAddress]
-    $NetworkAddress,
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()]
+        [IPAddress]
+        $IPAddress,
 
-    [Parameter(Mandatory = $True)]
-    [ValidateNotNullOrEmpty()]
-    [Int]
-    $PrefixLength
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()]
+        [IPAddress]
+        $NetworkAddress,
 
-)
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()]
+        [Int]
+        $PrefixLength
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Try {
+    Process {
 
-        $NATAdapterIP = New-NetIPAddress -IPAddress $IPAddress -PrefixLength $PrefixLength -InterfaceAlias $InterfaceAlias
-        $NAT = New-NetNat -Name $NATName -InternalIPInterfaceAddressPrefix ($NetworkAddress + '/' + $PrefixLength)
-        $Property = @{
-            Status       = 'Successful'
-            NATAdapterIP = $NATAdapterIP
-            Nat          = $NAT
+        Try {
+
+            $NATAdapterIP = New-NetIPAddress -IPAddress $IPAddress -PrefixLength $PrefixLength -InterfaceAlias $InterfaceAlias
+            $NAT = New-NetNat -Name $NATName -InternalIPInterfaceAddressPrefix ($NetworkAddress + '/' + $PrefixLength)
+            $Property = @{
+                Status       = 'Successful'
+                NATAdapterIP = $NATAdapterIP
+                Nat          = $NAT
+            }
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to create new VMNAT on interface $InterfaceAlias."
+            $Property = @{
+                Status       = 'Unsuccessful'
+                NATAdapterIP = 'Null'
+                Nat          = 'Null'
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
         }
 
     }
 
-    Catch {
+    End {
 
-        Write-Verbose "Unable to create new VMNAT on interface $InterfaceAlias."
-        $Property = @{
-            Status       = 'Unsuccessful'
-            NATAdapterIP = 'Null'
-            Nat          = 'Null'
-        }
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
-
-    Finally {
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
 
 }

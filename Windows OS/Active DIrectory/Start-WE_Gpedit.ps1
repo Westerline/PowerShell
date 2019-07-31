@@ -1,47 +1,54 @@
-[Cmdletbinding()]
+<#
+#>
 
-Param (
+Function Start-WE_Gpedit {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('HostName')]
-    [String[]] $ComputerName
+    [Cmdletbinding()]
 
-)
+    Param (
 
-Begin {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('HostName')]
+        [String[]] $ComputerName
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
-
-    Foreach ($Computer in $ComputerName) {
-
-        Try {
-
-            & gpedit.msc /gpcomputer: $Computer
-
-        }
-
-        Catch {
-
-            Write-Verbose "Unable to open gpedit on $Computer."
-
-        }
-
-        Finally { }
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
-}
+    Process {
 
-End {
+        Foreach ($Computer in $ComputerName) {
 
-    $ErrorActionPreference = $StartErrorActionPreference
+            Try {
+
+                & gpedit.msc /gpcomputer: $Computer
+
+            }
+
+            Catch {
+
+                Write-Verbose "Unable to open gpedit on $Computer."
+
+            }
+
+            Finally { }
+
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
 
 }

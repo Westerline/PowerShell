@@ -3,63 +3,67 @@ To-do: (1) Set NetworkAddress Parameter to IP type. (2) Create Subnet Calculator
 Fix parameter input on $Range. Doesn't accept 1..10 as input
 #>
 
-[CmdletBinding()]
+Function Ping-WE_Subnet {
 
-Param (
+    [CmdletBinding()]
 
-    [ValidateNotNullOrEmpty()]
-    [String]
-    $NetworkAddress = '192.168.1',
+    Param (
 
-    [ValidateRange(0, 255)]
-    [Int]
-    $Range = 1..40
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $NetworkAddress = '192.168.1',
 
-)
+        [ValidateRange(0, 255)]
+        [Int]
+        $Range = 1..40
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Foreach ($R in $Range) {
+    Process {
 
-        Try {
+        Foreach ($R in $Range) {
 
-            $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet
-            $Property = @{
-                ComputerName  = "$NetworkAddress.$R"
-                PingSucceeded = $Ping
+            Try {
+
+                $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet
+                $Property = @{
+                    ComputerName  = "$NetworkAddress.$R"
+                    PingSucceeded = $Ping
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Output "Unable to ping subnet $NetworkAddress in range $Range"
+                $Property = @{
+                    ComputerName  = "$NetworkAddress.$R"
+                    PingSucceeded = 'NULL'
+                }
 
-            Write-Output "Unable to ping subnet $NetworkAddress in range $Range"
-            $Property = @{
-                ComputerName  = "$NetworkAddress.$R"
-                PingSucceeded = 'NULL'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference
+    }
 
 }

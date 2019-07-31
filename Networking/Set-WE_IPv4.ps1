@@ -7,7 +7,7 @@ Code modified from: http://powershelldistrict.com/set-ip-address-using-powershel
     Add Support for IPv6
 #>
 
-Function Set-WE_NetIpAddress {
+Function Set-WE_IPv4 {
 
     [cmdletbinding(SupportsShouldProcess)]
 

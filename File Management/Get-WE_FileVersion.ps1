@@ -2,63 +2,67 @@
 Examples:  $FileName = Get-ChildItem -File -Path $Path | Where-Object { $_.VersionInfo.FileVersion -ne $Null }
 #>
 
-[CmdletBinding()]
+Function Get-WE_FileVersion {
 
-param (
+    [CmdletBinding()]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()]
-    [Alias('FileName')]
-    [String[]]
-    $Path
+    param (
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [Alias('FileName')]
+        [String[]]
+        $Path
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Foreach ($File in $Path) {
+    Process {
 
-        Try {
+        Foreach ($File in $Path) {
 
-            $Property = @{
-                FullName    = $File.FullName
-                FileVersion = $File.VersionInfo.FileVersion
+            Try {
+
+                $Property = @{
+                    FullName    = $File.FullName
+                    FileVersion = $File.VersionInfo.FileVersion
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to get file version for $File."
+                $Property = @{
+                    FullName    = $File
+                    FileVersion = 'Null'
+                }
 
-            Write-Verbose "Unable to get file version for $File."
-            $Property = @{
-                FullName    = $File
-                FileVersion = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference
+    }
 
 }

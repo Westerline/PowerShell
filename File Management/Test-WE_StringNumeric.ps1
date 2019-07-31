@@ -1,61 +1,68 @@
-﻿[CmdletBinding()]
+﻿<#
+#>
 
-Param(
+Function Test-WE_StringNumeric {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()]
-    [Alias('Pattern')]
-    [String[]]
-    $String
+    [CmdletBinding()]
 
-)
+    Param(
 
-Begin {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [Alias('Pattern')]
+        [String[]]
+        $String
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
+        $StartErrorActionPreference = $ErrorActionPreference
 
-    Foreach ($Str in $String) {
+    }
 
-        Try {
+    Process {
 
-            $Boolean = "$Str" -match "^[\d\.]+$"
-            $Property = @{
-                String  = "$Str"
-                Numeric = "$Boolean"
+        Foreach ($Str in $String) {
+
+            Try {
+
+                $Boolean = "$Str" -match "^[\d\.]+$"
+                $Property = @{
+                    String  = "$Str"
+                    Numeric = "$Boolean"
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to analyze the string $Str."
+                $Property = @{
+                    String  = "$Str"
+                    Numeric = 'Null'
+                }
 
-            Write-Verbose "Unable to analyze the string $Str."
-            $Property = @{
-                String  = "$Str"
-                Numeric = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference
+    }
 
 }

@@ -2,68 +2,72 @@
 To do: expand function to allow CSV import as input
 #>
 
-[Cmdletbinding()]
+Function Remove-WE_WindowsCredential {
 
-Param(
+    [Cmdletbinding()]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('UserName')]
-    [String[]]
-    $Name
+    Param(
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('UserName')]
+        [String[]]
+        $Name
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Foreach ($N in $Name) {
+    Process {
 
-        Try {
+        Foreach ($N in $Name) {
 
-            $CmdKey = & cmdkey.exe /Delete:$N
+            Try {
+
+                $CmdKey = & cmdkey.exe /Delete:$N
 
 
-            $Property = @{
-                Status             = 'Successful'
-                CMDKey             = $CmdKey
-                CredentialHostName = & cmdkey.exe /List | findstr.exe $N
+                $Property = @{
+                    Status             = 'Successful'
+                    CMDKey             = $CmdKey
+                    CredentialHostName = & cmdkey.exe /List | findstr.exe $N
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to remove windows credentials for host $N"
+                $Property = @{
+                    Status             = 'Unsuccessful'
+                    CMDKey             = 'Null'
+                    CredentialHostName = $N
+                }
 
-            Write-Verbose "Unable to remove windows credentials for host $N"
-            $Property = @{
-                Status             = 'Unsuccessful'
-                CMDKey             = 'Null'
-                CredentialHostName = $N
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference
+    }
 
 }

@@ -1,89 +1,94 @@
 ﻿<#
 To do:
 #>
-[cmdletbinding()]
 
-Param(
+Function Get-WE_Hash {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()]
-    [String []]
-    $InputFile,
+    [cmdletbinding()]
 
-    [Parameter(Mandatory = $False)]
-    [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')]
-    [String]
-    $Algorithm = 'All'
+    Param(
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [String []]
+        $InputFile,
 
-Begin {
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')]
+        [String]
+        $Algorithm = 'All'
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
+        $StartErrorActionPreference = $ErrorActionPreference
 
-    Foreach ($File in $InputFile) {
+    }
 
-        Try {
+    Process {
 
-            $Property = [Ordered]@{
-                File = $File
-            }
+        Foreach ($File in $InputFile) {
 
-            If ($Algorithm -eq 'All') {
+            Try {
 
-                $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160'
+                $Property = [Ordered]@{
+                    File = $File
+                }
 
-            }
+                If ($Algorithm -eq 'All') {
 
-            Foreach ($Alg in $Algorithm) {
+                    $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160'
 
-                $Hash = Get-FileHash -Path $File -Algorithm $Alg
-                $Property += @{
-                    $Alg = $Hash.Hash
+                }
+
+                Foreach ($Alg in $Algorithm) {
+
+                    $Hash = Get-FileHash -Path $File -Algorithm $Alg
+                    $Property += @{
+                        $Alg = $Hash.Hash
+                    }
+
                 }
 
             }
 
-        }
+            Catch [System.Management.Automation.ItemNotFoundException] {
 
-        Catch [System.Management.Automation.ItemNotFoundException] {
+                Write-Verbose "Cannot find path $File."
+                $Property += @{
+                    $Alg = 'Null'
+                }
 
-            Write-Verbose "Cannot find path $File."
-            $Property += @{
-                $Alg = 'Null'
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Could not get the hash on $File. Please ensure the path to the file is correct and try again."
+                $Property += @{
+                    'Null' = 'Null'
+                }
 
-            Write-Verbose "Could not get the hash on $File. Please ensure the path to the file is correct and try again."
-            $Property += @{
-                'Null' = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference
+    }
 
 }

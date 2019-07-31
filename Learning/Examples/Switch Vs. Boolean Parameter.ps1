@@ -5,7 +5,7 @@ https://blogs.technet.microsoft.com/bulentozkir/2017/06/20/the-dIfference-betwee
 
 #Switch Parameter
 
-function MyAwesomeFunction1 {
+function SwitchParameter {
 
     [CmdletBinding()]
 
@@ -33,7 +33,7 @@ function MyAwesomeFunction1 {
 }
 
 #Boolean Parameter
-function MyAwesomeFunction2 {
+function BooleanParameter {
 
     [CMDLetBinding()]
 

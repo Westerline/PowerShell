@@ -3,7 +3,7 @@ Example: Get-WE_DirectorySize -Directory (Get-ChildItem -Path C:\Users -Recurse 
 Example: Get-WE_DirectorySize -Directory (Get-ChildItem -Path C:\ -Directory | Select-Object -ExpandProperty FullName)
 #>
 
-FUnction Get-WE_DirectorySize {
+Function Get-WE_DirectorySize {
 
     [CmdletBinding()]
 

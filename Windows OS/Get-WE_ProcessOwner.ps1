@@ -1,63 +1,70 @@
-﻿[Cmdletbinding()]
+﻿<#
+#>
 
-Param (
+Function Get-WE_ProcessOwner {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('ProcessName', 'Process')]
-    [String[]] $Name
+    [Cmdletbinding()]
 
-)
+    Param (
 
-Begin {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('ProcessName', 'Process')]
+        [String[]] $Name
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
+        $StartErrorActionPreference = $ErrorActionPreference
 
-    Foreach ($N in $Name) {
+    }
 
-        Try {
+    Process {
 
-            $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%$N%'"
+        Foreach ($N in $Name) {
 
-            $Property = @{
-                Status = 'Successful'
-                Name   = $Process.Name
-                Owner  = ($Process.GetOwner()).User
+            Try {
+
+                $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%$N%'"
+
+                $Property = @{
+                    Status = 'Successful'
+                    Name   = $Process.Name
+                    Owner  = ($Process.GetOwner()).User
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to get process owner for process $N."
+                $Property = @{
+                    Status = 'Unsuccessful'
+                    Name   = $N
+                    Owner  = 'Null'
+                }
 
-            Write-Verbose "Unable to get process owner for process $N."
-            $Property = @{
-                Status = 'Unsuccessful'
-                Name   = $N
-                Owner  = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference
+    }
 
 }

@@ -9,96 +9,100 @@
     To do: set-netconnectionprofile private
 #>
 
-[Cmdletbinding(SupportsShouldProcess)]
+Function Set-WE_PSRemoting {
 
-Param (
+    [Cmdletbinding(SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $False,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('HostName', 'ComputerName')]
-    [String[]]
-    $TrustedHosts,
+    Param (
 
-    [Switch]
-    $HttpListener,
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('HostName', 'ComputerName')]
+        [String[]]
+        $TrustedHosts,
 
-    [Switch]
-    $HttpsListener
+        [Switch]
+        $HttpListener,
 
-)
+        [Switch]
+        $HttpsListener
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Try {
+    Process {
 
-        $PSRemoting = Enable-PSRemoting
+        Try {
 
-        If ($TrustedHosts.IsPresent) {
+            $PSRemoting = Enable-PSRemoting
 
-            Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate
+            If ($TrustedHosts.IsPresent) {
+
+                Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate
+
+            }
+
+            If ($HttpListener.IsPresent) {
+
+                Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Value True -Confirm:$False
+
+            }
+
+            If ($HttpsListener.IsPresent) {
+
+                Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False
+
+            }
+
+            $PSRemotingHosts = Get-Item WSMan:\localhost\Client\TrustedHosts
+            $AllowRemoteAccess = Get-Item WSMan:\localhost\Service\AllowRemoteAccess
+            $PSRemotingHTTP = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener
+            $PSRemotingHTTPS = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener
+            $Property = @{
+                Status            = 'Successful'
+                PSRemoting        = $PSRemoting
+                AllowRemoteAccess = $AllowRemoteAccess.Value
+                TrustedHosts      = $PSRemotingHosts.Value
+                HTTPListener      = $PSRemotingHTTP.Value
+                HTTPSListener     = $PSRemotingHTTPS.Value
+            }
 
         }
 
-        If ($HttpListener.IsPresent) {
+        Catch [System.InvalidOperationException] {
 
-            Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Value True -Confirm:$False
+            Write-Verbose "Network connection profile is set to Public. Please change your network connection profile to private and try again."
+            $Property = @{
+                Status            = 'Unsuccessful: Public Network Profile'
+                PSRemoting        = $PSRemoting
+                AllowRemoteAccess = $AllowRemoteAccess.Value
+                TrustedHosts      = $PSRemotingHosts.Value
+                HTTPListener      = $PSRemotingHTTP.Value
+                HTTPSListener     = $PSRemotingHTTPS.Value
+            }
 
         }
 
-        If ($HttpsListener.IsPresent) {
+        Finally {
 
-            Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
 
-        }
-
-        $PSRemotingHosts = Get-Item WSMan:\localhost\Client\TrustedHosts
-        $AllowRemoteAccess = Get-Item WSMan:\localhost\Service\AllowRemoteAccess
-        $PSRemotingHTTP = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener
-        $PSRemotingHTTPS = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener
-        $Property = @{
-            Status            = 'Successful'
-            PSRemoting        = $PSRemoting
-            AllowRemoteAccess = $AllowRemoteAccess.Value
-            TrustedHosts      = $PSRemotingHosts.Value
-            HTTPListener      = $PSRemotingHTTP.Value
-            HTTPSListener     = $PSRemotingHTTPS.Value
         }
 
     }
 
-    Catch [System.InvalidOperationException] {
+    End {
 
-        Write-Verbose "Network connection profile is set to Public. Please change your network connection profile to private and try again."
-        $Property = @{
-            Status            = 'Unsuccessful: Public Network Profile'
-            PSRemoting        = $PSRemoting
-            AllowRemoteAccess = $AllowRemoteAccess.Value
-            TrustedHosts      = $PSRemotingHosts.Value
-            HTTPListener      = $PSRemotingHTTP.Value
-            HTTPSListener     = $PSRemotingHTTPS.Value
-        }
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
-
-    Finally {
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference
 
 }
