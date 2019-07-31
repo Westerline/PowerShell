@@ -11,7 +11,7 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('HostName')]
     [String[]] $ComputerName
 
@@ -25,33 +25,41 @@ Begin {
 
 Process {
 
-    Try {
-        Foreach ($Computer in $ComputerName) {
+    Foreach ($Computer in $ComputerName) {
+
+        Try {
 
             $GroupMemberComputer = Add-ADGroupMember -Identity $Identity -Members "CN=$Computer,OU=Computers,OU=Computers,OU=MyBusiness,DC=domain,DC=local"
-            $Property = @{ 
+            $Property = @{
                 Status              = 'Successful'
                 GroupMemberComputer = $GroupMemberComputer
             }
-        }
-    }
 
-    Catch { 
-        $Property = @{
-            Status              = 'Unsuccessful'
-            GroupMemberComputer = $GroupMemberComputer
         }
-    }
 
-    Finally {
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+        Catch {
+
+            Write-Verbose "Unable to add $Computer to the desired Active Directory group."
+            $Property = @{
+                Status              = 'Unsuccessful'
+                GroupMemberComputer = $GroupMemberComputer
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

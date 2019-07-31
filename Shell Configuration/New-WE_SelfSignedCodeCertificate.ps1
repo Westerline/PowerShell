@@ -10,13 +10,13 @@
 Param(
 
     [ValidateNotNullOrEmpty()]
-    [Int] 
+    [Int]
     $Duration = 3,
-    
+
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $Subject = "PowerShell Code Signing Certificate",
-    
+
     [ValidateNotNullOrEmpty()]
     [String]
     $CertStoreLocation = "Cert:\LocalMachine\My"
@@ -28,10 +28,11 @@ Begin {
     $StartErrorActionPreference = $ErrorActionPreference
 
 }
-    
+
 Process {
 
     Try {
+
         $NotAfter = $([datetime]::now.AddYears($Duration))
         $Certificate = New-SelfSignedCertificate -Subject $Subject -Type CodeSigningCert -NotAfter $NotAfter -CertStoreLocation $CertStoreLocation
         $TrustedRoot = Copy-Item -Path $Certificate.PSPath -Destination "Cert:\LocalMachine\Root"
@@ -41,25 +42,31 @@ Process {
             TrustedRoot      = $TrustedRoot
             TrustedPublisher = $TrustedPublisher
         }
+
     }
 
-    Catch { 
+    Catch {
+
+        Write-Verbose "Unable to create self-signed coding certificate. Verify you have permissions to write to the root certificate store."
         $Property = @{
             Thumbprint       = 'Null'
             TrustedRoot      = 'Null'
             TrustedPublisher = 'Null'
         }
+
     }
 
     Finally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

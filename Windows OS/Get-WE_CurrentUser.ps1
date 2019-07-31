@@ -10,9 +10,9 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('HostName')]
-    [String[]] 
+    [String[]]
     $ComputerName
 
 )
@@ -28,6 +28,7 @@ Process {
     ForEach ($Computer in $ComputerName) {
 
         Try {
+
             $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
             $ComputerSystem = Get-CimInstance -CimSession $Session -ClassName Win32_ComputerSystem
             $Property = @{
@@ -40,6 +41,7 @@ Process {
 
         Catch {
 
+            Write-Verbose "Unable to get the currently logged in user for $Computer. Please ensure the computer is available on the network."
             $Property = @{
                 Status   = 'Unsuccessful'
                 Computer = $Computer
@@ -49,8 +51,10 @@ Process {
         }
 
         Finally {
+
             $Object = New-Object -TypeName psobject -Property $Property
             Write-Output $Object
+
         }
     }
 

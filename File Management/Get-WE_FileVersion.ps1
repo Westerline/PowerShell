@@ -1,4 +1,8 @@
-﻿[CmdletBinding()]
+﻿<#
+Examples:  $FileName = Get-ChildItem -File -Path $Path | Where-Object { $_.VersionInfo.FileVersion -ne $Null }
+#>
+
+[CmdletBinding()]
 
 param (
 
@@ -6,11 +10,11 @@ param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [validatenotnullorempty()] 
-    [Alias('FileName')]    
+    [validatenotnullorempty()]
+    [Alias('FileName')]
     [String[]]
     $Path
-    
+
 )
 
 Begin {
@@ -18,20 +22,36 @@ Begin {
     $StartErrorActionPreference = $ErrorActionPreference
 
 }
-    
+
 Process {
 
-    $FileName = Get-ChildItem -File -Path $Path | Where-Object { $_.VersionInfo.FileVersion -ne $Null }
+    Foreach ($File in $Path) {
 
-    Foreach ($File in $FileName) {
+        Try {
 
-        $Property = @{               
-            FullName    = $File.FullName
-            FileVersion = $File.VersionInfo.FileVersion
+            $Property = @{
+                FullName    = $File.FullName
+                FileVersion = $File.VersionInfo.FileVersion
+            }
+
         }
 
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+        Catch {
+
+            Write-Verbose "Unable to get file version for $File."
+            $Property = @{
+                FullName    = $File
+                FileVersion = 'Null'
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
 
     }
 
@@ -39,6 +59,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

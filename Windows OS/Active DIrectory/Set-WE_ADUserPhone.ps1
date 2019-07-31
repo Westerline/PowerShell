@@ -10,7 +10,7 @@ Param (
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('LoginName', 'DisplayName')]
     [String[]]
     $UserName,
@@ -18,7 +18,7 @@ Param (
     [Parameter(Mandatory = $False,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('CellPhone')]
     [String[]]
     $MobilePhone,
@@ -26,7 +26,7 @@ Param (
     [Parameter(Mandatory = $False,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('Landline')]
     [String[]]
     $HomePhone,
@@ -34,7 +34,7 @@ Param (
     [Parameter(Mandatory = $False,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('WorkPhone')]
     [String[]]
     $OfficePhone
@@ -50,6 +50,7 @@ Begin {
 Process {
 
     Try {
+
         $ADUser = Set-ADUser -DisplayName $UserName -MobilePhone $MobilePhone -HomePhone $HomePhone -OfficePhone $OfficePhone
         $Property = @{
             Status      = 'Successful'
@@ -58,9 +59,12 @@ Process {
             HomePhone   = $ADUser.HomePhone
             OfficePhone = $ADUser.OfficePhone
         }
+
     }
 
-    Catch { 
+    Catch {
+
+        Write-Verbose "Unable to set Active Directory user $UserName phone details."
         $Property = @{
             Status      = 'Unsuccessful'
             User        = $ADUser.DisplayName
@@ -68,16 +72,19 @@ Process {
             HomePhone   = $ADUser.HomePhone
             OfficePhone = $ADUser.OfficePhone
         }
+
     }
 
     Finally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

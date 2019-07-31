@@ -1,7 +1,5 @@
+[cmdletbinding(DefaultParameterSetName = 'Name')]
 
-[cmdletbinding(
-    DefaultParameterSetName = 'Name'
-)]
 Param(
     [Parameter(
         ParameterSetName = 'Name',
@@ -19,4 +17,5 @@ Param(
     [int]
     $ID
 )
+
 $PSCmdlet.ParameterSetName

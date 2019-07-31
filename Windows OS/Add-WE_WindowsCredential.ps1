@@ -10,30 +10,30 @@ Param(
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('ComputerName')]
-    [String]
+    [String[]]
     $HostName,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
+    [ValidateNotNullOrEmpty()]
+    [String[]]
     $UserName,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
+    [ValidateNotNullOrEmpty()]
+    [String[]]
     $Password,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateSet('Domain', 'SmartCard', 'Generic')] 
-    [String]
+    [ValidateSet('Domain', 'SmartCard', 'Generic')]
+    [String[]]
     $Type
 
 )
@@ -50,38 +50,40 @@ Process {
 
         Switch ($Type) {
 
-            Domain { $CmdKey = & CmdKey /Add:$HostName /User:$UserName /Pass:$Password }
-            SmartCard { $CmdKey = & CmdKey /Add:$HostName /SmartCard }
-            Generic { $CmdKey = & CmdKey /Generic:$HostName /User:$UserName /Pass:$Password }
+            Domain { $CmdKey = & cmdkey.exe /Add:$HostName /User:$UserName /Pass:$Password }
+            SmartCard { $CmdKey = & cmdkey.exe /Add:$HostName /SmartCard }
+            Generic { $CmdKey = & cmdkey.exe /Generic:$HostName /User:$UserName /Pass:$Password }
 
         }
 
         $Property = @{
             Status             = $CmdKey
-            CredentialHostName = & CmdKey /List | findstr $HostName
+            CredentialHostName = & cmdkey.exe /List | findstr.exe $HostName
         }
 
     }
 
     Catch {
 
+        Write-Verbose "Unable to add windows credential for hostname $HostName."
         $Property = @{
             Status             = "$CmdKey Null"
-            CredentialHostName = & CmdKey /List | findstr $HostName
+            CredentialHostName = & cmdkey.exe /List | findstr.exe $HostName
         }
 
     }
 
     Finally {
-    
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

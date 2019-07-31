@@ -6,7 +6,7 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('HostName')]
     [String[]] $ComputerName
 
@@ -28,7 +28,11 @@ Process {
 
         }
 
-        Catch { }
+        Catch {
+
+            Write-Verbose "Unable to open gpedit on $Computer."
+
+        }
 
         Finally { }
 
@@ -38,6 +42,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

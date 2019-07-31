@@ -9,11 +9,11 @@
 Param(
 
     [Parameter(ParameterSetName = "Enable")]
-    [Switch] 
+    [Switch]
     $Enable,
 
     [Parameter(ParameterSetName = "Disable")]
-    [Switch] 
+    [Switch]
     $Disable
 
 )
@@ -31,19 +31,25 @@ Process {
         $ProxyRegKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 
         If ($Enable.IsPresent) {
+
             Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1
+
         }
 
         ElseIf ($Disable.IsPresent) {
+
             Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0
+
         }
 
         $Proxy = Get-ItemProperty -path $ProxyRegKey
 
         Switch ($Proxy.ProxyEnable) {
+
             1 { $ProxyStatus = 'Enabled' }
             0 { $ProxyStatus = 'Disabled' }
             Default { $ProxyStatus = 'Invalid Registry Value' }
+
         }
 
         $Property = @{
@@ -55,6 +61,7 @@ Process {
 
     Catch {
 
+        Write-Verbose "Unable to change proxy settings."
         $Property = @{
             ProxyStatus   = 'Null'
             ProxyOverride = 'Null'
@@ -62,7 +69,7 @@ Process {
 
     }
 
-    Finally { 
+    Finally {
 
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
@@ -73,6 +80,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

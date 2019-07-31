@@ -78,6 +78,7 @@
 
             #Error Action should be set to Stop within the try block for non-terminating errors to be able to fall into the catch block.
             Try {
+                
                 $ErrorActionPreference = 'Stop'
 
                 <#

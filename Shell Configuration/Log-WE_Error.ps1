@@ -12,7 +12,11 @@ Param (
         Position = 0)]
     [ValidateNotNullOrEmpty()]
     [Int]
-    $EventID
+    $EventID,
+
+    [ValidateNotNullOrEmpty()]
+    [String]
+    $LogName = 'Windows PowerShell'
 
 )
 
@@ -21,7 +25,7 @@ Begin {
     $StartErrorActionPreference = $ErrorActionPreference
 
 }
-    
+
 Process {
 
     Try {
@@ -37,20 +41,35 @@ Process {
             ErrorDetails          = $Error.ErrorDetails
         }
 
-        $Object = New-Object -TypeName PSObject -Property $Property
-        #New-EventLog -Source $Host.Name -LogName 'Windows PowerShell'
-        Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source $Host.Name -Message (Write-Output $Object) -EntryType Error
+    }
+
+    Catch {
+
+        Write-Verbose "Unable to log error ($Error)."
+        $Property = @{
+            PSMessageDetails      = 'Null'
+            Exception             = 'Null'
+            TargetObject          = 'Null'
+            Category              = 'Null'
+            Activity              = 'Null'
+            Reason                = 'Null'
+            FullyQualifiedErrorID = 'Null'
+            ErrorDetails          = 'Null'
+        }
 
     }
 
-    Catch { }
+    Finally {
 
-    Finally { }
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source $Host.Name -Message (Write-Output $Object) -EntryType Error
+
+    }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

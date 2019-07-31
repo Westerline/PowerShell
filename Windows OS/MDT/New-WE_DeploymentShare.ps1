@@ -6,24 +6,24 @@ Param(
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
+    [ValidateNotNullOrEmpty()]
+    [String]
     $Path,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
+    [ValidateNotNullOrEmpty()]
+    [String]
     $Name,
 
     [Parameter(Mandatory = $False)]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
+    [ValidateNotNullOrEmpty()]
+    [String]
     $Description,
 
-    [ValidateNotNullOrEmpty()] 
-    [String] 
+    [ValidateNotNullOrEmpty()]
+    [String]
     $FullAccess = 'Adinistrators'
 
 
@@ -38,6 +38,7 @@ Begin {
 Process {
 
     Try {
+
         Import-Module "C:\Program Files\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
         $Directory = New-Item -Path $Path -ItemType directory
         $SMBShare = New-SmbShare -Name $Name -Path $Path -FullAccess $FullAccess
@@ -50,9 +51,11 @@ Process {
             PSDrive    = $PSDrive.Name
             MDTDrive   = $MDTDrive.$Name
         }
+
     }
 
-    Catch { 
+    Catch {
+
         Write-Verbose "Unable to create the MDT Deployment Share $Name."
         $Property = @{
             Status     = 'Unsuccessful'
@@ -61,17 +64,20 @@ Process {
             PSDrive    = 'Null'
             MDTDrive   = 'Null'
         }
+
     }
 
     Finally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

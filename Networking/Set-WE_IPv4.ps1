@@ -17,42 +17,42 @@ Function Set-WE_NetIpAddress {
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
-        [ValidateNotNullOrEmpty()] 
+        [ValidateNotNullOrEmpty()]
         [Alias('AdapterName')]
-        [String] 
+        [String]
         $InterfaceAlias,
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True)]
-        [ValidateNotNullOrEmpty()] 
+        [ValidateNotNullOrEmpty()]
         [IPAddress]
         $IPAddress,
 
         [Parameter(Mandatory = $True)]
-        [ValidateNotNullOrEmpty()] 
-        [Int] 
+        [ValidateNotNullOrEmpty()]
+        [Int]
         $Prefix,
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True)]
-        [ValidateNotNullOrEmpty()] 
-        [IPAddress] 
+        [ValidateNotNullOrEmpty()]
+        [IPAddress]
         $DefaultGateway,
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True)]
-        [ValidateNotNullOrEmpty()] 
-        [IPAddress] 
+        [ValidateNotNullOrEmpty()]
+        [IPAddress]
         $PrimaryDNS,
 
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True)]
-        [ValidateNotNullOrEmpty()] 
-        [IPAddress] 
+        [ValidateNotNullOrEmpty()]
+        [IPAddress]
         $SecondaryDNS
 
     )
@@ -66,21 +66,21 @@ Function Set-WE_NetIpAddress {
     Process {
 
         Try {
-            
+
             $DisableDHCP = Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0
-            
+
             $OldGateway = (Get-NetIPConfiguration -InterfaceAlias $InterfaceAlias).IPv4DefaultGateway.NextHop
-            
+
             $RemoveNetRoute = Remove-NetRoute -InterfaceAlias $InterfaceAlias -NExtHop $OldGateway -Confirm:$False
-            
+
             $RemoveIPAddress = Remove-NetIPAddress -InterfaceAlias $InterfaceAlias -Confirm:$False
-            
+
             $NewIPAddress = New-NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IPAddress -PrefixLength $Prefix -DefaultGateway $DefaultGateway
 
             $DNS = Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $PrimaryDNS, $SecondaryDNS
 
-            $Property = @{ 
-                InterfaceAlias = $NewIPAddress.InterfaceAlias  
+            $Property = @{
+                InterfaceAlias = $NewIPAddress.InterfaceAlias
                 IPaddress      = $NewIPAddress.IPaddress
                 Prefix         = $NewIPAddress.Prefix
                 DefaultGateway = $NewIPAddress.DefaultGateway
@@ -90,27 +90,31 @@ Function Set-WE_NetIpAddress {
         }
 
         Catch {
-            Write-Verbose "Couldn't configure IP settings for $InterfaceAlias."
-            $Property = @{ 
+
+            Write-Verbose "Unable to configure IP settings for $InterfaceAlias."
+            $Property = @{
                 InterfaceAlias = 'Null'
                 IPaddress      = 'Null'
                 Prefix         = 'Null'
                 DefaultGateway = 'Null'
                 DNS            = 'Null'
             }
+
         }
 
-        Finally { 
+        Finally {
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
+
         }
 
     }
 
     End {
 
-        $ErrorActionPreference = $StartErrorActionPreference 
-    
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
 
 }

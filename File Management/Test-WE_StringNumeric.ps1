@@ -6,11 +6,11 @@ Param(
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [validatenotnullorempty()] 
+    [validatenotnullorempty()]
     [Alias('Pattern')]
     [String[]]
-    $String 
-    
+    $String
+
 )
 
 Begin {
@@ -18,19 +18,37 @@ Begin {
     $StartErrorActionPreference = $ErrorActionPreference
 
 }
-    
+
 Process {
 
     Foreach ($Str in $String) {
 
-        $Boolean = "$Str" -match "^[\d\.]+$"
-        $Property = @{
-            String  = "$Str"
-            Numeric = "$Boolean"
+        Try {
+
+            $Boolean = "$Str" -match "^[\d\.]+$"
+            $Property = @{
+                String  = "$Str"
+                Numeric = "$Boolean"
+            }
+
         }
 
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+        Catch {
+
+            Write-Verbose "Unable to analyze the string $Str."
+            $Property = @{
+                String  = "$Str"
+                Numeric = 'Null'
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
 
     }
 
@@ -38,6 +56,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

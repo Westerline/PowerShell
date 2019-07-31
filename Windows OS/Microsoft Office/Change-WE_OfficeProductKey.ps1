@@ -12,7 +12,7 @@ Param(
     [ValidatePattern('\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')]
     [ValidateNotNullOrEmpty()]
     [Alias('LicenseKey')]
-    [String[]] 
+    [String[]]
     $ProductKey
 
 )
@@ -26,18 +26,33 @@ Begin {
 Process {
 
     Try {
-    
+
         $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -ErrorAction SilentlyContinue
-        cscript.exe $OSPP.FullName /inpkey:$ProductKey
-        cscript.exe $OSPP.FullName /act
-        
+        $ChangeKey = cscript.exe $OSPP.FullName /inpkey:$ProductKey
+        $Activate = cscript.exe $OSPP.FullName /act
+        $Property = @{
+            OSPP      = $OSPP
+            ChangeKey = $ChangeKey
+            Activate  = $Activate
+        }
+
     }
 
     Catch {
 
+        Write-Verbose "Unable to activate product key $ProductKey on $Env:COMPUTERNAME. Verify a path is available to OSPP.VBS."
+        $Property = @{
+            OSPP      = 'Null'
+            ChangeKey = 'Null'
+            Activate  = 'Null'
+        }
+
     }
 
     Finally {
+
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Verbose $Object
 
     }
 
@@ -45,6 +60,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

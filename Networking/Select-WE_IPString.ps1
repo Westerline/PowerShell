@@ -6,7 +6,7 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [String]
     $String
 
@@ -26,7 +26,12 @@ Process {
 
     }
 
-    Catch { }
+    Catch {
+
+        Write-Verbose "Unable to parse IP from string $String."
+        $IPString = "Unable to parse IP from string $String."
+
+    }
 
     Finally {
 
@@ -38,6 +43,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

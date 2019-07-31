@@ -1,6 +1,6 @@
 ﻿<#
 .DESCRIPTION
-    PSEXEC PowerShell Module; will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS. 
+    PSEXEC PowerShell Module; will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS.
     Recommend adding the entire Sysinternals suite to your "Path" environment variable so all Sysinternals tools can be called from a relative path.
 .EXAMPLE
     Example 1: Open Command Prompt on Remote Computer
@@ -29,7 +29,7 @@
 
 .NOTES
     Author: Wesley Esterline
-    Resources:      
+    Resources:
     Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_pasteutm_campaign=growth
     PS Tools available https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
     Updated:
@@ -52,9 +52,9 @@ Param (
     [Parameter(ParameterSetName = 'SQLQuery')]
     [Parameter(ParameterSetName = 'SQLScript')]
     [Parameter(ParameterSetName = 'Regedit')]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('HostName')]
-    [String[]] 
+    [String[]]
     $ComputerName,
 
     [Parameter(Mandatory = $True,
@@ -65,15 +65,15 @@ Param (
     [Parameter(ParameterSetName = 'SQLScript')]
     [Parameter(ParameterSetName = 'Regedit')]
     [ValidateSet('CMD', 'Installer', 'PowerShell', 'PSScript', 'SQLQuery', 'SQLScript', 'Regedit')]
-    [String] 
+    [String]
     $Type,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         ParameterSetName = 'Installer')]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
+    [ValidateNotNullOrEmpty()]
+    [String]
     $ProgramPath,
 
     [Parameter(Mandatory = $False,
@@ -85,7 +85,7 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         ParameterSetName = 'PSScript')]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [String]
     $PSScriptPath,
 
@@ -94,7 +94,7 @@ Param (
         ValueFromPipelineByPropertyName = $True,
         ParameterSetName = 'SQLQuery')]
     [Parameter(ParameterSetName = 'SQLScript')]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [String]
     $SQLServer,
 
@@ -111,7 +111,7 @@ Param (
         ValueFromPipelineByPropertyName = $True,
         ParameterSetName = 'Regedit')]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $RegKeyName,
 
     [Parameter(Mandatory = $True,
@@ -119,7 +119,7 @@ Param (
         ValueFromPipelineByPropertyName = $True,
         ParameterSetName = 'Regedit')]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $RegKeyType,
 
     [Parameter(Mandatory = $True,
@@ -135,7 +135,7 @@ Param (
         ValueFromPipelineByPropertyName = $True,
         ParameterSetName = 'Regedit')]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $RegValueData
 
 )
@@ -147,7 +147,7 @@ Begin {
 }
 
 Process {
-    
+
     Foreach ($Computer in $ComputerName) {
 
         Try {
@@ -163,24 +163,23 @@ Process {
                 Regedit { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer reg add $RegKeyName /t $RegKeyType /v $RegValueName  /d $RegValueData }
 
             }
+
         }
 
         Catch {
-        
+
             Write-Verbose "Unable to complete Invoke-WE_PSEXEC type $Type on $Computer"
 
         }
 
-        Finally {
+        Finally { }
 
-        }
-    
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

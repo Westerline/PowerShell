@@ -4,18 +4,18 @@ To do:
 [cmdletbinding()]
 
 Param(
-    
+
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [validatenotnullorempty()] 
-    [String []] 
+    [validatenotnullorempty()]
+    [String []]
     $InputFile,
 
     [Parameter(Mandatory = $False)]
-    [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')] 
-    [String] 
+    [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')]
+    [String]
     $Algorithm = 'All'
 
 )
@@ -30,19 +30,53 @@ Process {
 
     Foreach ($File in $InputFile) {
 
-        $Property = [Ordered]@{
-            File = $File
+        Try {
+
+            $Property = [Ordered]@{
+                File = $File
+            }
+
+            If ($Algorithm -eq 'All') {
+
+                $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160'
+
+            }
+
+            Foreach ($Alg in $Algorithm) {
+
+                $Hash = Get-FileHash -Path $File -Algorithm $Alg
+                $Property += @{
+                    $Alg = $Hash.Hash
+                }
+
+            }
+
         }
 
-        If ($Algorithm -eq 'All') { $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160' }
+        Catch [System.Management.Automation.ItemNotFoundException] {
 
-        Foreach ($Alg in $Algorithm) {
-            $Hash = Get-FileHash -Path $File -Algorithm $Alg 
-            $Property.Add($Alg, $Hash.Hash)
+            Write-Verbose "Cannot find path $File."
+            $Property += @{
+                $Alg = 'Null'
+            }
+
         }
 
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+        Catch {
+
+            Write-Verbose "Could not get the hash on $File. Please ensure the path to the file is correct and try again."
+            $Property += @{
+                'Null' = 'Null'
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
 
     }
 
@@ -50,6 +84,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

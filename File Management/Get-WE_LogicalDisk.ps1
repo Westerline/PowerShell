@@ -10,9 +10,9 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [validatenotnullorempty()] 
+    [validatenotnullorempty()]
     [Alias('HostName', 'MachineName')]
-    [String[]] 
+    [String[]]
     $ComputerName
 
 )
@@ -22,7 +22,7 @@ Begin {
     $StartErrorActionPreference = $ErrorActionPreference
 
 }
-    
+
 Process {
 
     ForEach ($Computer in $ComputerName) {
@@ -31,38 +31,18 @@ Process {
 
             $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
             $LogicalDisk = Get-CimInstance -CimSession $Session -ClassName Win32_DiskDrive
-            $DiskArray = @()
+            $Property = [Ordered]@{
+                ComputerName = $Computer
+                Status       = 'Connected'
+            }
+
             ForEach ($Disk in $LogicalDisk) {
 
-                Try {
-        
-                    $Property = @{
-                        Computername = $Computer
-                        Stauts       = 'Connected'
-                        Name         = $Disk.Name
-                        Size         = $Disk.Size
-                        Partitions   = $Disk.Partitions
-                    }
-            
-                }
-
-                Catch { 
-
-                    $Property = @{
-                        Computername = $Computer
-                        Stauts       = 'Connected'
-                        Name         = 'Null'
-                        Size         = 'Null'
-                        Partitions   = 'Null'
-                    }
-
-                }
-
-                Finally {
-
-                    $Object = New-Object -TypeName PSObject -Property $Property
-                    $DiskArray += $Object
-
+                $Index = $Disk.Index
+                $Property += @{
+                    "Name[$Index]"       = $Disk.Name
+                    "Size[$Index]"       = $Disk.Size
+                    "Partitions[$Index]" = $Disk.Partitions
                 }
 
             }
@@ -71,21 +51,18 @@ Process {
 
         Catch {
 
-            $Property = @{
-                Computername = $Computer
-                Stauts       = 'Disconnected'
-                Name         = 'Null'
-                Size         = 'Null'
-                Partitions   = 'Null'
+            Write-Verbose "Could not fetch the logical disks from $Computer."
+            $Property = [Ordered]@{
+                ComputerName = $Computer
+                Status       = 'Disconnected'
             }
-            $Object = New-Object -TypeName PSObject -Property $Property
-            $DiskArray += $Object
 
         }
-    
-        Finally { 
 
-            Write-Output $DiskArray
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
 
         }
     }
@@ -94,6 +71,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

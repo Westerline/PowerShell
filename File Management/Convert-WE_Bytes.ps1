@@ -26,32 +26,32 @@
 
 Function Convert-WE_Bytes {
 
-    [cmdletbinding()] 
+    [cmdletbinding()]
 
-    param(      
+    Param(
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
-            Position = 0)] 
-        [validatenotnullorempty()] 
-        [Alias('Size')]            
+            Position = 0)]
+        [validatenotnullorempty()]
+        [Alias('Size')]
         [Double[]]
         $Value,
 
-        [Parameter(Mandatory = $True)] 
-        [ValidateSet('B', 'KB', 'MB', 'GB', 'TB')]               
+        [Parameter(Mandatory = $True)]
+        [ValidateSet('B', 'KB', 'MB', 'GB', 'TB')]
         [String]
-        $From,            
+        $From,
 
-        [Parameter(Mandatory = $True)] 
-        [ValidateSet('B', 'KB', 'MB', 'GB', 'TB')]         
-        [String]$To,            
+        [Parameter(Mandatory = $True)]
+        [ValidateSet('B', 'KB', 'MB', 'GB', 'TB')]
+        [String]$To,
 
         [validatenotnullorempty()]
-        [Int]$Precision = 4   
+        [Int]$Precision = 4
 
-    )       
+    )
 
     Begin {
 
@@ -60,40 +60,56 @@ Function Convert-WE_Bytes {
     }
 
     Process {
-         
-        Foreach ($Val in $Value) {
 
-            Switch ($From) {    
+        Try {
 
-                'B' { $Val = $Val }            
-                'KB' { $Val = $Val * 1000 }            
-                'MB' { $Val = $Val * 1000000 }            
-                'GB' { $Val = $Val * 1000000000 }            
-                'TB' { $Val = $Val * 1000000000000 }     
+            Foreach ($Val in $Value) {
 
-            }            
-            
-            Switch ($To) {   
+                Switch ($From) {
 
-                'B' { $Val = $Val }            
-                'KB' { $Val = $Val / 1000 }            
-                'MB' { $Val = $Val / 1000000 }            
-                'GB' { $Val = $Val / 1000000000 }            
-                'TB' { $Val = $Val / 1000000000000 }            
-            
-            }            
-            
-            $Math = [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)   
-            Write-Output $Math$To      
-            
-        }       
-    
+                    'B' { $Val = $Val }
+                    'KB' { $Val = $Val * 1000 }
+                    'MB' { $Val = $Val * 1000000 }
+                    'GB' { $Val = $Val * 1000000000 }
+                    'TB' { $Val = $Val * 1000000000000 }
+
+                }
+
+                Switch ($To) {
+
+                    'B' { $Val = $Val }
+                    'KB' { $Val = $Val / 1000 }
+                    'MB' { $Val = $Val / 1000000 }
+                    'GB' { $Val = $Val / 1000000000 }
+                    'TB' { $Val = $Val / 1000000000000 }
+
+                }
+
+                $Math = [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)
+
+            }
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to convert $Val to $To"
+            $Math = 'Null'
+
+        }
+
+        Finally {
+
+            Write-Output $Math$To
+
+        }
+
     }
 
     End {
 
-        $ErrorActionPreference = $StartErrorActionPreference 
-    
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
 
 }

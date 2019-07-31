@@ -7,10 +7,10 @@ Fix parameter input on $Range. Doesn't accept 1..10 as input
 
 Param (
 
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [String]
     $NetworkAddress = '192.168.1',
-    
+
     [ValidateRange(0, 255)]
     [Int]
     $Range = 1..40
@@ -27,29 +27,39 @@ Process {
 
     Foreach ($R in $Range) {
 
-        Try { 
+        Try {
+
             $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet
             $Property = @{
                 ComputerName  = "$NetworkAddress.$R"
                 PingSucceeded = $Ping
             }
+
         }
+
         Catch {
+
+            Write-Output "Unable to ping subnet $NetworkAddress in range $Range"
             $Property = @{
                 ComputerName  = "$NetworkAddress.$R"
                 PingSucceeded = 'NULL'
             }
+
         }
+
         Finally {
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
+
         }
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

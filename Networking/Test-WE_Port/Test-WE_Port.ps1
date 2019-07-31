@@ -19,31 +19,31 @@ Param(
         Position = 0,
         ParameterSetName = 'Default')]
     [Parameter(ParameterSetName = 'CommonPort')]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('ComputerName')]
-    [String[]] 
+    [String[]]
     $HostName,
 
     [Parameter(Mandatory = $True,
-        ParameterSetName = 'Default')] 
+        ParameterSetName = 'Default')]
     [ValidateSet('TCP', 'UDP', 'Both')]
-    [String] 
+    [String]
     $Protocol,
 
     [Parameter(Mandatory = $True,
-        ParameterSetName = 'Default')] 
+        ParameterSetName = 'Default')]
     [ValidateRange(0, 65535)]
-    [Int] 
+    [Int]
     $Port,
 
     [Parameter(Mandatory = $False,
-        ParameterSetName = 'CommonPort')] 
+        ParameterSetName = 'CommonPort')]
     [ValidateRange(0, 65535)]
-    [Int] 
+    [Int]
     $SourcePort = (Get-Random -Maximum 65535),
 
     [Parameter(Mandatory = $True,
-        ParameterSetName = 'CommonPort')] 
+        ParameterSetName = 'CommonPort')]
     [ValidateSet('SMTP', 'HTTP', 'HTTPS', 'FTP', 'Telnet', 'IMAP', 'RDP', 'SSH', 'DNS', 'DHCP', 'POP3', 'PortRange', 'SourcePort')]
     [String]
     $CommonPort
@@ -61,8 +61,9 @@ Process {
     Foreach ($Hst in $HostName) {
 
         Try {
-    
+
             Switch ($CommonPort) {
+
                 SMTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 25 }
                 HTTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 80 }
                 HTTPS { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 443 }
@@ -77,6 +78,7 @@ Process {
                 PortRange { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -r $Port }
                 SourcePort { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -sp $SourcePort -p 'UDP' -o $Port }
                 Default { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p $Protocol -o $Port }
+
             }
 
             $DNSResolve = $PortQry | Select-String -Pattern 'Resolved'
@@ -86,19 +88,24 @@ Process {
                 DNSResolve = $DNSResolve
                 TestPort   = $TestPort
             }
+
         }
 
         Catch {
+
             $Property = @{
                 HostName   = $Hst
                 DNSResolve = 'Null'
                 TestPort   = 'Null'
             }
+
         }
 
         Finally {
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
+
         }
 
     }
@@ -107,6 +114,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

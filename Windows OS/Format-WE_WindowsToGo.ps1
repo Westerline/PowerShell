@@ -11,7 +11,7 @@ Param(
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('DiskName', 'Name')]
     [String]
     $FriendlyName
@@ -25,7 +25,7 @@ Begin {
 }
 
 Process {
-    
+
     Try {
 
         $WINTOGO_Drive = Get-Disk -FriendlyName $FriendlyName | Select-Object -ExpandProperty Number
@@ -40,7 +40,7 @@ Process {
 
         $WindowsVolume = Format-Volume -DriveLetter 'W' -FileSystem NTFS -NewFileSystemLabel "Windows To Go"
 
-        $BCD = bcdboot W:\Windows /s S: /f ALL
+        $BCD = bcdboot.exe W:\Windows /s S: /f ALL
 
         $Property = @{
             Status           = 'Successful'
@@ -51,12 +51,12 @@ Process {
             WindowsVolume    = $WindowsVolume
             BCD              = $BCD
         }
-    
+
     }
 
     Catch {
 
-        Write-Verbose ""
+        Write-Verbose "Unable to format Windows-to-Go drive $FriendlyName."
         $Property = @{
             Status           = 'Unsuccessful'
             Initialization   = 'Null'
@@ -80,6 +80,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

@@ -18,8 +18,8 @@ Param (
         ParameterSetName = 'Default')]
     [Parameter(ParameterSetName = 'IPG')]
     [Parameter(ParameterSetName = 'MT')]
-    [ValidateSet('MIR_IPG', 'MIR_MT', 'COPY_IPG', 'COPY_MT', 'MOVE_IPG', 'MOVE_MT', 'J')] 
-    [String[]] 
+    [ValidateSet('MIR_IPG', 'MIR_MT', 'COPY_IPG', 'COPY_MT', 'MOVE_IPG', 'MOVE_MT', 'J')]
+    [String[]]
     $Type,
 
     [Parameter(Mandatory = $True,
@@ -28,7 +28,7 @@ Param (
         ParameterSetName = 'Default')]
     [Parameter(ParameterSetName = 'IPG')]
     [Parameter(ParameterSetName = 'MT')]
-    [validatenotnullorempty()] 
+    [validatenotnullorempty()]
     [String]
     $Source,
 
@@ -38,17 +38,17 @@ Param (
         ParameterSetName = 'Default')]
     [Parameter(ParameterSetName = 'IPG')]
     [Parameter(ParameterSetName = 'MT')]
-    [validatenotnullorempty()] 
+    [validatenotnullorempty()]
     [String]
     $Destination,
 
     [Parameter(ParameterSetName = 'IPG')]
-    [validatenotnullorempty()] 
-    [Int] 
+    [validatenotnullorempty()]
+    [Int]
     $IPG = 2,
 
     [Parameter(ParameterSetName = 'MT')]
-    [validatenotnullorempty()] 
+    [validatenotnullorempty()]
     [Int]
     $MT = 8
 
@@ -59,7 +59,7 @@ Begin {
     $StartErrorActionPreference = $ErrorActionPreference
 
 }
-    
+
 Process {
 
     Try {
@@ -67,26 +67,37 @@ Process {
         $Parameter = @()
 
         Switch ( $Type ) {
+
             'MIR_IPG' { $Parameter += "/MIR", "/IPG:$IPG" }
             'MIR_MT' { $Parameter += "/MIR", "/MT:$MT" }
             'COPY_IPG' { $Parameter += "/COPY:DAT", "/IPG:$IPG" }
             'COPY_MT' { $Parameter += "/COPY:DAT", "/MT:$MT" }
             'MOVE_IPG' { $Parameter += "/MOVE", "/IPG:$IPG" }
             'MOVE_MT' { $Parameter += "/MOVE", "/MT:$MT" }
+
         }
 
-        Robocopy.exe $Source $Destination /E @Parameter
+        $Robocopy = Robocopy.exe $Source $Destination /E @Parameter
 
     }
 
-    Catch { }
+    Catch {
 
-    Finally { }
+        Write-Verbose "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
+        $Robocopy = "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
+
+    }
+
+    Finally {
+
+        Write-Output $Robocopy
+
+    }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

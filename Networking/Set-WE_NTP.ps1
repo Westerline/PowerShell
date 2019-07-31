@@ -14,9 +14,9 @@ Param (
     [Parameter(ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('ServerName', 'NTPServer', 'TimeServer')]
-    [String[]] 
+    [String[]]
     $NTPPeerList = "0.nz.pool.ntp.org, 1.nz.pool.ntp.org, 2.nz.pool.ntp.org, 3.nz.pool.ntp.org"
 
 )
@@ -29,7 +29,7 @@ Begin {
 
 Process {
 
-    Try {       
+    Try {
 
         Set-Service -Name W32Time -StartupType Automatic
         Start-Service -Name W32Time
@@ -42,9 +42,11 @@ Process {
             W32TimeConfig  = $W32TimeConfig
             W32TimeResync  = $W32TimeResync
         }
+
     }
 
     Catch {
+
         Write-Verbose "Unable to configure NTP settings for $Env:ComputerName, please check the network adapter DNS settings and try again."
         $Property = @{
             Status         = 'Unsuccessful'
@@ -52,17 +54,20 @@ Process {
             W32TimeConfig  = 'Null'
             W32TimeResync  = 'Null'
         }
+
     }
 
     Finally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

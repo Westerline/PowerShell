@@ -10,20 +10,20 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [validatenotnullorempty()] 
+    [validatenotnullorempty()]
     [Alias('FileName')]
-    [String[]] 
+    [String[]]
     $Path,
 
     [Parameter(Mandatory = $True)]
-    [validatenotnullorempty()] 
-    [String] 
+    [validatenotnullorempty()]
+    [String]
     $Pattern,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [validatenotnullorempty()] 
+    [validatenotnullorempty()]
     [String]
     $Value
 
@@ -36,8 +36,9 @@ Begin {
 }
 
 Process {
-    
+
     Try {
+
         $Content = Get-Content -Path $Path
 
         $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
@@ -50,24 +51,30 @@ Process {
             Path       = $Path
             NewContent = $Content[$LineIndex]
         }
+
     }
 
     Catch {
+
+        Write-Verbose "Unable to get set line content for $Path."
         $Property = @{
             Path       = $Path
             NewContent = 'Null'
         }
+
     }
 
     Finally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

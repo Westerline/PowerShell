@@ -7,7 +7,7 @@
     Client-side
     Configure the machines you the client can remote to.
     To do: set-netconnectionprofile private
-#>  
+#>
 
 [Cmdletbinding(SupportsShouldProcess)]
 
@@ -16,14 +16,14 @@ Param (
     [Parameter(Mandatory = $False,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('HostName', 'ComputerName')]
     [String[]]
     $TrustedHosts,
-    
+
     [Switch]
     $HttpListener,
-    
+
     [Switch]
     $HttpsListener
 
@@ -38,27 +38,31 @@ Begin {
 Process {
 
     Try {
-    
-        $PSRemoting = Enable-PsRemoting
+
+        $PSRemoting = Enable-PSRemoting
 
         If ($TrustedHosts.IsPresent) {
+
             Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate
+
         }
 
         If ($HttpListener.IsPresent) {
+
             Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Value True -Confirm:$False
+
         }
 
         If ($HttpsListener.IsPresent) {
-            Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False
-        }
 
+            Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False
+
+        }
 
         $PSRemotingHosts = Get-Item WSMan:\localhost\Client\TrustedHosts
         $AllowRemoteAccess = Get-Item WSMan:\localhost\Service\AllowRemoteAccess
         $PSRemotingHTTP = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener
         $PSRemotingHTTPS = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener
-
         $Property = @{
             Status            = 'Successful'
             PSRemoting        = $PSRemoting
@@ -67,9 +71,11 @@ Process {
             HTTPListener      = $PSRemotingHTTP.Value
             HTTPSListener     = $PSRemotingHTTPS.Value
         }
+
     }
 
     Catch [System.InvalidOperationException] {
+
         Write-Verbose "Network connection profile is set to Public. Please change your network connection profile to private and try again."
         $Property = @{
             Status            = 'Unsuccessful: Public Network Profile'
@@ -79,17 +85,20 @@ Process {
             HTTPListener      = $PSRemotingHTTP.Value
             HTTPSListener     = $PSRemotingHTTPS.Value
         }
+
     }
 
     Finally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

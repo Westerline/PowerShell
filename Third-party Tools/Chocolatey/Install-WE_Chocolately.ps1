@@ -17,23 +17,36 @@ Process {
     Try {
 
         If ($Proxy.IsPresent) {
+
             [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
         }
 
         Else {
-            Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+            $Chocolatey = Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
         }
 
     }
 
-    Catch { }
+    Catch {
 
-    Finally { }
+        Write-Verbose "Unable to install chocolatey on $Env:COMPUTERNAME."
+        $Chocolatey = "Unable to install chocolatey on $Env:COMPUTERNAME."
+
+    }
+
+    Finally {
+
+        Write-Output $Chocolatey
+
+    }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }

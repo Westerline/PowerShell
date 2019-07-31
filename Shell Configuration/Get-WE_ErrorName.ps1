@@ -8,9 +8,9 @@ Function Get-WE_ErrorName {
     Param (
 
         [ValidateNotNullOrEmpty()]
-        [Int] 
+        [Int]
         $ErrorIndex = 0
-    
+
     )
 
     Begin {
@@ -28,30 +28,32 @@ Function Get-WE_ErrorName {
                 ErrorName = $ErrorName.exception.gettype().fullname
                 Activity  = $ErrorName.CategoryInfo.Activity
             }
-    
+
         }
 
-        Catch { 
+        Catch {
 
-            Write-Verbose "Unable to capture Error Name"
+            Write-Verbose "Unable to capture error name. PLease try re-creating the error and rerunning this cmdlet."
             $Property = @{
                 ErrorName = 'Null'
                 Activity  = 'Null'
             }
 
         }
-    
+
         Finally {
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
+
         }
 
     }
 
     End {
 
-        $ErrorActionPreference = $StartErrorActionPreference 
-    
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
-    
+
 }

@@ -22,23 +22,36 @@ Process {
     Try {
 
         If ($Proxy.IsPresent) {
-            [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; Choco Upgrade All --install-if-not-installed -Y 
+
+            [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; chocolatey.exe Upgrade All --install-if-not-installed -Y
+
         }
 
         Else {
-            Choco Upgrade All --install-if-not-installed -Y
+
+            $Chocolatey = chocolatey.exe Upgrade All --install-if-not-installed -Y
+
         }
 
     }
 
-    Catch { }
+    Catch {
 
-    Finally { }
+        Write-Verbose "Unable to upgrade chocolatey applications on $Env:COMPUTERNAME. Please verify that chocolatey is installed and that you are able to reach the target repository."
+        $Chocolatey = "Unable to upgrade chocolatey applications on $Env:COMPUTERNAME. Please verify that chocolatey is installed and that you are able to reach the target repository."
+
+    }
+
+    Finally {
+
+        Write-Output $Chocolatey
+
+    }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    $ErrorActionPreference = $StartErrorActionPreference
+
 }
