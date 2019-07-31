@@ -2,72 +2,79 @@
 Pattern parameter will append wildcards to either side of the input.
 #>
 
-[CmdletBinding(SupportsShouldProcess)]
+Function Set-WE_LineContent {
 
-Param (
+    [CmdletBinding(SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()] 
-    [Alias('FileName')]
-    [String[]] 
-    $Path,
+    Param (
 
-    [Parameter(Mandatory = $True)]
-    [validatenotnullorempty()] 
-    [String] 
-    $Pattern,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [Alias('FileName')]
+        [String[]]
+        $Path,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [validatenotnullorempty()] 
-    [String]
-    $Value
+        [Parameter(Mandatory = $True)]
+        [validatenotnullorempty()]
+        [String]
+        $Pattern,
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [validatenotnullorempty()]
+        [String]
+        $Value
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
-    
-    Try {
-        $Content = Get-Content -Path $Path
+    }
 
-        $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
+    Process {
 
-        $Content[$LineIndex] = $Value
+        Try {
 
-        Set-Content -Path $Path -Value $Content
+            $Content = Get-Content -Path $Path
+            $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
+            $Content[$LineIndex] = $Value
+            Set-Content -Path $Path -Value $Content
+            $Property = @{
+                Path       = $Path
+                NewContent = $Content[$LineIndex]
+            }
 
-        $Property = @{
-            Path       = $Path
-            NewContent = $Content[$LineIndex]
         }
-    }
 
-    Catch {
-        $Property = @{
-            Path       = $Path
-            NewContent = 'Null'
+        Catch {
+
+            Write-Verbose "Unable to get set line content for $Path."
+            $Property = @{
+                Path       = $Path
+                NewContent = 'Null'
+            }
+
         }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
+
     }
 
-    Finally {
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
 
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
 }

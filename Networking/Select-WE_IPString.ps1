@@ -1,43 +1,55 @@
-﻿[CmdletBinding()]
+﻿<#
+#>
 
-Param (
+Function Select-WE_IPString {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()] 
-    [String]
-    $String
+    [CmdletBinding()]
 
-)
+    Param (
 
-Begin {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $String
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
-
-    Try {
-
-        $IPString = (Select-String -InputObject $String -Pattern "\d{1,3}(\.\d{1,3}){3}" -AllMatches).Matches.Value
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
-    Catch { }
+    Process {
 
-    Finally {
+        Try {
 
-        Write-Output $IPString
+            $IPString = (Select-String -InputObject $String -Pattern "\d{1,3}(\.\d{1,3}){3}" -AllMatches).Matches.Value
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to parse IP from string $String."
+            $IPString = "Unable to parse IP from string $String."
+
+        }
+
+        Finally {
+
+            Write-Output $IPString
+
+        }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+    }
+
 }

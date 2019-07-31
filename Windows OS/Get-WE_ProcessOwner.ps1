@@ -1,62 +1,70 @@
-﻿[Cmdletbinding()]
+﻿<#
+#>
 
-Param (
+Function Get-WE_ProcessOwner {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()] 
-    [Alias('ProcessName', 'Process')]
-    [String[]] $Name
+    [Cmdletbinding()]
 
-)
+    Param (
 
-Begin {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('ProcessName', 'Process')]
+        [String[]] $Name
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
-    
-    Foreach ($N in $Name) {
-       
-        Try {
-       
-            $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%$N%'"
+        $StartErrorActionPreference = $ErrorActionPreference
 
-            $Property = @{
-                Status = 'Successful'
-                Name   = $Process.Name
-                Owner  = ($Process.GetOwner()).User
-            }
-       
-        }
-
-        Catch { 
-       
-            $Property = @{
-                Status = 'Unsuccessful'
-                Name   = $N
-                Owner  = 'Null'
-            }
-       
-        }
-
-        Finally {
-       
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
-       
-        }
-    
     }
 
-}
+    Process {
 
-End {
+        Foreach ($N in $Name) {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+            Try {
+
+                $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%$N%'"
+
+                $Property = @{
+                    Status = 'Successful'
+                    Name   = $Process.Name
+                    Owner  = ($Process.GetOwner()).User
+                }
+
+            }
+
+            Catch {
+
+                Write-Verbose "Unable to get process owner for process $N."
+                $Property = @{
+                    Status = 'Unsuccessful'
+                    Name   = $N
+                    Owner  = 'Null'
+                }
+
+            }
+
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
+
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
 
 }

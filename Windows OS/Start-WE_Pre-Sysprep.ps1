@@ -3,42 +3,66 @@
     Add Remove-WE_Credentials function
 #>
 
-[Cmdletbinding()]
+Function Start-WE_Pre-Sysprep {
 
-Param ( )
+    [Cmdletbinding(SupportsShouldProcess)]
 
-Begin {
+    Param ( )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
-
-Process {
-
-    Try {
-       
-        $ShadowCopies = & Vssadmin Delete Shadows /All
-        $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse
-        $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse
-        $DiskCleanup = C:\windows\system32\cleanmgr.exe /sagerun:1
-        $ClearEventLog = Get-EventLog -LogName * | ForEach-Object { Clear-EventLog $_.Log }
-        $DNSCache = Clear-DnsClientCache
-        $Property = @{ }
-    }
-
-    Catch {
-
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
-    Finally {
+    Process {
+
+        Try {
+
+            $ShadowCopies = & vssadmin.exe Delete Shadows /All
+            $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse
+            $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse
+            $DiskCleanup = cleanmgr.exe /sagerun:1
+            $ClearEventLog = Get-EventLog -LogName * | ForEach-Object { Clear-EventLog $_.Log }
+            $DNSCache = Clear-DnsClientCache
+            $Property = @{
+                ShadowCopies         = $ShadowCopies
+                SoftwareDistribution = $SoftwareDistribution
+                Prefetch             = $Prefetch
+                DiskCleanup          = $DiskCleanup
+                ClearEventLog        = $ClearEventLog
+                DNSCache             = $DNSCache
+            }
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to complete pre-sysprep operations on $Env:COMPUTERNAME."
+            $Property = @{
+                ShadowCopies         = $ShadowCopies
+                SoftwareDistribution = $SoftwareDistribution
+                Prefetch             = $Prefetch
+                DiskCleanup          = $DiskCleanup
+                ClearEventLog        = $ClearEventLog
+                DNSCache             = $DNSCache
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    }
 
 }

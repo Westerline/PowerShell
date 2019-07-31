@@ -1,55 +1,94 @@
 ﻿<#
 To do:
 #>
-[cmdletbinding()]
 
-Param(
-    
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()] 
-    [String []] 
-    $InputFile,
+Function Get-WE_Hash {
 
-    [Parameter(Mandatory = $False)]
-    [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')] 
-    [String] 
-    $Algorithm = 'All'
+    [cmdletbinding()]
 
-)
+    Param(
 
-Begin {
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [String []]
+        $InputFile,
 
-    $StartErrorActionPreference = $ErrorActionPreference
+        [Parameter(Mandatory = $False)]
+        [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')]
+        [String]
+        $Algorithm = 'All'
 
-}
+    )
 
-Process {
+    Begin {
 
-    Foreach ($File in $InputFile) {
-
-        $Property = [Ordered]@{
-            File = $File
-        }
-
-        If ($Algorithm -eq 'All') { $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160' }
-
-        Foreach ($Alg in $Algorithm) {
-            $Hash = Get-FileHash -Path $File -Algorithm $Alg 
-            $Property.Add($Alg, $Hash.Hash)
-        }
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
-}
+    Process {
 
-End {
+        Foreach ($File in $InputFile) {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+            Try {
+
+                $Property = [Ordered]@{
+                    File = $File
+                }
+
+                If ($Algorithm -eq 'All') {
+
+                    $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160'
+
+                }
+
+                Foreach ($Alg in $Algorithm) {
+
+                    $Hash = Get-FileHash -Path $File -Algorithm $Alg
+                    $Property += @{
+                        $Alg = $Hash.Hash
+                    }
+
+                }
+
+            }
+
+            Catch [System.Management.Automation.ItemNotFoundException] {
+
+                Write-Verbose "Cannot find path $File."
+                $Property += @{
+                    $Alg = 'Null'
+                }
+
+            }
+
+            Catch {
+
+                Write-Verbose "Could not get the hash on $File. Please ensure the path to the file is correct and try again."
+                $Property += @{
+                    'Null' = 'Null'
+                }
+
+            }
+
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
+
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
+
 }

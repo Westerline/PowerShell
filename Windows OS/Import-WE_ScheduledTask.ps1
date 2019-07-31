@@ -5,81 +5,90 @@
     Add Switch {} statement for non-user/password version of command. (2) Password parameter secure string conversion to plain text.
 #>
 
-[Cmdletbinding(SupportsShouldProcess)]
+Function Import-WE_ScheduledTask {
 
-Param (
+    [Cmdletbinding(SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $Path,
+    Param (
 
-    [Parameter(Mandatory = $True)]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $Name,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Path,
 
-    [Parameter(Mandatory = $False)]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $TaskPath,
+        [Parameter(Mandatory = $True)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Name,
 
-    [Parameter(ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $DomainName = '.',
+        [Parameter(Mandatory = $False)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $TaskPath,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $User,
+        [Parameter(ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $DomainName = '.',
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $Password
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $User,
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Password
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
-    
-    Try {
+    }
 
-        $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password
-        $Property = @{
-            Task = $Task
+    Process {
+
+        Try {
+
+            $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password
+            $Property = @{
+                Task = $Task
+            }
+
         }
-    }
 
-    Catch {
-        $Property = @{
-            Task = 'Null'
+        Catch {
+
+            $Property = @{
+                Task = 'Null'
+            }
+
         }
+
+        FInally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
+
     }
 
-    FInally {
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference 
 
 }

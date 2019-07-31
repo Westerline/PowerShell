@@ -1,43 +1,68 @@
-﻿[CmdletBinding()]
+﻿<#
+#>
 
-Param(
+Function Test-WE_StringNumeric {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()] 
-    [Alias('Pattern')]
-    [String[]]
-    $String 
-    
-)
+    [CmdletBinding()]
 
-Begin {
+    Param(
 
-    $StartErrorActionPreference = $ErrorActionPreference
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [Alias('Pattern')]
+        [String[]]
+        $String
 
-}
-    
-Process {
+    )
 
-    Foreach ($Str in $String) {
+    Begin {
 
-        $Boolean = "$Str" -match "^[\d\.]+$"
-        $Property = @{
-            String  = "$Str"
-            Numeric = "$Boolean"
-        }
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
-}
+    Process {
 
-End {
+        Foreach ($Str in $String) {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+            Try {
+
+                $Boolean = "$Str" -match "^[\d\.]+$"
+                $Property = @{
+                    String  = "$Str"
+                    Numeric = "$Boolean"
+                }
+
+            }
+
+            Catch {
+
+                Write-Verbose "Unable to analyze the string $Str."
+                $Property = @{
+                    String  = "$Str"
+                    Numeric = 'Null'
+                }
+
+            }
+
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
+
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
+
 }

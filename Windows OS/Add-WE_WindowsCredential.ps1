@@ -2,86 +2,92 @@
 To do: expand function to allow CSV import as input (2) secure string parameter and then convert back to plaintext for CmdKey.
 #>
 
-[Cmdletbinding(SupportsShouldProcess)]
+Function Add-WE_WindowsCredential {
 
-Param(
+    [Cmdletbinding(SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()] 
-    [Alias('ComputerName')]
-    [String]
-    $HostName,
+    Param(
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
-    $UserName,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('ComputerName')]
+        [String[]]
+        $HostName,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
-    $Password,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [String[]]
+        $UserName,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True)]
-    [ValidateSet('Domain', 'SmartCard', 'Generic')] 
-    [String]
-    $Type
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [String[]]
+        $Password,
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateSet('Domain', 'SmartCard', 'Generic')]
+        [String[]]
+        $Type
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Try {
+    Process {
 
-        Switch ($Type) {
+        Try {
 
-            Domain { $CmdKey = & CmdKey /Add:$HostName /User:$UserName /Pass:$Password }
-            SmartCard { $CmdKey = & CmdKey /Add:$HostName /SmartCard }
-            Generic { $CmdKey = & CmdKey /Generic:$HostName /User:$UserName /Pass:$Password }
+            Switch ($Type) {
+
+                Domain { $CmdKey = & cmdkey.exe /Add:$HostName /User:$UserName /Pass:$Password }
+                SmartCard { $CmdKey = & cmdkey.exe /Add:$HostName /SmartCard }
+                Generic { $CmdKey = & cmdkey.exe /Generic:$HostName /User:$UserName /Pass:$Password }
+
+            }
+
+            $Property = @{
+                Status             = $CmdKey
+                CredentialHostName = & cmdkey.exe /List | findstr.exe $HostName
+            }
 
         }
 
-        $Property = @{
-            Status             = $CmdKey
-            CredentialHostName = & CmdKey /List | findstr $HostName
+        Catch {
+
+            Write-Verbose "Unable to add windows credential for hostname $HostName."
+            $Property = @{
+                Status             = "$CmdKey Null"
+                CredentialHostName = & cmdkey.exe /List | findstr.exe $HostName
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
         }
 
     }
 
-    Catch {
+    End {
 
-        $Property = @{
-            Status             = "$CmdKey Null"
-            CredentialHostName = & CmdKey /List | findstr $HostName
-        }
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
 
-    Finally {
-    
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
 }

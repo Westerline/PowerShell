@@ -1,35 +1,43 @@
 <#
 Switch Parameter Type vs Boolean Parameter Type
-https://blogs.technet.microsoft.com/bulentozkir/2017/06/20/the-difference-between-switch-andbool-in-powershell-function-parameters/
+https://blogs.technet.microsoft.com/bulentozkir/2017/06/20/the-dIfference-between-switch-andbool-in-powershell-function-parameters/
 #>
 
 #Switch Parameter
 
-function MyAwesomeFunction1 {
-    [CMDLetBinding()]
-    param
-    (
+function SwitchParameter {
+
+    [CmdletBinding()]
+
+    Param (
         [string] $foo,
         [string] $bar,
         [switch] $someVariable
-        
+
     )
 
     Write-Host "someVariable = $someVariable" + $someVariable.GetType()
 
-    if ($someVariable) {
+    If ($someVariable) {
+
         Write-Host $foo
+
     }
-    else {
+
+    Else {
+
         Write-Host $bar
+
     }
+
 }
 
 #Boolean Parameter
-function MyAwesomeFunction2 {
+function BooleanParameter {
+
     [CMDLetBinding()]
-    param
-    (
+
+    Param(
         [string] $foo,
         [string] $bar,
         [bool] $someVariable
@@ -37,12 +45,18 @@ function MyAwesomeFunction2 {
 
     Write-Host "someVariable = $someVariable" + $someVariable.GetType()
 
-    if ($someVariable) {
+    If ($someVariable) {
+
         Write-Host $foo
+
     }
-    else {
+
+    Else {
+
         Write-Host $bar
+
     }
+
 }
 
 MyAwesomeFunction1 -foo "foo" -bar "bar" -someVariable:$true

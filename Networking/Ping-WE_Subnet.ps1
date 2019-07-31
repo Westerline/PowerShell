@@ -3,53 +3,67 @@ To-do: (1) Set NetworkAddress Parameter to IP type. (2) Create Subnet Calculator
 Fix parameter input on $Range. Doesn't accept 1..10 as input
 #>
 
-[CmdletBinding()]
+Function Ping-WE_Subnet {
 
-Param (
+    [CmdletBinding()]
 
-    [ValidateNotNullOrEmpty()] 
-    [String]
-    $NetworkAddress = '192.168.1',
-    
-    [ValidateRange(0, 255)]
-    [Int]
-    $Range = 1..40
+    Param (
 
-)
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $NetworkAddress = '192.168.1',
 
-Begin {
+        [ValidateRange(0, 255)]
+        [Int]
+        $Range = 1..40
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
+        $StartErrorActionPreference = $ErrorActionPreference
 
-    Foreach ($R in $Range) {
-
-        Try { 
-            $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet
-            $Property = @{
-                ComputerName  = "$NetworkAddress.$R"
-                PingSucceeded = $Ping
-            }
-        }
-        Catch {
-            $Property = @{
-                ComputerName  = "$NetworkAddress.$R"
-                PingSucceeded = 'NULL'
-            }
-        }
-        Finally {
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
-        }
     }
 
-}
+    Process {
 
-End {
+        Foreach ($R in $Range) {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+            Try {
+
+                $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet
+                $Property = @{
+                    ComputerName  = "$NetworkAddress.$R"
+                    PingSucceeded = $Ping
+                }
+
+            }
+
+            Catch {
+
+                Write-Output "Unable to ping subnet $NetworkAddress in range $Range"
+                $Property = @{
+                    ComputerName  = "$NetworkAddress.$R"
+                    PingSucceeded = 'NULL'
+                }
+
+            }
+
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
+
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
+
 }

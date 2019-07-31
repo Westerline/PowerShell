@@ -4,75 +4,86 @@
 
 #>
 
-[CmdletBinding(SupportsShouldProcess)]
+Function Set-WE_Proxy {
 
-Param(
+    [CmdletBinding(SupportsShouldProcess)]
 
-    [Parameter(ParameterSetName = "Enable")]
-    [Switch] 
-    $Enable,
+    Param(
 
-    [Parameter(ParameterSetName = "Disable")]
-    [Switch] 
-    $Disable
+        [Parameter(ParameterSetName = "Enable")]
+        [Switch]
+        $Enable,
 
-)
+        [Parameter(ParameterSetName = "Disable")]
+        [Switch]
+        $Disable
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Try {
+    Process {
 
-        $ProxyRegKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+        Try {
 
-        If ($Enable.IsPresent) {
-            Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1
+            $ProxyRegKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+
+            If ($Enable.IsPresent) {
+
+                Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1
+
+            }
+
+            ElseIf ($Disable.IsPresent) {
+
+                Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0
+
+            }
+
+            $Proxy = Get-ItemProperty -path $ProxyRegKey
+
+            Switch ($Proxy.ProxyEnable) {
+
+                1 { $ProxyStatus = 'Enabled' }
+                0 { $ProxyStatus = 'Disabled' }
+                Default { $ProxyStatus = 'Invalid Registry Value' }
+
+            }
+
+            $Property = @{
+                ProxyStatus   = $ProxyStatus
+                ProxyOverride = $Proxy.ProxyOverride
+            }
+
         }
 
-        ElseIf ($Disable.IsPresent) {
-            Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0
+        Catch {
+
+            Write-Verbose "Unable to change proxy settings."
+            $Property = @{
+                ProxyStatus   = 'Null'
+                ProxyOverride = 'Null'
+            }
+
         }
 
-        $Proxy = Get-ItemProperty -path $ProxyRegKey
+        Finally {
 
-        Switch ($Proxy.ProxyEnable) {
-            1 { $ProxyStatus = 'Enabled' }
-            0 { $ProxyStatus = 'Disabled' }
-            Default { $ProxyStatus = 'Invalid Registry Value' }
-        }
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
 
-        $Property = @{
-            ProxyStatus   = $ProxyStatus
-            ProxyOverride = $Proxy.ProxyOverride
         }
 
     }
 
-    Catch {
+    End {
 
-        $Property = @{
-            ProxyStatus   = 'Null'
-            ProxyOverride = 'Null'
-        }
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
 
-    Finally { 
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
 }

@@ -1,6 +1,6 @@
 ﻿<#
 .DESCRIPTION
-    PSEXEC PowerShell Module; will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS. 
+    PSEXEC PowerShell Module; will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS.
     Recommend adding the entire Sysinternals suite to your "Path" environment variable so all Sysinternals tools can be called from a relative path.
 .EXAMPLE
     Example 1: Open Command Prompt on Remote Computer
@@ -29,7 +29,7 @@
 
 .NOTES
     Author: Wesley Esterline
-    Resources:      
+    Resources:
     Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_pasteutm_campaign=growth
     PS Tools available https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
     Updated:
@@ -37,150 +37,153 @@
     Break each type of PSEXEC into its own module.
 #>
 
-[Cmdletbinding(DefaultParameterSetname = 'Default',
-    SupportsShouldProcess)]
+Function Invoke-WE_PSEXEC {
 
-Param (
+    [Cmdletbinding(DefaultParameterSetname = 'Default',
+        SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0,
-        ParameterSetName = 'Default')]
-    [Parameter(ParameterSetName = 'Installer')]
-    [Parameter(ParameterSetName = 'PSScript')]
-    [Parameter(ParameterSetName = 'SQLQuery')]
-    [Parameter(ParameterSetName = 'SQLScript')]
-    [Parameter(ParameterSetName = 'Regedit')]
-    [ValidateNotNullOrEmpty()] 
-    [Alias('HostName')]
-    [String[]] 
-    $ComputerName,
+    Param (
 
-    [Parameter(Mandatory = $True,
-        ParameterSetName = 'Default')]
-    [Parameter(ParameterSetName = 'Installer')]
-    [Parameter(ParameterSetName = 'PSScript')]
-    [Parameter(ParameterSetName = 'SQLQuery')]
-    [Parameter(ParameterSetName = 'SQLScript')]
-    [Parameter(ParameterSetName = 'Regedit')]
-    [ValidateSet('CMD', 'Installer', 'PowerShell', 'PSScript', 'SQLQuery', 'SQLScript', 'Regedit')]
-    [String] 
-    $Type,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0,
+            ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'Installer')]
+        [Parameter(ParameterSetName = 'PSScript')]
+        [Parameter(ParameterSetName = 'SQLQuery')]
+        [Parameter(ParameterSetName = 'SQLScript')]
+        [Parameter(ParameterSetName = 'Regedit')]
+        [ValidateNotNullOrEmpty()]
+        [Alias('HostName')]
+        [String[]]
+        $ComputerName,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'Installer')]
-    [ValidateNotNullOrEmpty()] 
-    [String] 
-    $ProgramPath,
+        [Parameter(Mandatory = $True,
+            ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'Installer')]
+        [Parameter(ParameterSetName = 'PSScript')]
+        [Parameter(ParameterSetName = 'SQLQuery')]
+        [Parameter(ParameterSetName = 'SQLScript')]
+        [Parameter(ParameterSetName = 'Regedit')]
+        [ValidateSet('CMD', 'Installer', 'PowerShell', 'PSScript', 'SQLQuery', 'SQLScript', 'Regedit')]
+        [String]
+        $Type,
 
-    [Parameter(Mandatory = $False,
-        ParameterSetName = 'Installer')]
-    [String]
-    $InstallationParameters,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'Installer')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $ProgramPath,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'PSScript')]
-    [ValidateNotNullOrEmpty()] 
-    [String]
-    $PSScriptPath,
+        [Parameter(Mandatory = $False,
+            ParameterSetName = 'Installer')]
+        [String]
+        $InstallationParameters,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'SQLQuery')]
-    [Parameter(ParameterSetName = 'SQLScript')]
-    [ValidateNotNullOrEmpty()] 
-    [String]
-    $SQLServer,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'PSScript')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $PSScriptPath,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'SQLScript')]
-    [ValidateNotNullOrEmpty()]
-    [String]
-    $SQLScriptPath,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'SQLQuery')]
+        [Parameter(ParameterSetName = 'SQLScript')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $SQLServer,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'Regedit')]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $RegKeyName,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'SQLScript')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $SQLScriptPath,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'Regedit')]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $RegKeyType,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'Regedit')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $RegKeyName,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'Regedit')]
-    [ValidateNotNullOrEmpty()]
-    [String]
-    $RegValueName,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'Regedit')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $RegKeyType,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        ParameterSetName = 'Regedit')]
-    [ValidateNotNullOrEmpty()]
-    [String] 
-    $RegValueData
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'Regedit')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $RegValueName,
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'Regedit')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $RegValueData
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
-    
-    Foreach ($Computer in $ComputerName) {
-
-        Try {
-
-            Switch ($Type) {
-
-                CMD { & $PSScriptRoot\psexec.exe \\$Computer CMD }
-                Installer { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer CMD /c $ProgramPath $InstallationParameters }
-                PowerShell { & $PSScriptRoot\psexec.exe \\$Computer PowerShell }
-                PSScript { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer -s PowerShell $PSScriptPath }
-                SQLQuery { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer SQLCMD -S $SQLServer -Q $SQLQuery }
-                SQLScript { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer SQLCMD -S $SQLServer -i $SQLScriptPath }
-                Regedit { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer reg add $RegKeyName /t $RegKeyType /v $RegValueName  /d $RegValueData }
-
-            }
-        }
-
-        Catch {
-        
-            Write-Verbose "Unable to complete Invoke-WE_PSEXEC type $Type on $Computer"
-
-        }
-
-        Finally {
-
-        }
-    
     }
 
-}
+    Process {
 
-End {
+        Foreach ($Computer in $ComputerName) {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+            Try {
+
+                Switch ($Type) {
+
+                    CMD { & $PSScriptRoot\psexec.exe \\$Computer CMD }
+                    Installer { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer CMD /c $ProgramPath $InstallationParameters }
+                    PowerShell { & $PSScriptRoot\psexec.exe \\$Computer PowerShell }
+                    PSScript { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer -s PowerShell $PSScriptPath }
+                    SQLQuery { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer SQLCMD -S $SQLServer -Q $SQLQuery }
+                    SQLScript { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer SQLCMD -S $SQLServer -i $SQLScriptPath }
+                    Regedit { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer reg add $RegKeyName /t $RegKeyType /v $RegValueName  /d $RegValueData }
+
+                }
+
+            }
+
+            Catch {
+
+                Write-Verbose "Unable to complete Invoke-WE_PSEXEC type $Type on $Computer"
+
+            }
+
+            Finally { }
+
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
+
 }

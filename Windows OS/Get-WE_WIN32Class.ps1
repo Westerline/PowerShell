@@ -2,38 +2,45 @@
 To do: format output of property and method arrays to be more readable
 #>
 
-[Cmdletbinding()]
+Function Get-WE_Win32Class {
 
-Param ()
+    [Cmdletbinding()]
 
-Begin {
+    Param ()
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
-
-Process {
-
-    Try {
-
-        $Win32Classes = Get-CimClass -ClassName '*Win32*'
-    
-    }
-
-    Catch {
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
-    Finally {
+    Process {
 
-        Write-Output $Win32Classes
+        Try {
+
+            $Win32Classes = Get-CimClass -ClassName '*Win32*'
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to fetch Win32 classes on $Env:COMPUTERNAME."
+            $Win32Classes = "Unable to fetch Win32 classes on $Env:COMPUTERNAME."
+
+        }
+
+        Finally {
+
+            Write-Output $Win32Classes
+
+        }
 
     }
-    
-}
 
-End {
+    End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
 
 }

@@ -1,44 +1,68 @@
-﻿[CmdletBinding()]
+﻿<#
+Examples:  $FileName = Get-ChildItem -File -Path $Path | Where-Object { $_.VersionInfo.FileVersion -ne $Null }
+#>
 
-param (
+Function Get-WE_FileVersion {
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()] 
-    [Alias('FileName')]    
-    [String[]]
-    $Path
-    
-)
+    [CmdletBinding()]
 
-Begin {
+    param (
 
-    $StartErrorActionPreference = $ErrorActionPreference
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [Alias('FileName')]
+        [String[]]
+        $Path
 
-}
-    
-Process {
+    )
 
-    $FileName = Get-ChildItem -File -Path $Path | Where-Object { $_.VersionInfo.FileVersion -ne $Null }
+    Begin {
 
-    Foreach ($File in $FileName) {
-
-        $Property = @{               
-            FullName    = $File.FullName
-            FileVersion = $File.VersionInfo.FileVersion
-        }
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
+        $StartErrorActionPreference = $ErrorActionPreference
 
     }
 
-}
+    Process {
 
-End {
+        Foreach ($File in $Path) {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+            Try {
+
+                $Property = @{
+                    FullName    = $File.FullName
+                    FileVersion = $File.VersionInfo.FileVersion
+                }
+
+            }
+
+            Catch {
+
+                Write-Verbose "Unable to get file version for $File."
+                $Property = @{
+                    FullName    = $File
+                    FileVersion = 'Null'
+                }
+
+            }
+
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
+
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
+
 }

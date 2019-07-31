@@ -1,3 +1,5 @@
+<#
+
 #Chapters 1-8
 
 #1
@@ -16,7 +18,7 @@ Set-Service -Name BITS -StartupType Automatic
 Get-ChildItem -Path C:\ -Recurse -File -Include 'win*.*'
 
 #6
-Get-ChildItem -Path 'C:\Program Files' -Recurse | Out-File "$Env:HOMEDRIVE\temp\test6.txt" 
+Get-ChildItem -Path 'C:\Program Files' -Recurse | Out-File "$Env:HOMEDRIVE\temp\test6.txt"
 
 #7
 Get-EventLog -LogName Security -Newest 20 | ConvertTo-Xml | Format-Custom
@@ -28,9 +30,8 @@ Get-EventLog -LogName * | Select-Object -Property LogDisplayName, MaximumKilobyt
 Get-Service | Select-Object -Property Name, DisplayName, Status | ConvertTo-Html -Title "Service Report" -PreContent "<H1> Installed Services </H1>" | Out-File "$Env:HOMEDRIVE\temp\test9.html"
 
 #10
-New-Alias -Name D -Value Get-ChildItem -PassThru | Export-Alias "$Env:HOMEDRIVE\temp\test10.txt" 
-
-Import-Alias -Path "$Env:HOMEDRIVE\temp\test10.txt" 
+New-Alias -Name D -Value Get-ChildItem -PassThru | Export-Alias "$Env:HOMEDRIVE\temp\test10.txt"
+Import-Alias -Path "$Env:HOMEDRIVE\temp\test10.txt"
 
 #11
 Get-HotFix -Description 'Hotfix', 'Update'
@@ -39,7 +40,7 @@ Get-HotFix -Description 'Hotfix', 'Update'
 Get-Location
 
 #13
-Get-History -Id X | Invoke-History 
+Get-History -Id X | Invoke-History
 
 #14
 Limit-EventLog -LogName Security -OverwriteAction OverWriteAsNeeded
@@ -58,8 +59,6 @@ Restore-Computer
 
 #18
 Set-ItemProperty
-
-
 
 #Chapters 1-14
 
@@ -122,14 +121,12 @@ Find-Module -Tag Network | Sort-Object -Property Name | Select-Object -Property 
 
 #Chapters 1-19
 
-<#
-    1. Start-Job
-    2. Invoke-Command -AsJob
-    3. Yes, legal variable name
-    4. Get-Variable -Scope Local
-    5. Read-Host
-    6. Write-Output
-    #>
+1. Start-Job
+2. Invoke-Command -AsJob
+3. Yes, legal variable name
+4. Get-Variable -Scope Local
+5. Read-Host
+6. Write-Output
 
 #1
 Get-Process | Select-Object -Property Name, Id, @{Label = 'VM (MB)'; Expression = { [Math]::Round($_.VM / 1MB, 2) } }, @{Label = 'PM (MB)'; Expression = { [Math]::Round($_.PM / 1MB, 2) } } | ConvertTo-Html -Title "Current Processes" | Out-File -FilePath "C:\temp\Current Process.html"
@@ -146,3 +143,5 @@ $Job = Start-Job -ScriptBlock { Get-WmiObject -Class Win32_Product }
 Wait-Job -Id $Job.Id
 Write-Output "Job's done!"
 Receive-Job -Id $Job.Id -Keep | Select-Object -Property Name, Vendor, InstallDate, InstallLocation | Out-GridView -Title "My Products"
+
+#>

@@ -8,84 +8,93 @@
     To remove a path, include a second \ in the path, e.g. C:\\temp
 #>
 
-[Cmdletbinding(SupportsShouldProcess)]
+Function Set-WE_PSModulePath {
 
-Param (
+    [Cmdletbinding(SupportsShouldProcess)]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [ValidateNotNullOrEmpty()] 
-    [Alias('Path')]
-    [String] 
-    $ModulePath,
+    Param (
 
-    [Parameter(Mandatory = $True)]
-    [validateset('Temporary', 'Profile-AllUsersAllHosts', 'Profile-AllUsersCurrentHost', 'Profile-CurrentUserCurrentHost', 'Profile-CurrentUsersAllHosts')]
-    [String] 
-    $Scope
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('Path')]
+        [String]
+        $ModulePath,
 
-)
+        [Parameter(Mandatory = $True)]
+        [validateset('Temporary', 'Profile-AllUsersAllHosts', 'Profile-AllUsersCurrentHost', 'Profile-CurrentUserCurrentHost', 'Profile-CurrentUsersAllHosts')]
+        [String]
+        $Scope
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
-    
-    Try {
+    }
 
-        Switch ($Scope) {
+    Process {
 
-            'Temporary' { $env:PSModulePath = $env:PSModulePath + ";$ModulePath" }
-            'Profile-AllUsersAllHosts' { Add-Content -Path $Profile.AllUsersAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
-            'Profile-AllUsersCurrentHost' { Add-Content -Path $Profile.AllUsersCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
-            'Profile-CurrentUsersAllHosts' { Add-Content -Path $Profile.CurrentUserAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
-            'Profile-CurrentUserCurrentHost' { Add-Content -Path $Profile.CurrentUserCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
-            'EnvironmentVariable' {
-                $CurrentValue = [Environment]::GetEnvironmentVariable("PSModulePath")
-                [Environment]::SetEnvironmentVariable("PSModulePath", $CurrentValue + ";$ModulePath") 
+        Try {
+
+            Switch ($Scope) {
+
+                'Temporary' { $env:PSModulePath = $env:PSModulePath + ";$ModulePath" }
+                'Profile-AllUsersAllHosts' { Add-Content -Path $Profile.AllUsersAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
+                'Profile-AllUsersCurrentHost' { Add-Content -Path $Profile.AllUsersCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
+                'Profile-CurrentUsersAllHosts' { Add-Content -Path $Profile.CurrentUserAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
+                'Profile-CurrentUserCurrentHost' { Add-Content -Path $Profile.CurrentUserCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
+                'EnvironmentVariable' {
+                    $CurrentValue = [Environment]::GetEnvironmentVariable("PSModulePath")
+                    [Environment]::SetEnvironmentVariable("PSModulePath", $CurrentValue + ";$ModulePath")
+                }
+                'Remove' { $env:PSModulePath = $env:PSModulePath -replace ";$ModulePath" }
+
             }
-            'Remove' { $env:PSModulePath = $env:PSModulePath -replace ";$ModulePath" }
+
+            $Property = [Ordered] @{
+                Status = 'Successful'
+                Scope  = $Scope
+            }
+
+            $PSModulePath = $env:PSModulePath.Split(';', [System.StringSplitOptions]::RemoveEmptyEntries)
+
+            For ($i = 0; $i -lt $PSModulePath.Length; $i++) {
+
+                $Property += @{
+                    "PSModulePath[$i]" = $PSModulePath[$i]
+                }
+
+            }
 
         }
 
-        $Property = [Ordered] @{
-            Status = 'Successful'
-            Added  = $env:PSModulePath.EndsWith($ModulePath)
+        Catch {
+
+            Write-Verbose "Unable to set the PSModule path under scope $Scope. Verify you have permissions to write to the specified scope."
+            $Property = [Ordered] @{
+                Status = 'Unsuccessful'
+                Scope  = $Scope
+            }
+
         }
-    
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
+
     }
 
-    Catch {
+    End {
 
-        $Property = [Ordered] @{
-            Status = 'Unsuccessful'
-            Added  = 'False'
-        }
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
-    
-    Finally { 
-        
-        $PSModulePath = $env:PSModulePath.Split(';', [System.StringSplitOptions]::RemoveEmptyEntries)
 
-        For ($i = 0; $i -lt $PSModulePath.Length; $i++) {
-            $Property.Add("PSModulePath[$i]", $PSModulePath[$i])
-        }
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
-    
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
 }

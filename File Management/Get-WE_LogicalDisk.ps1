@@ -2,98 +2,82 @@
 To do: format output, see if output can still be done without the $DiskArray. Limit to one Try/Catch. Get rid of array, add to hash table instead.
 #>
 
-[CmdletBinding()]
+Function Get-WE_LogicalDisk {
 
-Param (
+    [CmdletBinding()]
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()] 
-    [Alias('HostName', 'MachineName')]
-    [String[]] 
-    $ComputerName
+    Param (
 
-)
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [Alias('HostName', 'MachineName')]
+        [String[]]
+        $ComputerName
 
-Begin {
+    )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
-    
-Process {
+        $StartErrorActionPreference = $ErrorActionPreference
 
-    ForEach ($Computer in $ComputerName) {
-
-        Try {
-
-            $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
-            $LogicalDisk = Get-CimInstance -CimSession $Session -ClassName Win32_DiskDrive
-            $DiskArray = @()
-            ForEach ($Disk in $LogicalDisk) {
-
-                Try {
-        
-                    $Property = @{
-                        Computername = $Computer
-                        Stauts       = 'Connected'
-                        Name         = $Disk.Name
-                        Size         = $Disk.Size
-                        Partitions   = $Disk.Partitions
-                    }
-            
-                }
-
-                Catch { 
-
-                    $Property = @{
-                        Computername = $Computer
-                        Stauts       = 'Connected'
-                        Name         = 'Null'
-                        Size         = 'Null'
-                        Partitions   = 'Null'
-                    }
-
-                }
-
-                Finally {
-
-                    $Object = New-Object -TypeName PSObject -Property $Property
-                    $DiskArray += $Object
-
-                }
-
-            }
-
-        }
-
-        Catch {
-
-            $Property = @{
-                Computername = $Computer
-                Stauts       = 'Disconnected'
-                Name         = 'Null'
-                Size         = 'Null'
-                Partitions   = 'Null'
-            }
-            $Object = New-Object -TypeName PSObject -Property $Property
-            $DiskArray += $Object
-
-        }
-    
-        Finally { 
-
-            Write-Output $DiskArray
-
-        }
     }
 
-}
+    Process {
 
-End {
+        ForEach ($Computer in $ComputerName) {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
+            Try {
+
+                $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
+                $LogicalDisk = Get-CimInstance -CimSession $Session -ClassName Win32_DiskDrive
+                $Property = [Ordered]@{
+                    ComputerName = $Computer
+                    Status       = 'Connected'
+                }
+
+                ForEach ($Disk in $LogicalDisk) {
+
+                    $Index = $Disk.Index
+                    $Property += @{
+                        "Name[$Index]"            = $Disk.Name
+                        "Partitions[$Index]"      = $Disk.Partitions
+                        "Size[$Index] (GB)"       = $Disk.Size
+                        "FreeSpace[$Index] (GB)"  = $Disk.FreeSpace
+                        "Used Space[$Index] (GB)" = $Disk.UsedSpace
+                        "DeviceID[$Index]"        = $Disk.DeviceID
+                    }
+
+                }
+
+            }
+
+            Catch {
+
+                Write-Verbose "Could not fetch the logical disks from $Computer."
+                $Property = [Ordered]@{
+                    ComputerName = $Computer
+                    Status       = 'Disconnected'
+                }
+
+            }
+
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
+        }
+
+    }
+
+    End {
+
+        $ErrorActionPreference = $StartErrorActionPreference
+
+    }
+
 }

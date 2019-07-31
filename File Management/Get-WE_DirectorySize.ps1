@@ -3,8 +3,8 @@ Example: Get-WE_DirectorySize -Directory (Get-ChildItem -Path C:\Users -Recurse 
 Example: Get-WE_DirectorySize -Directory (Get-ChildItem -Path C:\ -Directory | Select-Object -ExpandProperty FullName)
 #>
 
-FUnction Get-WE_DirectorySize {
-    
+Function Get-WE_DirectorySize {
+
     [CmdletBinding()]
 
     Param (
@@ -13,10 +13,10 @@ FUnction Get-WE_DirectorySize {
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
-        [validatenotnullorempty()] 
+        [validatenotnullorempty()]
         [Alias('Path')]
-        [String[]] 
-        $Directory 
+        [String[]]
+        $Directory
 
     )
 
@@ -27,7 +27,7 @@ FUnction Get-WE_DirectorySize {
     }
 
     Process {
-    
+
         ForEach ($Dir in $Directory) {
 
             Try {
@@ -43,6 +43,7 @@ FUnction Get-WE_DirectorySize {
 
             Catch {
 
+                Write-Verbose "Unable to get directory size for $Dir."
                 $Property = [Ordered] @{
                     Directory   = $Dir
                     'Size (MB)' = 'Null'
@@ -63,8 +64,8 @@ FUnction Get-WE_DirectorySize {
 
     End {
 
-        $ErrorActionPreference = $StartErrorActionPreference 
-    
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
 
 }

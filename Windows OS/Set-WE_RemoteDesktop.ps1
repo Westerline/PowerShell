@@ -38,7 +38,7 @@ Function Set-WE_RemoteDesktop {
     Process {
 
         Try {
-            
+
             $EnableRDP = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\‘ -Name “fDenyTSConnections” -Value 0
             $NLA = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\‘ -Name “UserAuthentication” -Value 1
             $Firewall = Enable-NetFirewallRule -DisplayGroup “Remote Desktop”
@@ -51,23 +51,28 @@ Function Set-WE_RemoteDesktop {
         }
 
         Catch {
+
+            Write-Verbose "Unable to set remote desktop connection settings on $Env:COMPUTERNAME."
             $Property = @{
                 RDPStatus                  = 'Null'
                 NetworkLevelAuthentication = 'Null'
                 FirewallStatus             = 'Null'
             }
+
         }
 
         Finally {
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
+
         }
 
     }
 
     End {
 
-        $ErrorActionPreference = $StartErrorActionPreference 
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
 

@@ -2,50 +2,55 @@
 Requirements: Windows 10
 #>
 
-[Cmdletbinding()]
+Function Get-WE_WindowsVersion {
 
-Param( )
+    [Cmdletbinding()]
 
-Begin {
+    Param( )
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    Begin {
 
-}
+        $StartErrorActionPreference = $ErrorActionPreference
 
-Process {
+    }
 
-    Try {
-       
-        $CurrentVersion = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
-        $Property = @{
-            ProductName = $CurrentVersion.ProductName
-            ReleaseID   = $CurrentVersion.ReleaseID
-            EditionID   = $CurrentVersion.EditionID
+    Process {
+
+        Try {
+
+            $CurrentVersion = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+            $Property = @{
+                ProductName = $CurrentVersion.ProductName
+                ReleaseID   = $CurrentVersion.ReleaseID
+                EditionID   = $CurrentVersion.EditionID
+            }
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to get windows version on $Env:COMPUTERNAME."
+            $Property = @{
+                ProductName = 'Null'
+                ReleaseID   = 'Null'
+                EditionID   = 'Null'
+            }
+
+        }
+
+        Finally {
+
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
         }
 
     }
 
-    Catch {
+    End {
 
-        $Property = @{
-            ProductName = 'Null'
-            ReleaseID   = 'Null'
-            EditionID   = 'Null'
-        }
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
-
-    Finally {
-
-        $Object = New-Object -TypeName PSObject -Property $Property
-        Write-Output $Object
-
-    }
-
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference 
 
 }

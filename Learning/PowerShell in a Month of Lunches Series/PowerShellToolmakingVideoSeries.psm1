@@ -45,16 +45,18 @@ Function PowerShellToolmakingVideoSeries {
     }
 
     Process {
+
         #Foreach used, rather than loading the objects and piping each one to the command, because it supports a broader range of input patterns.
         ForEach ($Computer in $ComputerName) {
 
             #If an error were to occur, $Session is likely place. We want to wrap all the way through to Write-Output in a try because we don't want the rest of the code to execute.
             Try {
+
                 #Instead of setting up two CIM connections, we're setting up one CIM session for OS and CS to use
                 $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
                 $OS = Get-CimInstance -CimSession $Session -ClassName Win32_OperatingSystem
                 $CS = Get-CimInstance -CimSession $Session -ClassName Win32_ComputerSystem
-        
+
                 <#
             Instead of outputting two different object types, we're going to create a hash table of the properties we want from our two objects.
             Non-ordered hash tables are more memory efficient
@@ -65,11 +67,11 @@ Function PowerShellToolmakingVideoSeries {
                     OSVersion              = $OS.Version
                     Model                  = $CS.Model
                 }
-        
+
             }
 
             Catch {
-            
+
                 #We will only get verbose output if CmdletBinding is enabled and the -Verbose parameter is used. -Verbose parameter gets passed to all commands.
                 #If you want to create a section header, the verbose pipeline is a good place for that
                 Write-Verbose '---------------------------------------------'
@@ -86,12 +88,12 @@ Function PowerShellToolmakingVideoSeries {
             }
 
             Finally {
-                
-                <#Next, we create a PSObject that has either the try or catch properties we retrieved above. This is saved to a variable for a couple reasons 
+
+                <#Next, we create a PSObject that has either the try or catch properties we retrieved above. This is saved to a variable for a couple reasons
             1. Lets us change $Object before outputting
             2. It's good practice to explicitly write your output, that way you can see where in your code to start investigating if there are output errors.
-            
-            Don't use Format commands within your script because this doesn't produce a PSObject. 
+
+            Don't use Format commands within your script because this doesn't produce a PSObject.
 
             #>
                 $Object = New-Object -TypeName PSObject -Property $Property
@@ -102,13 +104,13 @@ Function PowerShellToolmakingVideoSeries {
             }
 
         }
-    
+
     }
 
     End {
 
-        $ErrorActionPreference = $StartErrorActionPreference 
-    
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
 
 }

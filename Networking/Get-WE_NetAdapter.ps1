@@ -2,51 +2,60 @@
 
 #>
 
-[Cmdletbinding()]
+Function Get-WE_NetAdapter {
 
-Param (
-    
-    [Parameter(Mandatory = $True,
-        Position = 0)]
-    [validateset('Ethernet', 'Wi-Fi', 'Bluetooth', 'Virtual')]  
-    [String] 
-    $Type
+    [Cmdletbinding()]
 
-)
+    Param (
 
-Begin {
+        [Parameter(Mandatory = $True,
+            Position = 0)]
+        [validateset('Ethernet', 'Wi-Fi', 'Bluetooth', 'Virtual')]
+        [String]
+        $Type
 
-    $StartErrorActionPreference = $ErrorActionPreference
+    )
 
-}
+    Begin {
 
-Process {
+        $StartErrorActionPreference = $ErrorActionPreference
 
-    Try {
+    }
 
-        Switch ($Type) {
-            Ethernet { $Adapter = Get-netadapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.3*' } }
-            Wi-Fi { $Adapter = Get-netadapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.11*' } }
-            Bluetooth { $Adapter = Get-netadapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Bluetooth*' } }
-            Virtual { $Adapter = Get-netadapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Unspecified*' } }
+    Process {
+
+        Try {
+
+            Switch ($Type) {
+
+                Ethernet { $Adapter = Get-NetAdapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.3*' } }
+                Wi-Fi { $Adapter = Get-NetAdapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.11*' } }
+                Bluetooth { $Adapter = Get-NetAdapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Bluetooth*' } }
+                Virtual { $Adapter = Get-NetAdapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Unspecified*' } }
+
+            }
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to find $Type network adapter."
+            $Adapter = "Unable to find $Type network adapter."
+
+        }
+
+        Finally {
+
+            Write-Output $Adapter
+
         }
 
     }
 
-    Catch { 
-        $Adapter = Write-Verbose "Unable to find $Type network adapter."
-    }
+    End {
 
-    Finally {
-
-        Write-Output $Adapter
+        $ErrorActionPreference = $StartErrorActionPreference
 
     }
 
-}
-
-End {
-
-    $ErrorActionPreference = $StartErrorActionPreference 
-    
 }
