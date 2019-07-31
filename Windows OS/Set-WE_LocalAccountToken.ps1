@@ -24,13 +24,14 @@ Process {
 
         $LocalAccountTokenFilterPolicy = New-ItemProperty -Name LocalAccountTokenFilterPolicy -Value 1 -PropertyType Dword -Force
         $Property = @{
-            LocalAccountTokenFilterPolicy = $LocalAccountTokenFilterPolicy 
+            LocalAccountTokenFilterPolicy = $LocalAccountTokenFilterPolicy
         }
 
     }
 
     Catch {
 
+        Write-Verbose "Unable to set local account token filter policy on $Env:COMPUTERNAME."
         $Property = @{
             LocalAccountTokenFilterPolicy = 'Null'
         }
@@ -41,13 +42,13 @@ Process {
 
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
-        
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

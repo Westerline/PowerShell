@@ -11,19 +11,19 @@ Param (
     [ValidateNotNullOrEmpty()]
     [Int]
     $MonitorTimeout = 15,
-    
+
     [ValidateNotNullOrEmpty()]
-    [Int] 
+    [Int]
     $DiskTimeout = 20,
-    
+
     [ValidateNotNullOrEmpty()]
-    [Int] 
+    [Int]
     $StandbyTimeout = 30,
 
     [ValidateNotNullOrEmpty()]
-    [Int] 
+    [Int]
     $HibernateTimeout = 30
-    
+
 )
 
 Begin {
@@ -49,9 +49,12 @@ Process {
             Standby   = $Standby
             Hibernate = $Hibernate
         }
+
     }
 
     Catch {
+
+        Write-Verbose "Unable to set $Env:COMPUTERNAME's power plan to high performance."
         $Property = @{
             PowerPlan = 'Null'
             Monitor   = 'Null'
@@ -59,17 +62,20 @@ Process {
             Standby   = 'Null'
             Hibernate = 'Null'
         }
+
     }
 
     Finally {
-        $Object = New-Object -TypeName PSObject -Property $Property 
+
+        $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

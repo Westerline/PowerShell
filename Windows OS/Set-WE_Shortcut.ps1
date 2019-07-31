@@ -1,25 +1,25 @@
-﻿param ( 
+﻿param (
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('Test')]
     [string]
-    $Target, 
+    $Target,
 
     [Parameter(Mandatory = $False,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('Test')]
     [string]
-    $Argument, 
+    $Argument,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('Test')]
     [string]
     $Path,
@@ -27,10 +27,10 @@
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('Test')]
     [String]
-    $FileName 
+    $FileName
 
 )
 
@@ -57,23 +57,28 @@ Process {
 
     }
 
-    Catch { 
+    Catch {
+
+        Write-Verbose "Unable to create shortcut for $FileName."
         $Property = @{
             FullName   = 'Null'
             TargetPath = 'Null'
             Arguments  = 'Null'
         }
+
     }
 
     Finally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

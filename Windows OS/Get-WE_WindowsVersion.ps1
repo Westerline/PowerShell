@@ -15,7 +15,7 @@ Begin {
 Process {
 
     Try {
-       
+
         $CurrentVersion = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
         $Property = @{
             ProductName = $CurrentVersion.ProductName
@@ -27,6 +27,7 @@ Process {
 
     Catch {
 
+        Write-Verbose "Unable to get windows version on $Env:COMPUTERNAME."
         $Property = @{
             ProductName = 'Null'
             ReleaseID   = 'Null'
@@ -46,6 +47,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

@@ -16,22 +16,42 @@ Begin {
 Process {
 
     Try {
-       
-        $ShadowCopies = & Vssadmin Delete Shadows /All
+
+        $ShadowCopies = & vssadmin.exe Delete Shadows /All
         $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse
         $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse
-        $DiskCleanup = C:\windows\system32\cleanmgr.exe /sagerun:1
+        $DiskCleanup = cleanmgr.exe /sagerun:1
         $ClearEventLog = Get-EventLog -LogName * | ForEach-Object { Clear-EventLog $_.Log }
         $DNSCache = Clear-DnsClientCache
-        $Property = @{ }
+        $Property = @{
+            ShadowCopies         = $ShadowCopies
+            SoftwareDistribution = $SoftwareDistribution
+            Prefetch             = $Prefetch
+            DiskCleanup          = $DiskCleanup
+            ClearEventLog        = $ClearEventLog
+            DNSCache             = $DNSCache
+        }
+
     }
 
     Catch {
 
+        Write-Verbose "Unable to complete pre-sysprep operations on $Env:COMPUTERNAME."
+        $Property = @{
+            ShadowCopies         = $ShadowCopies
+            SoftwareDistribution = $SoftwareDistribution
+            Prefetch             = $Prefetch
+            DiskCleanup          = $DiskCleanup
+            ClearEventLog        = $ClearEventLog
+            DNSCache             = $DNSCache
+        }
 
     }
 
     Finally {
+
+        $Object = New-Object -TypeName PSObject -Property $Property
+        Write-Output $Object
 
     }
 
@@ -39,6 +59,6 @@ Process {
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

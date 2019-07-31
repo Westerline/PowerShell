@@ -17,10 +17,13 @@ Process {
     Try {
 
         $Win32Classes = Get-CimClass -ClassName '*Win32*'
-    
+
     }
 
     Catch {
+
+        Write-Verbose "Unable to fetch Win32 classes on $Env:COMPUTERNAME."
+        $Win32Classes = "Unable to fetch Win32 classes on $Env:COMPUTERNAME."
 
     }
 
@@ -29,11 +32,11 @@ Process {
         Write-Output $Win32Classes
 
     }
-    
+
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

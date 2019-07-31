@@ -14,37 +14,37 @@ Param (
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $Path,
 
     [Parameter(Mandatory = $True)]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $Name,
 
     [Parameter(Mandatory = $False)]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $TaskPath,
 
     [Parameter(ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $DomainName = '.',
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $User,
 
     [Parameter(Mandatory = $True,
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True)]
     [ValidateNotNullOrEmpty()]
-    [String] 
+    [String]
     $Password
 
 )
@@ -56,30 +56,35 @@ Begin {
 }
 
 Process {
-    
+
     Try {
 
         $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password
         $Property = @{
             Task = $Task
         }
+
     }
 
     Catch {
+
         $Property = @{
             Task = 'Null'
         }
+
     }
 
     FInally {
+
         $Object = New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

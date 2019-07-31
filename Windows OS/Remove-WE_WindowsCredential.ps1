@@ -10,7 +10,7 @@ Param(
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('UserName')]
     [String[]]
     $Name
@@ -29,38 +29,41 @@ Process {
 
         Try {
 
-            $CmdKey = & CmdKey /Delete:$N
+            $CmdKey = & cmdkey.exe /Delete:$N
 
 
             $Property = @{
-                Status             = $CmdKey
-                CredentialHostName = & CmdKey /List | findstr $N
+                Status             = 'Successful'
+                CMDKey             = $CmdKey
+                CredentialHostName = & cmdkey.exe /List | findstr.exe $N
             }
 
         }
 
         Catch {
 
+            Write-Verbose "Unable to remove windows credentials for host $N"
             $Property = @{
-                Status             = "$CmdKey Null"
-                CredentialHostName = & CmdKey /List | findstr $N
+                Status             = 'Unsuccessful'
+                CMDKey             = 'Null'
+                CredentialHostName = $N
             }
 
         }
 
         Finally {
-    
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
 
         }
-    
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

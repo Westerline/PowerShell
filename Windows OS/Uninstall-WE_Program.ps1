@@ -6,7 +6,7 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('ProgramName')]
     [String[]] $Name
 
@@ -21,7 +21,7 @@ Begin {
 Process {
 
     Try {
- 
+
         $Program = Get-WE_InstalledProgram | Where-Object { $_.DisplayName -eq "$Name" }
         $UninstallString = $Program.UninstallString -Replace "msiexec.exe", "" -Replace "/I", "" -Replace "/X", ""
         $UninstallArgument = $UninstallString.Trim()
@@ -35,6 +35,7 @@ Process {
 
     Catch {
 
+        Write-Verbose "Unable to uninstall the program $Name."
         $Property = @{
             Status           = 'Unsuccessful'
             UninstallCommand = 'Null'
@@ -43,14 +44,16 @@ Process {
     }
 
     Finally {
+
         New-Object -TypeName PSObject -Property $Property
         Write-Output $Object
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

@@ -29,7 +29,7 @@ Process {
             $Session = New-CimSession -ComputerName $Computer -ErrorAction Stop
             $OS = Get-CimInstance -CimSession $Session -ClassName Win32_OperatingSystem
             $CS = Get-CimInstance -CimSession $Session -ClassName Win32_ComputerSystem
-        
+
             $Property = @{Computername = $ComputerName
                 Stauts                 = 'Connected'
                 SPVersion              = $OS.ServicePackMajorVersion
@@ -37,13 +37,12 @@ Process {
                 Model                  = $CS.Model
 
             }
-        
+
         }
 
         Catch {
-            
-            Write-Verbose "Unable to establish CIM instance to $Computer"
 
+            Write-Verbose "Unable to establish CIM instance to $Computer"
             $Property = @{Computername = $ComputerName
                 Status                 = 'Disconnected'
                 SPVersion              = 'Null'
@@ -54,16 +53,18 @@ Process {
         }
 
         Finally {
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
+
         }
 
     }
-    
+
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

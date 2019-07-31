@@ -17,31 +17,41 @@ Begin {
 Process {
 
     Try {
+
         $OSArchitecture = Get-WmiObject -Class WIn32_OperatingSystem | Select-Object -ExpandProperty OSArchitecture
 
         If ($OSArchitecture -eq '64-bit') {
+
             $x64Program = Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne $Null }
             $x86Program = Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne $Null }
             $AllPrograms = Compare-Object -Property DisplayName -ReferenceObject $x64Program -DifferenceObject $x86Program -IncludeEqual -PassThru
+
         }
 
         Elseif ($OSArchitecture -eq '32-bit') {
+
             $AllPrograms = Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne $Null }
+
         }
     }
 
-    Catch { }
+    Catch {
+
+        Write-Verbose "Unable to fetch installed programs on $Env:COMPUTERNAME. Please ensure you have administrator access to the registry and try running the cmdlet again."
+        $AllPrograms = "Unable to fetch installed programs on $Env:COMPUTERNAME. Please ensure you have administrator access to the registry and try running the cmdlet again."
+
+    }
 
     Finally {
-        
+
         Write-Output $AllPrograms
 
     }
-    
+
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

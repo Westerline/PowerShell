@@ -6,7 +6,7 @@ Param (
         ValueFromPipeline = $True,
         ValueFromPipelineByPropertyName = $True,
         Position = 0)]
-    [ValidateNotNullOrEmpty()] 
+    [ValidateNotNullOrEmpty()]
     [Alias('ProcessName', 'Process')]
     [String[]] $Name
 
@@ -19,11 +19,11 @@ Begin {
 }
 
 Process {
-    
+
     Foreach ($N in $Name) {
-       
+
         Try {
-       
+
             $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%$N%'"
 
             $Property = @{
@@ -31,32 +31,33 @@ Process {
                 Name   = $Process.Name
                 Owner  = ($Process.GetOwner()).User
             }
-       
+
         }
 
-        Catch { 
-       
+        Catch {
+
+            Write-Verbose "Unable to get process owner for process $N."
             $Property = @{
                 Status = 'Unsuccessful'
                 Name   = $N
                 Owner  = 'Null'
             }
-       
+
         }
 
         Finally {
-       
+
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
-       
+
         }
-    
+
     }
 
 }
 
 End {
 
-    $ErrorActionPreference = $StartErrorActionPreference 
+    $ErrorActionPreference = $StartErrorActionPreference
 
 }

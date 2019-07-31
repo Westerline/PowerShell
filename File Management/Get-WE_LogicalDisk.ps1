@@ -40,9 +40,12 @@ Process {
 
                 $Index = $Disk.Index
                 $Property += @{
-                    "Name[$Index]"       = $Disk.Name
-                    "Size[$Index]"       = $Disk.Size
-                    "Partitions[$Index]" = $Disk.Partitions
+                    "Name[$Index]"            = $Disk.Name
+                    "Partitions[$Index]"      = $Disk.Partitions
+                    "Size[$Index] (GB)"       = $Disk.Size
+                    "FreeSpace[$Index] (GB)"  = $Disk.FreeSpace
+                    "Used Space[$Index] (GB)" = $Disk.UsedSpace
+                    "DeviceID[$Index]"        = $Disk.DeviceID
                 }
 
             }
