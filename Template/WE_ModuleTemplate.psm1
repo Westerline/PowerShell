@@ -55,11 +55,11 @@
             ValueFromPipelineByPropertyName = $True,
             HelpMessage = "Help. Message. Here.",
             Position = 0)]
-        [ValidateNotNullOrEmpty()] 
+        [ValidateNotNullOrEmpty()]
         [Alias('Test')]
-        [String[]] 
+        [String[]]
         $Parameter1
-        
+
     )
 
     <#
@@ -78,7 +78,7 @@
 
             #Error Action should be set to Stop within the try block for non-terminating errors to be able to fall into the catch block.
             Try {
-                
+
                 $ErrorActionPreference = 'Stop'
 
                 <#
@@ -86,7 +86,7 @@
                 Non-ordered hash tables are more memory efficient
                 #>
                 $Property = @{
-                
+
                     Computername = $ComputerName
                     Stauts       = 'Connected'
                     Property1    = $Property1
@@ -94,7 +94,7 @@
                     Property3    = $Property3
 
                 }
-       
+
             }
 
             Catch {
@@ -115,7 +115,6 @@
             #Reset error action preference before beginning the next ForEach loop or ending the script.
             Finally {
 
-                $ErrorActionPreference = $StartErrorActionPreference
                 $Object = New-Object -TypeName PSObject -Property $Property
                 Write-Output $Object
 
@@ -127,8 +126,8 @@
 
     End {
 
-        $ErrorActionPreference = $StartErrorActionPreference 
-    
+        $ErrorActionPreference = $StartErrorActionPreference
+
     }
 
 }
