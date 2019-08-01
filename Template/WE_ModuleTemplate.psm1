@@ -1,31 +1,58 @@
 ﻿Function WE_ModuleTemplate {
 
     <#
-.SYNOPSIS
-    ...
 
-.DESCRIPTION
-    ...
+    .SYNOPSIS
+        Synopsis here
 
-.PARAMETER ParameterName
-    ...
+    .DESCRIPTION
+        Command description here.
 
-.Inputs
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
 
-.Outputs
-    <Outputs if any, otherwise state None - example: Log file stored in C:\Windows\Temp\<name>.log>
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
 
-.EXAMPLE
-    <Example goes here. Repeat this attribute for more than one example>
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
 
-.NOTES
-  Version: 1.0
-  Author(s): Wesley Esterline
-  Creation Date: <Date>
-  Purpose/Change: Initial script development
-  Resources:
-  To Do:
-#>
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     #SupportsShouldProcess enables -whatif and -confirm parameters.
     [CmdletBinding()]
@@ -58,7 +85,7 @@
         [ValidateNotNullOrEmpty()]
         [Alias('Test')]
         [String[]]
-        $Parameter1
+        $ComputerName
 
     )
 

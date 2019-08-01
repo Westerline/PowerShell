@@ -1,15 +1,64 @@
-<#
-.DESCRIPTION
-    Enable RDP With NLA
-    $RDPEnable - Set to 1 to enable remote desktop connections, 0 to disable
-    $RDPFirewallOpen - Set to 1 to open RDP firewall port(s), 0 to close
-    $NLAEnable - Set to 1 to enable, 0 to disable
-    Section 1: Remote Desktop Connections
-    Section 2: NLA (Network Level Authentication)
-    Section 3: Recreate the WMI object so we can read out the (hopefully changed) setting
-#>
-
 Function Set-WE_RemoteDesktop {
+
+    <#
+
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        Enable RDP With NLA
+        $RDPEnable - Set to 1 to enable remote desktop connections, 0 to disable
+        $RDPFirewallOpen - Set to 1 to open RDP firewall port(s), 0 to close
+        $NLAEnable - Set to 1 to enable, 0 to disable
+        Section 1: Remote Desktop Connections
+        Section 2: NLA (Network Level Authentication)
+        Section 3: Recreate the WMI object so we can read out the (hopefully changed) setting
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [CmdletBinding(SupportsShouldProcess)]
 

@@ -1,9 +1,63 @@
-<#
-To-do: (1) Set NetworkAddress Parameter to IP type. (2) Create Subnet Calculator Tool (3) Tie calculator to ping script (4) scan range based on subnet mask (5) redirect warning output to $Property variable
-Fix parameter input on $Range. Doesn't accept 1..10 as input
-#>
-
 Function Ping-WE_Subnet {
+
+    <#
+
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        Command description here.
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -Set NetworkAddress Parameter to IP type.
+            -Create Subnet Calculator Tool
+            -Tie calculator to ping script
+            -Scan range based on subnet mask
+            -Redirect warning output to $Property variable and remove -InformationLevel parameter
+            -Fix parameter input on $Range. Doesn't accept 1..10 as input
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [CmdletBinding()]
 

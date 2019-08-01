@@ -1,11 +1,59 @@
-﻿<#
-.Description
-    https://blogs.u2u.be/u2u/post/creating-a-self-signed-code-signing-certificate-from-powershell
-    Generates self-signed powershell code signing certificate. Should only be used in test environments.
-    Certificate must be moved to the local machine's trusted root and trusted publisher stores for the code to be executed.
-#>
+﻿Function New-WE_SelfSignedCodeCertificate {
 
-Function New-WE_SelfSignedCodeCertificate {
+    <#
+
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        Generates self-signed powershell code signing certificate. Should only be used in test environments.
+        Certificate must be moved to the local machine's trusted root and trusted publisher stores for the code to be executed.
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -Modified from https://blogs.u2u.be/u2u/post/creating-a-self-signed-code-signing-certificate-from-powershell
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [Cmdletbinding(SupportsShouldProcess)]
 

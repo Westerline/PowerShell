@@ -1,32 +1,59 @@
 Function Set-WE_WSUSNonDomainClient {
 
     <#
-.SYNOPSIS
-    ...
 
-.DESCRIPTION
-    ...
+    .SYNOPSIS
+        Synopsis here
 
-.PARAMETER ParameterName
-    ...
+    .DESCRIPTION
+        Command description here.
 
-.Inputs
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
 
-.Outputs
-    <Outputs if any, otherwise state None - example: Log file stored in C:\Windows\Temp\<name>.log>
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
 
-.EXAMPLE
-    <Example goes here. Repeat this attribute for more than one example>
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
 
-.NOTES
-  Version: 1.0
-  Author(s): Wesley Esterline
-  Creation Date: <Date>
-  Purpose/Change: Initial script development
-  Resources: https://community.spiceworks.com/how_to/85392-wsus-targeting-for-non-domain-computers
-  To Do: Option to restore default settings via : rem REG DELETE "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate", post tool to Spiceworks.
-#>
+    .INPUTS
+        System.String[]
+            Input description here.
 
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -Modified from https://community.spiceworks.com/how_to/85392-wsus-targeting-for-non-domain-computers
+        To Do:
+            -Option to restore default settings via : rem REG DELETE "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
+            -Post tool to Spiceworks.
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [CmdletBinding(SupportsShouldProcess)]
 
