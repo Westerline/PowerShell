@@ -47,7 +47,7 @@ Function Get-WE_Hash {
 
                 Foreach ($Alg in $Algorithm) {
 
-                    $Hash = Get-FileHash -Path $File -Algorithm $Alg
+                    $Hash = Get-FileHash -Path $File -Algorithm $Alg -ErrorAction Stop
                     $Property += @{
                         $Alg = $Hash.Hash
                     }

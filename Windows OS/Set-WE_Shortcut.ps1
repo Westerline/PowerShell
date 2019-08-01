@@ -53,11 +53,13 @@ Function Set-WE_Shortcut {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $Shell = New-Object -ComObject WScript.Shell
                 $Shortcut = $Shell.CreateShortcut($P + '\' + $FileName + '.lnk')
                 $Shortcut.TargetPath = $Target
                 $Shortcut.Arguments = $Argument
                 $Shortcut.Save()
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
                     FullName   = $Shortcut.FullName
                     TargetPath = $Shortcut.TargetPath

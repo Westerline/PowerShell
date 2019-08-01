@@ -54,7 +54,9 @@ Function ConvertFrom-WE_RobocopyOutput {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $Robo_Content = $InputObj -match '^(?= *?\b(Source|Dest|Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$'
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = [Ordered] @{
                     Status      = 'Connected'
                     Started     = $Robo_Content[0] -replace 'Started :' -replace '(?m)^\s+'

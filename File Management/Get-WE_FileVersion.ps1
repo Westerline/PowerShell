@@ -31,9 +31,10 @@ Function Get-WE_FileVersion {
 
             Try {
 
+                $Item = Get-Item -Path $P -ErrorAction Stop
                 $Property = @{
-                    FullName    = $P.FullName
-                    FileVersion = $P.VersionInfo.FileVersion
+                    FullName    = $Item.FullName
+                    FileVersion = $Item.VersionInfo.FileVersion
                 }
 
             }

@@ -30,7 +30,9 @@ Function Test-WE_StringNumeric {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $Boolean = "$Str" -match "^[\d\.]+$"
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
                     String  = "$Str"
                     Numeric = "$Boolean"

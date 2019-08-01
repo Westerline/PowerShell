@@ -20,6 +20,7 @@ Function Get-WE_InstalledProgram {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             $OSArchitecture = Get-WmiObject -Class WIn32_OperatingSystem | Select-Object -ExpandProperty OSArchitecture
 
             If ($OSArchitecture -eq '64-bit') {
@@ -35,6 +36,9 @@ Function Get-WE_InstalledProgram {
                 $AllPrograms = Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -ne $Null }
 
             }
+
+            $ErrorActionPreference = $StartErrorActionPreference
+
         }
 
         Catch {

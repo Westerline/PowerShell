@@ -26,10 +26,12 @@ Function Uninstall-WE_Program {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $Program = Get-WE_InstalledProgram | Where-Object { $_.DisplayName -eq "$N" }
                 $UninstallString = $Program.UninstallString -Replace "msiexec.exe", "" -Replace "/I", "" -Replace "/X", ""
                 $UninstallArgument = $UninstallString.Trim()
                 $UninstallCommand = Start-Process "msiexec.exe" -arg "/X $UninstallArgument /qb" -Wait
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
                     Status           = 'Successful'
                     UninstallCommand = $UninstallCommand

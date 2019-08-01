@@ -50,6 +50,8 @@ Function Add-WE_WindowsCredential {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
+
             Switch ($Type) {
 
                 Domain { $CmdKey = & cmdkey.exe /Add:$HostName /User:$UserName /Pass:$Password }
@@ -57,6 +59,8 @@ Function Add-WE_WindowsCredential {
                 Generic { $CmdKey = & cmdkey.exe /Generic:$HostName /User:$UserName /Pass:$Password }
 
             }
+
+            $ErrorActionPreference = $StartErrorActionPreference
 
             $Property = @{
                 Status             = $CmdKey

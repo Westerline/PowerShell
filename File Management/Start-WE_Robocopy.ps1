@@ -67,6 +67,7 @@ Function Start-WE_Robocopy {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $Parameter = @()
 
                 Switch ( $Type ) {
@@ -81,6 +82,7 @@ Function Start-WE_Robocopy {
                 }
 
                 $Robocopy = Robocopy.exe $Source $Dest /E @Parameter
+                $ErrorActionPreference = $StartErrorActionPreference
 
             }
 

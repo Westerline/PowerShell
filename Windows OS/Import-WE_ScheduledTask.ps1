@@ -61,7 +61,7 @@ Function Import-WE_ScheduledTask {
 
         Try {
 
-            $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password
+            $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password -ErrorAction Stop
             $Property = @{
                 Task = $Task
             }

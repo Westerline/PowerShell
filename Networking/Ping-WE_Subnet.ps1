@@ -31,7 +31,7 @@ Function Ping-WE_Subnet {
 
             Try {
 
-                $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet
+                $Ping = Test-NetConnection -ComputerName "$NetworkAddress.$R" -WarningAction SilentlyContinue -InformationLevel Quiet -ErrorAction Stop
                 $Property = @{
                     ComputerName  = "$NetworkAddress.$R"
                     PingSucceeded = $Ping

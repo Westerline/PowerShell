@@ -35,8 +35,9 @@ Function New-WE_LogError {
             Try {
 
                 $Message = "$Err.Exception"
-                Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source 'PowerShell' -Message $Message -EntryType Error
+                Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source 'PowerShell' -Message $Message -EntryType Error -ErrorAction Stop
                 $EventLog = "Sucessfully logged error ($Error)."
+
             }
 
             Catch {

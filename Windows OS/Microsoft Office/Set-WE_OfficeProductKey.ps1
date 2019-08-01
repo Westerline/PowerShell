@@ -30,8 +30,10 @@ Function Set-WE_OfficeProductKey {
         Try {
 
             $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -ErrorAction SilentlyContinue
+            $ErrorActionPreference = Stop
             $ChangeKey = cscript.exe $OSPP.FullName /inpkey:$ProductKey
             $Activate = cscript.exe $OSPP.FullName /act
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 OSPP      = $OSPP
                 ChangeKey = $ChangeKey

@@ -32,7 +32,7 @@ Function Get-WE_DirectorySize {
 
             Try {
 
-                $Content = Get-ChildItem -Path $Dir -Recurse | Measure-Object -Property Length -Sum
+                $Content = Get-ChildItem -Path $Dir -Recurse -ErrorAction Stop | Measure-Object -Property Length -Sum
 
                 $Property = [Ordered] @{
                     Directory   = $Dir

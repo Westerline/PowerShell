@@ -31,6 +31,7 @@ Function Set-WE_Proxy {
         Try {
 
             $ProxyRegKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+            $ErrorActionPreference = 'Stop'
 
             If ($Enable.IsPresent) {
 
@@ -53,6 +54,8 @@ Function Set-WE_Proxy {
                 Default { $ProxyStatus = 'Invalid Registry Value' }
 
             }
+
+            $ErrorActionPreference = $StartErrorActionPreference
 
             $Property = @{
                 ProxyStatus   = $ProxyStatus

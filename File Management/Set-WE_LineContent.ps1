@@ -43,10 +43,12 @@ Function Set-WE_LineContent {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $Content = Get-Content -Path $P
                 $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
                 $Content[$LineIndex] = $Value
                 Set-Content -Path $P -Value $Content
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
                     Path       = $P
                     NewContent = $Content[$LineIndex]

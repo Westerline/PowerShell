@@ -25,7 +25,9 @@ Function Get-WE_ErrorName {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $ErrorName = $Error[$E]
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
                     ErrorName = $ErrorName.exception.gettype().fullname
                     Activity  = $ErrorName.CategoryInfo.Activity

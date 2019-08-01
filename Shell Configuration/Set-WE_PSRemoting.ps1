@@ -27,7 +27,10 @@ Function Set-WE_PSRemoting {
         $HttpListener,
 
         [Switch]
-        $HttpsListener
+        $HttpsListener,
+
+        [Switch]
+        $Force
 
     )
 
@@ -41,23 +44,24 @@ Function Set-WE_PSRemoting {
 
         Try {
 
-            $PSRemoting = Enable-PSRemoting
+            $ErrorActionPreference = 'Stop'
+            $PSRemoting = Enable-PSRemoting -Force:$Force
 
             If ($TrustedHosts.IsPresent) {
 
-                Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate
+                Set-Item WSMan:\localhost\Client\TrustedHosts -Value $TrustedHosts -Concatenate -Force:$Force
 
             }
 
             If ($HttpListener.IsPresent) {
 
-                Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Value True -Confirm:$False
+                Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Value True -Confirm:$False -Force:$Force
 
             }
 
             If ($HttpsListener.IsPresent) {
 
-                Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False
+                Set-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Value True -Confirm:$False -Force:$Force
 
             }
 
@@ -65,6 +69,7 @@ Function Set-WE_PSRemoting {
             $AllowRemoteAccess = Get-Item WSMan:\localhost\Service\AllowRemoteAccess
             $PSRemotingHTTP = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener
             $PSRemotingHTTPS = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status            = 'Successful'
                 PSRemoting        = $PSRemoting

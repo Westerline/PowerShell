@@ -65,6 +65,8 @@ Function Test-WE_Port {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
+
                 Switch ($CommonPort) {
 
                     SMTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 25 }
@@ -86,6 +88,7 @@ Function Test-WE_Port {
 
                 $DNSResolve = $PortQry | Select-String -Pattern 'Resolved'
                 $TestPort = $PortQry | Select-String -Pattern 'Port'
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
                     HostName   = $Hst
                     DNSResolve = $DNSResolve

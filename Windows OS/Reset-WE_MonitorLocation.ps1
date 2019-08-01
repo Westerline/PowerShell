@@ -20,7 +20,7 @@ Function Reset-WE_MonitorLocation {
 
             $Configuration = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Configuration'
             $Connectivity = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Connectivity'
-            Remove-Item -Path $Configuration, $Connectivity -Recurse
+            Remove-Item -Path $Configuration, $Connectivity -Recurse -ErrorAction Stop
             $Property = @{
                 Status       = 'Successful'
                 ComputerName = $Env:COMPUTERNAME

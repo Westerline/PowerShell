@@ -85,8 +85,9 @@ Function Convert-WE_Bytes {
 
                 }
 
+                $ErrorActionPreference = 'Stop'
                 $Math = [Math]::Round($Val, $Precision, [MidPointRounding]::AwayFromZero)
-
+                $ErrorActionPreference = $StartErrorActionPreference
 
             }
 

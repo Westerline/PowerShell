@@ -30,6 +30,7 @@ Functin Format-WE_WindowstoGo {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             $WINTOGO_Drive = Get-Disk -FriendlyName $FriendlyName | Select-Object -ExpandProperty Number
             $Initialization = Initialize-Disk -Number $WINTOGO_Drive -PartitionStyle MBR
             $SystemPartition = New-Partition - -Size 350MB -DriveLetter 'S' -IsActive
@@ -37,6 +38,7 @@ Functin Format-WE_WindowstoGo {
             $WindowsParition = New-Partition -DiskNumber $WINTOGO_Drive -UseMaximumSize -DriveLetter 'W'
             $WindowsVolume = Format-Volume -DriveLetter 'W' -FileSystem NTFS -NewFileSystemLabel "Windows To Go"
             $BCD = bcdboot.exe W:\Windows /s S: /f ALL
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status           = 'Successful'
                 Initialization   = $Initialization
