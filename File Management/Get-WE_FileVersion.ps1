@@ -27,22 +27,22 @@ Function Get-WE_FileVersion {
 
     Process {
 
-        Foreach ($File in $Path) {
+        Foreach ($P in $Path) {
 
             Try {
 
                 $Property = @{
-                    FullName    = $File.FullName
-                    FileVersion = $File.VersionInfo.FileVersion
+                    FullName    = $P.FullName
+                    FileVersion = $P.VersionInfo.FileVersion
                 }
 
             }
 
             Catch {
 
-                Write-Verbose "Unable to get file version for $File."
+                Write-Verbose "Unable to get file version for $P."
                 $Property = @{
-                    FullName    = $File
+                    FullName    = $P
                     FileVersion = 'Null'
                 }
 

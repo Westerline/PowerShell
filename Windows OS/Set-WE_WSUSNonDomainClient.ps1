@@ -68,14 +68,14 @@ Function Set-WE_WSUSNonDomainClient {
             $Property = @{
                 WindowsUpdate      = $WindowsUpdate.Name
                 AU                 = $AU.Name
-                WUServer           = $WUServer.Name
-                WUStatusServer     = $WUStatusServer.Name
-                TargetGroup        = $TargetGroup.Name
-                TargetGroupEnabled = $TargetGroupEnabled.Name
-                AutoDownload       = $AutoDownload.Name
-                OptionalRestart    = $OptionalRestart.Name
-                AutoUpdate         = $AutoUpdate.Name
-                UseWUServer        = $UseWUServer.Name
+                WUServer           = $WUServer.WUServer
+                WUStatusServer     = $WUStatusServer.WUStatusServer
+                TargetGroup        = $TargetGroup.TargetGroup
+                TargetGroupEnabled = $TargetGroupEnabled.TargetGroupEnabled
+                AutoDownload       = $AutoDownload.AUOptions
+                OptionalRestart    = $OptionalRestart.NoAutoRebootWithLoggedOnUsers
+                AutoUpdate         = $AutoUpdate.NoAutoUpdate
+                UseWUServer        = $UseWUServer.UseWUServer
             }
 
         }

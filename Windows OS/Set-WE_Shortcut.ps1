@@ -49,36 +49,40 @@ Function Set-WE_Shortcut {
 
     Process {
 
-        Try {
+        Foreach ($P in $Path) {
 
-            $Shell = New-Object -ComObject WScript.Shell
-            $Shortcut = $Shell.CreateShortcut($Path + '\' + $FileName + '.lnk')
-            $Shortcut.TargetPath = $Target
-            $Shortcut.Arguments = $Argument
-            $Shortcut.Save()
-            $Property = @{
-                FullName   = $Shortcut.FullName
-                TargetPath = $Shortcut.TargetPath
-                Arguments  = $Shortcut.Arguments
+            Try {
+
+                $Shell = New-Object -ComObject WScript.Shell
+                $Shortcut = $Shell.CreateShortcut($P + '\' + $FileName + '.lnk')
+                $Shortcut.TargetPath = $Target
+                $Shortcut.Arguments = $Argument
+                $Shortcut.Save()
+                $Property = @{
+                    FullName   = $Shortcut.FullName
+                    TargetPath = $Shortcut.TargetPath
+                    Arguments  = $Shortcut.Arguments
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to create shortcut for $FileName."
+                $Property = @{
+                    FullName   = 'Null'
+                    TargetPath = 'Null'
+                    Arguments  = 'Null'
+                }
 
-            Write-Verbose "Unable to create shortcut for $FileName."
-            $Property = @{
-                FullName   = 'Null'
-                TargetPath = 'Null'
-                Arguments  = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 

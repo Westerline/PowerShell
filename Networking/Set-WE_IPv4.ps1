@@ -68,17 +68,11 @@ Function Set-WE_IPv4 {
         Try {
 
             $DisableDHCP = Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0
-
             $OldGateway = (Get-NetIPConfiguration -InterfaceAlias $InterfaceAlias).IPv4DefaultGateway.NextHop
-
             $RemoveNetRoute = Remove-NetRoute -InterfaceAlias $InterfaceAlias -NExtHop $OldGateway -Confirm:$False
-
             $RemoveIPAddress = Remove-NetIPAddress -InterfaceAlias $InterfaceAlias -Confirm:$False
-
             $NewIPAddress = New-NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IPAddress -PrefixLength $Prefix -DefaultGateway $DefaultGateway
-
             $DNS = Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $PrimaryDNS, $SecondaryDNS
-
             $Property = @{
                 InterfaceAlias = $NewIPAddress.InterfaceAlias
                 IPaddress      = $NewIPAddress.IPaddress

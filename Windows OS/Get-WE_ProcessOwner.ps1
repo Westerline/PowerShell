@@ -30,7 +30,6 @@ Function Get-WE_ProcessOwner {
             Try {
 
                 $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%$N%'"
-
                 $Property = @{
                     Status = 'Successful'
                     Name   = $Process.Name

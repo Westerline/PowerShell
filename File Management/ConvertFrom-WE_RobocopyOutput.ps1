@@ -36,9 +36,9 @@ Function ConvertFrom-WE_RobocopyOutput {
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
         [validatenotnullorempty()]
-        [Alias('FileName', 'FullName')]
+        [Alias('FileName', 'FullName', 'Path')]
         [String[]]
-        $Path
+        $InputObject
 
     )
 
@@ -50,42 +50,46 @@ Function ConvertFrom-WE_RobocopyOutput {
 
     Process {
 
-        Try {
+        Foreach ($InputObj in $InputObject) {
 
-            $Robo_Content = $Path -match '^(?= *?\b(Source|Dest|Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$'
-            $Property = [Ordered] @{
-                Status      = 'Connected'
-                Started     = $Robo_Content[0] -replace 'Started :' -replace '(?m)^\s+'
-                Source      = $Robo_Content[1] -replace 'Source :' -replace '(?m)^\s+'
-                Destination = $Robo_Content[2] -replace 'Dest :' -replace '(?m)^\s+'
-                Columns     = $Robo_Content[3] -replace '(?m)^\s+'
-                Dirs        = $Robo_Content[4] -replace 'Dirs :' -replace '(?m)^\s+'
-                Files       = $Robo_Content[5] -replace 'Files :' -replace '(?m)^\s+'
-                Ended       = $Robo_Content[6] -replace 'Ended :' -replace '(?m)^\s+'
+            Try {
+
+                $Robo_Content = $InputObj -match '^(?= *?\b(Source|Dest|Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$'
+                $Property = [Ordered] @{
+                    Status      = 'Connected'
+                    Started     = $Robo_Content[0] -replace 'Started :' -replace '(?m)^\s+'
+                    Source      = $Robo_Content[1] -replace 'Source :' -replace '(?m)^\s+'
+                    Destination = $Robo_Content[2] -replace 'Dest :' -replace '(?m)^\s+'
+                    Columns     = $Robo_Content[3] -replace '(?m)^\s+'
+                    Dirs        = $Robo_Content[4] -replace 'Dirs :' -replace '(?m)^\s+'
+                    Files       = $Robo_Content[5] -replace 'Files :' -replace '(?m)^\s+'
+                    Ended       = $Robo_Content[6] -replace 'Ended :' -replace '(?m)^\s+'
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to parse Robocopy output."
+                $Property = [Ordered] @{
+                    Status      = 'Disconnected'
+                    Started     = 'Null'
+                    Source      = 'Null'
+                    Destination = 'Null'
+                    Columns     = 'Null'
+                    Dirs        = 'Null'
+                    Files       = 'Null'
+                    Ended       = 'Null'
+                }
 
-            Write-Verbose "Unable to parse Robocopy output."
-            $Property = [Ordered] @{
-                Status      = 'Disconnected'
-                Started     = 'Null'
-                Source      = 'Null'
-                Destination = 'Null'
-                Columns     = 'Null'
-                Dirs        = 'Null'
-                Files       = 'Null'
-                Ended       = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 

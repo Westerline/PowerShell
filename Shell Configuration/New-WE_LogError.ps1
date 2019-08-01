@@ -30,41 +30,26 @@ Function New-WE_LogError {
 
     Process {
 
-        Try {
+        Foreach ($Err in $Error) {
 
-            $Property = @{
-                PSMessageDetails      = $Error.PSMessageDetails
-                Exception             = $Error.Exception
-                TargetObject          = $Error.TargetObject
-                Category              = $Error.CategoryInfo.Category
-                Activity              = $Error.CategoryInfo.Activity
-                Reason                = $Error.CategoryInfo.Reason
-                FullyQualifiedErrorID = $Error.FullyQualifiedErrorID
-                ErrorDetails          = $Error.ErrorDetails
+            Try {
+
+                $Message = "$Err.Exception"
+                Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source 'PowerShell' -Message $Message -EntryType Error
+                $EventLog = "Sucessfully logged error ($Error)."
             }
 
-        }
+            Catch {
 
-        Catch {
+                $EventLog = "Unable to log error ($Error)."
 
-            Write-Verbose "Unable to log error ($Error)."
-            $Property = @{
-                PSMessageDetails      = 'Null'
-                Exception             = 'Null'
-                TargetObject          = 'Null'
-                Category              = 'Null'
-                Activity              = 'Null'
-                Reason                = 'Null'
-                FullyQualifiedErrorID = 'Null'
-                ErrorDetails          = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                Write-Output $EventLog
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-EventLog -EventId $EventID -LogName 'Windows PowerShell' -Source $Host.Name -Message (Write-Output $Object) -EntryType Error
+            }
 
         }
 

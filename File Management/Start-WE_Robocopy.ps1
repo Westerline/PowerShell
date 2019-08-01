@@ -40,7 +40,7 @@ Function Start-WE_Robocopy {
         [Parameter(ParameterSetName = 'IPG')]
         [Parameter(ParameterSetName = 'MT')]
         [validatenotnullorempty()]
-        [String]
+        [String[]]
         $Destination,
 
         [Parameter(ParameterSetName = 'IPG')]
@@ -63,35 +63,39 @@ Function Start-WE_Robocopy {
 
     Process {
 
-        Try {
+        Foreach ($Dest in $Destination) {
 
-            $Parameter = @()
+            Try {
 
-            Switch ( $Type ) {
+                $Parameter = @()
 
-                'MIR_IPG' { $Parameter += "/MIR", "/IPG:$IPG" }
-                'MIR_MT' { $Parameter += "/MIR", "/MT:$MT" }
-                'COPY_IPG' { $Parameter += "/COPY:DAT", "/IPG:$IPG" }
-                'COPY_MT' { $Parameter += "/COPY:DAT", "/MT:$MT" }
-                'MOVE_IPG' { $Parameter += "/MOVE", "/IPG:$IPG" }
-                'MOVE_MT' { $Parameter += "/MOVE", "/MT:$MT" }
+                Switch ( $Type ) {
+
+                    'MIR_IPG' { $Parameter += "/MIR", "/IPG:$IPG" }
+                    'MIR_MT' { $Parameter += "/MIR", "/MT:$MT" }
+                    'COPY_IPG' { $Parameter += "/COPY:DAT", "/IPG:$IPG" }
+                    'COPY_MT' { $Parameter += "/COPY:DAT", "/MT:$MT" }
+                    'MOVE_IPG' { $Parameter += "/MOVE", "/IPG:$IPG" }
+                    'MOVE_MT' { $Parameter += "/MOVE", "/MT:$MT" }
+
+                }
+
+                $Robocopy = Robocopy.exe $Source $Dest /E @Parameter
 
             }
 
-            $Robocopy = Robocopy.exe $Source $Destination /E @Parameter
+            Catch {
 
-        }
+                Write-Verbose "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
+                $Robocopy = "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
 
-        Catch {
+            }
 
-            Write-Verbose "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
-            $Robocopy = "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
+            Finally {
 
-        }
+                Write-Output $Robocopy
 
-        Finally {
-
-            Write-Output $Robocopy
+            }
 
         }
 

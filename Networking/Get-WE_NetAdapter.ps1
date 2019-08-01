@@ -1,5 +1,6 @@
 <#
-
+.Notes
+    To Do: add for loop to add multiple adapters + Index to hash table
 #>
 
 Function Get-WE_NetAdapter {
