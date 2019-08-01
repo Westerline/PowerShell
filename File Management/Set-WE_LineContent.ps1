@@ -39,33 +39,39 @@ Function Set-WE_LineContent {
 
     Process {
 
-        Try {
+        Foreach ($P in $Path) {
 
-            $Content = Get-Content -Path $Path
-            $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
-            $Content[$LineIndex] = $Value
-            Set-Content -Path $Path -Value $Content
-            $Property = @{
-                Path       = $Path
-                NewContent = $Content[$LineIndex]
+            Try {
+
+                $ErrorActionPreference = 'Stop'
+                $Content = Get-Content -Path $P
+                $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
+                $Content[$LineIndex] = $Value
+                Set-Content -Path $P -Value $Content
+                $ErrorActionPreference = $StartErrorActionPreference
+                $Property = @{
+                    Path       = $P
+                    NewContent = $Content[$LineIndex]
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to get set line content for $P."
+                $Property = @{
+                    Path       = $P
+                    NewContent = 'Null'
+                }
 
-            Write-Verbose "Unable to get set line content for $Path."
-            $Property = @{
-                Path       = $Path
-                NewContent = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 

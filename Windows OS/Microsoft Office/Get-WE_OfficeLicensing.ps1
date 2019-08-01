@@ -15,12 +15,12 @@ Function Get-WE_OfficeLicensing {
 
     Process {
 
-        $ErrorActionPreference = 'SilentlyContinue'
-
         Try {
 
             $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -ErrorAction SilentlyContinue
+            $ErrorActionPreference = Stop
             $ActivactionStatus = cscript.exe $OSPP.FullName /dstatus
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 OSPP              = $OSPP
                 ActivactionStatus = $ActivactionStatus

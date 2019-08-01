@@ -31,7 +31,7 @@ Function Add-WE_ADGroupMemberComputer {
 
             Try {
 
-                $GroupMemberComputer = Add-ADGroupMember -Identity $Identity -Members "CN=$Computer,OU=Computers,OU=Computers,OU=MyBusiness,DC=domain,DC=local"
+                $GroupMemberComputer = Add-ADGroupMember -Identity $Identity -Members "CN=$Computer,OU=Computers,OU=Computers,OU=MyBusiness,DC=domain,DC=local" -ErrorAction Stop
                 $Property = @{
                     Status              = 'Successful'
                     GroupMemberComputer = $GroupMemberComputer

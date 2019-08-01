@@ -18,7 +18,7 @@ Function Get-WE_WindowsVersion {
 
         Try {
 
-            $CurrentVersion = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+            $CurrentVersion = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction Stop
             $Property = @{
                 ProductName = $CurrentVersion.ProductName
                 ReleaseID   = $CurrentVersion.ReleaseID

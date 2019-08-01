@@ -33,11 +33,13 @@ Function Set-WE_NTP {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             Set-Service -Name W32Time -StartupType Automatic
             Start-Service -Name W32Time
             $W32TimeService = Get-Service -Name W32Time
             $W32TimeConfig = & w32tm.exe /config /syncfromflags:manual /manualpeerlist:$NTPPeerList /update
             $W32TimeResync = & w32tm.exe /resync /rediscover
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status         = 'Successful'
                 W32TimeService = $W32TimeService

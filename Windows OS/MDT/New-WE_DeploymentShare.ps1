@@ -44,11 +44,13 @@ Function New-WE_DeploymentShare {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             Import-Module "C:\Program Files\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
             $Directory = New-Item -Path $Path -ItemType directory
             $SMBShare = New-SmbShare -Name $Name -Path $Path -FullAccess $FullAccess
             $PSDrive = New-PSDrive -Name $Name -PSProvider "MDTProvider" -Root $Path -Description $Description -NetworkPath "\\$Env:ComputerName\$Name"
             $MDTDrive = Add-MDTPersistentDrive -Name $Name -InputObjetc $PSDrive
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status     = 'Successful'
                 Directory  = $Directory.Directory

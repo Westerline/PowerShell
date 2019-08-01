@@ -31,9 +31,9 @@ Function Remove-WE_WindowsCredential {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 $CmdKey = & cmdkey.exe /Delete:$N
-
-
+                $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
                     Status             = 'Successful'
                     CMDKey             = $CmdKey

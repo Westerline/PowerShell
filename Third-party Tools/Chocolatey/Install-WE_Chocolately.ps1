@@ -21,6 +21,8 @@ Function Install-WE_Chocolatey {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
+
             If ($Proxy.IsPresent) {
 
                 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
@@ -32,6 +34,8 @@ Function Install-WE_Chocolatey {
                 $Chocolatey = Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
             }
+
+            $ErrorActionPreference = $StartErrorActionPreference
 
         }
 

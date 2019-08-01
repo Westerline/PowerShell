@@ -53,7 +53,7 @@ Function Set-WE_ADUserPhone {
 
         Try {
 
-            $ADUser = Set-ADUser -DisplayName $UserName -MobilePhone $MobilePhone -HomePhone $HomePhone -OfficePhone $OfficePhone
+            $ADUser = Set-ADUser -DisplayName $UserName -MobilePhone $MobilePhone -HomePhone $HomePhone -OfficePhone $OfficePhone -ErrorAction Stop
             $Property = @{
                 Status      = 'Successful'
                 User        = $ADUser.DisplayName

@@ -154,6 +154,8 @@ Function Invoke-WE_PSEXEC {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
+
                 Switch ($Type) {
 
                     CMD { & $PSScriptRoot\psexec.exe \\$Computer CMD }
@@ -165,6 +167,8 @@ Function Invoke-WE_PSEXEC {
                     Regedit { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer reg add $RegKeyName /t $RegKeyType /v $RegValueName  /d $RegValueData }
 
                 }
+
+                $ErrorActionPreference = $StartErrorActionPreference
 
             }
 

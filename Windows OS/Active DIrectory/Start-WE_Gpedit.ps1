@@ -29,7 +29,9 @@ Function Start-WE_Gpedit {
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
                 & gpedit.msc /gpcomputer: $Computer
+                $ErrorActionPreference = $StartErrorActionPreference
 
             }
 

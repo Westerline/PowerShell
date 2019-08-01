@@ -40,6 +40,8 @@ Function Set-WE_PSModulePath {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
+
             Switch ($Scope) {
 
                 'Temporary' { $env:PSModulePath = $env:PSModulePath + ";$ModulePath" }
@@ -59,8 +61,8 @@ Function Set-WE_PSModulePath {
                 Status = 'Successful'
                 Scope  = $Scope
             }
-
             $PSModulePath = $env:PSModulePath.Split(';', [System.StringSplitOptions]::RemoveEmptyEntries)
+            $ErrorActionPreference = $StartErrorActionPreference
 
             For ($i = 0; $i -lt $PSModulePath.Length; $i++) {
 

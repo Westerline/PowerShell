@@ -68,8 +68,10 @@ Function New-WE_VMNAT {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             $NATAdapterIP = New-NetIPAddress -IPAddress $IPAddress -PrefixLength $PrefixLength -InterfaceAlias $InterfaceAlias
             $NAT = New-NetNat -Name $NATName -InternalIPInterfaceAddressPrefix ($NetworkAddress + '/' + $PrefixLength)
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status       = 'Successful'
                 NATAdapterIP = $NATAdapterIP

@@ -22,33 +22,39 @@ Function Uninstall-WE_Program {
 
     Process {
 
-        Try {
+        Foreach ($N in $Name) {
 
-            $Program = Get-WE_InstalledProgram | Where-Object { $_.DisplayName -eq "$Name" }
-            $UninstallString = $Program.UninstallString -Replace "msiexec.exe", "" -Replace "/I", "" -Replace "/X", ""
-            $UninstallArgument = $UninstallString.Trim()
-            $UninstallCommand = Start-Process "msiexec.exe" -arg "/X $UninstallArgument /qb" -Wait
-            $Property = @{
-                Status           = 'Successful'
-                UninstallCommand = $UninstallCommand
+            Try {
+
+                $ErrorActionPreference = 'Stop'
+                $Program = Get-WE_InstalledProgram | Where-Object { $_.DisplayName -eq "$N" }
+                $UninstallString = $Program.UninstallString -Replace "msiexec.exe", "" -Replace "/I", "" -Replace "/X", ""
+                $UninstallArgument = $UninstallString.Trim()
+                $UninstallCommand = Start-Process "msiexec.exe" -arg "/X $UninstallArgument /qb" -Wait
+                $ErrorActionPreference = $StartErrorActionPreference
+                $Property = @{
+                    Status           = 'Successful'
+                    UninstallCommand = $UninstallCommand
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to uninstall the program $N."
+                $Property = @{
+                    Status           = 'Unsuccessful'
+                    UninstallCommand = 'Null'
+                }
 
-            Write-Verbose "Unable to uninstall the program $Name."
-            $Property = @{
-                Status           = 'Unsuccessful'
-                UninstallCommand = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 

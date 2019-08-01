@@ -61,9 +61,9 @@ Function Convert-WE_Bytes {
 
     Process {
 
-        Try {
+        Foreach ($Val in $Value) {
 
-            Foreach ($Val in $Value) {
+            Try {
 
                 Switch ($From) {
 
@@ -85,22 +85,24 @@ Function Convert-WE_Bytes {
 
                 }
 
-                $Math = [Math]::Round($value, $Precision, [MidPointRounding]::AwayFromZero)
+                $ErrorActionPreference = 'Stop'
+                $Math = [Math]::Round($Val, $Precision, [MidPointRounding]::AwayFromZero)
+                $ErrorActionPreference = $StartErrorActionPreference
 
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to convert $Val to $To"
+                $Math = 'Null'
 
-            Write-Verbose "Unable to convert $Val to $To"
-            $Math = 'Null'
+            }
 
-        }
+            Finally {
 
-        Finally {
+                Write-Output $Math$To
 
-            Write-Output $Math$To
+            }
 
         }
 

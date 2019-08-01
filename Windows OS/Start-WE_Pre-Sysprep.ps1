@@ -19,12 +19,14 @@ Function Start-WE_Pre-Sysprep {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             $ShadowCopies = & vssadmin.exe Delete Shadows /All
             $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse
             $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse
             $DiskCleanup = cleanmgr.exe /sagerun:1
             $ClearEventLog = Get-EventLog -LogName * | ForEach-Object { Clear-EventLog $_.Log }
             $DNSCache = Clear-DnsClientCache
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 ShadowCopies         = $ShadowCopies
                 SoftwareDistribution = $SoftwareDistribution

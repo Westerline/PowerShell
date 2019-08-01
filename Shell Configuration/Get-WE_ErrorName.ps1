@@ -8,7 +8,7 @@ Function Get-WE_ErrorName {
     Param (
 
         [ValidateNotNullOrEmpty()]
-        [Int]
+        [Int[]]
         $ErrorIndex = 0
 
     )
@@ -21,30 +21,36 @@ Function Get-WE_ErrorName {
 
     Process {
 
-        Try {
+        Foreach ($E in $ErrorIndex) {
 
-            $ErrorName = $Error[$ErrorIndex]
-            $Property = @{
-                ErrorName = $ErrorName.exception.gettype().fullname
-                Activity  = $ErrorName.CategoryInfo.Activity
+            Try {
+
+                $ErrorActionPreference = 'Stop'
+                $ErrorName = $Error[$E]
+                $ErrorActionPreference = $StartErrorActionPreference
+                $Property = @{
+                    ErrorName = $ErrorName.exception.gettype().fullname
+                    Activity  = $ErrorName.CategoryInfo.Activity
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                Write-Verbose "Unable to capture error name. PLease try re-creating the error and rerunning this cmdlet."
+                $Property = @{
+                    ErrorName = 'Null'
+                    Activity  = 'Null'
+                }
 
-            Write-Verbose "Unable to capture error name. PLease try re-creating the error and rerunning this cmdlet."
-            $Property = @{
-                ErrorName = 'Null'
-                Activity  = 'Null'
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 

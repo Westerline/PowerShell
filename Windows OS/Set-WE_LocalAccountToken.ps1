@@ -24,7 +24,7 @@ Function Set-WE_LocalAccountToken {
 
         Try {
 
-            $LocalAccountTokenFilterPolicy = New-ItemProperty -Name LocalAccountTokenFilterPolicy -Value 1 -PropertyType Dword -Force
+            $LocalAccountTokenFilterPolicy = New-ItemProperty -Name LocalAccountTokenFilterPolicy -Value 1 -PropertyType Dword -Force -ErrorAction Stop
             $Property = @{
                 LocalAccountTokenFilterPolicy = $LocalAccountTokenFilterPolicy
             }

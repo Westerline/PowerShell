@@ -39,9 +39,11 @@ Function Set-WE_RemoteDesktop {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             $EnableRDP = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\‘ -Name “fDenyTSConnections” -Value 0
             $NLA = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\‘ -Name “UserAuthentication” -Value 1
             $Firewall = Enable-NetFirewallRule -DisplayGroup “Remote Desktop”
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 RDPStatus                  = $EnableRDP
                 NetworkLevelAuthentication = $NLA

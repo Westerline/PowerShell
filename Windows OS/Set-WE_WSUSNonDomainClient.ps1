@@ -53,6 +53,7 @@ Function Set-WE_WSUSNonDomainClient {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
             $WindowsUpdate = New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows" -Name WindowsUpdate -ItemType File -Force:$Force
             $AU = New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "AU" -ItemType File -Force:$Force
             $WUServer = New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -Name "WUServer" -Value "http://$HostName`:$Port/" -Force:$Force
@@ -65,17 +66,18 @@ Function Set-WE_WSUSNonDomainClient {
             $UseWUServer = New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "UseWUServer" -Value 1 -PropertyType Dword -Force:$Force
             Restart-Service -Name WUAUSERV -Force:$Force
             wuauclt.exe /reportnow /detectnow
+            $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 WindowsUpdate      = $WindowsUpdate.Name
                 AU                 = $AU.Name
-                WUServer           = $WUServer.Name
-                WUStatusServer     = $WUStatusServer.Name
-                TargetGroup        = $TargetGroup.Name
-                TargetGroupEnabled = $TargetGroupEnabled.Name
-                AutoDownload       = $AutoDownload.Name
-                OptionalRestart    = $OptionalRestart.Name
-                AutoUpdate         = $AutoUpdate.Name
-                UseWUServer        = $UseWUServer.Name
+                WUServer           = $WUServer.WUServer
+                WUStatusServer     = $WUStatusServer.WUStatusServer
+                TargetGroup        = $TargetGroup.TargetGroup
+                TargetGroupEnabled = $TargetGroupEnabled.TargetGroupEnabled
+                AutoDownload       = $AutoDownload.AUOptions
+                OptionalRestart    = $OptionalRestart.NoAutoRebootWithLoggedOnUsers
+                AutoUpdate         = $AutoUpdate.NoAutoUpdate
+                UseWUServer        = $UseWUServer.UseWUServer
             }
 
         }

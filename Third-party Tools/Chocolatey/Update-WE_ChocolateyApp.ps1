@@ -23,6 +23,8 @@ Function Update-WE_ChocolateyApp {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
+
             If ($Proxy.IsPresent) {
 
                 [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; chocolatey.exe Upgrade All --install-if-not-installed -Y
@@ -34,6 +36,8 @@ Function Update-WE_ChocolateyApp {
                 $Chocolatey = chocolatey.exe Upgrade All --install-if-not-installed -Y
 
             }
+
+            $ErrorActionPreference = $StartErrorActionPreference
 
         }
 

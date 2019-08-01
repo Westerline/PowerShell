@@ -18,7 +18,7 @@ Function Get-WE_Win32Class {
 
         Try {
 
-            $Win32Classes = Get-CimClass -ClassName '*Win32*'
+            $Win32Classes = Get-CimClass -ClassName '*Win32*' -ErrorAction Stop
 
         }
 

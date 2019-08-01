@@ -1,5 +1,6 @@
 <#
-
+.Notes
+    To Do: add for loop to add multiple adapters + Index to hash table
 #>
 
 Function Get-WE_NetAdapter {
@@ -26,6 +27,8 @@ Function Get-WE_NetAdapter {
 
         Try {
 
+            $ErrorActionPreference = 'Stop'
+
             Switch ($Type) {
 
                 Ethernet { $Adapter = Get-NetAdapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.3*' } }
@@ -34,6 +37,8 @@ Function Get-WE_NetAdapter {
                 Virtual { $Adapter = Get-NetAdapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Unspecified*' } }
 
             }
+
+            $ErrorActionPreference = $StartErrorActionPreference
 
         }
 
