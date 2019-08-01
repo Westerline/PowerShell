@@ -1,13 +1,58 @@
-﻿<#
-.Description
-    Useful for managing NTP servers for non-domain computers.
-.Example
-    For NTPPeerList parameter, don't separate the server
-.Requirements
-    Net adapter configured with Public DNS server such as Google public DNS 8.8.8.8
-#>
+﻿Function Set-WE_NTP {
 
-Function Set-WE_NTP {
+    <#
+
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        Ensure the target machine's net adapter is configured with a public DNS server such as Google public DNS 8.8.8.8.
+
+    .PARAMETER
+        -NTPPeerList [<String[]>]
+            Don't separate multiple servernames with a comma.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -
+        Misc:
+            -Useful for managing NTP servers on non-domain computers.
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [CmdletBinding(SupportsShouldProcess)]
 

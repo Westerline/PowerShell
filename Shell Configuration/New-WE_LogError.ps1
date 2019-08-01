@@ -1,8 +1,60 @@
-<#
-To-do: Add email logging option, generate alert numbers based on error info. Write to the event log of a remote computer.
-#>
-
 Function New-WE_LogError {
+
+    <#
+
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        Command description here.
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -Add email logging option
+            -Generate alert numbers based on error info
+            -Write to the event log of a remote computer
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [Cmdletbinding()]
 

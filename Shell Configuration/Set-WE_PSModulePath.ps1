@@ -1,14 +1,61 @@
-﻿<#
-.Resources
-    https://docs.microsoft.com/en-us/powershell/developer/module/modifying-the-psmodulepath-installation-path
-.Description
-    To add a temporary value that is available only for the current session, run the following command at the command line:
-    To add a persistent value that is available whenever a session is opened, add the following command to a Windows PowerShell profile:
-    To add a persistent environment variable
-    To remove a path, include a second \ in the path, e.g. C:\\temp
-#>
+﻿Function Set-WE_PSModulePath {
 
-Function Set-WE_PSModulePath {
+    <#
+
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        To add a temporary value that is available only for the current session, run the following command at the command line:
+        To add a persistent value that is available whenever a session is opened, add the following command to a Windows PowerShell profile:
+        To add a persistent environment variable
+        To remove a path, include a second \ in the path, e.g. C:\\temp
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -Modified from https://docs.microsoft.com/en-us/powershell/developer/module/modifying-the-psmodulepath-installation-path
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [Cmdletbinding(SupportsShouldProcess)]
 

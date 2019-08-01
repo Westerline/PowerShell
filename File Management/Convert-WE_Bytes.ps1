@@ -1,30 +1,60 @@
-﻿<#
-.SYNOPSIS
-    ...
+﻿Function Convert-WE_Bytes {
 
-.DESCRIPTION
-    ...
+    <#
 
-.PARAMETER ParameterName
-    ...
+    .SYNOPSIS
+        Converts bytes to kilobytes, megabytes, etc. or vice versa.
 
-.Inputs
+    .DESCRIPTION
+        This command can convert any of the following byte sizes to one another: (bytes, kilobytes, megabytes, gigabytes, terabytes).
 
-.Outputs
+    .PARAMETER
+        -ComputerName [<String[]>]
+            Test parameter for computer names.
 
-.EXAMPLE
-    <Example goes here. Repeat this attribute for more than one example>
+            'Test' is an available alias.
 
-.NOTES
-  Version: 1.0
-  Author(s): Wesley Esterline
-  Creation Date: 25/07/19
-  Purpose/Change: Initial script development
-  Resources: https://techibee.com/powershell/convert-from-any-to-any-bytes-kb-mb-gb-tb-using-powershell/2376
-  To Do:
-#>
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
 
-Function Convert-WE_Bytes {
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.Double[], System.Integer, System.String
+            You can pipe a Double type object to Convert-WE_Bytes.
+
+    .OUTPUTS
+        System.String
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -Modified from: https://techibee.com/powershell/convert-from-any-to-any-bytes-kb-mb-gb-tb-using-powershell/2376
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS> Convert-WE_Bytes -Value 10000000000000 -From B -To KB
+
+        Description
+
+        -----------
+
+        This command converts a value in bytes to kilobytes.
+
+    #>
 
     [cmdletbinding()]
 

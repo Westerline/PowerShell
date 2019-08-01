@@ -1,32 +1,78 @@
-﻿<#
-Regular Expression breakdown courtesy of https://regexr.com/:
-^(?= *?\b(Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$
-    ^   Matches the beginning of the string, or the beginning of a line if the multiline flag (m) is enabled. This matches a position, not a character.
-    (?=) Matches a group after the main expression without including it in the result.
-        Matches a SPACE character
-    *   Matches 0 or more of the preceding token
-    ?   Makes the preceding quantifier lazy, causing it to match as few characters as possible. By default, quantifiers are greedy, and will match as many characters as possible.
-    \b  Matches a word boundary position between a word character and non-word character or position (start / end of string).
-    ()  Capturing group 1. Groups multiple tokens together and creates a capture group for extracting a substring or using a backreference.
-    S   Matches S Character, etc.
-    |   Acts like a boolean OR. Matches the expression before or after the |
-    ()  Capturing group 2.
-    (?!) Specifies a group that can not match after the main expression (if it matches, the result is discarded).
-    .   Matches any character except line breaks
-    $   Matches the end of the string, or the end of a line if the multiline flag (m) is enabled.
+﻿Function ConvertFrom-WE_RobocopyOutput {
 
-(?m)^\s+
-    (?m) Mode Modifier
-    ^   Matches the beginning of the string, or the beginning of a line if the multiline flag (m) is enabled. This matches a position, not a character.
-    \s  Matches any whitespace character (spaces, tabs, line breaks)
-    +   Matches 1 or more of the preceding token.
-    '   Matches a """" character
+    <#
 
-To-Do: Adjust to accept pipeline input. Allow multiple file inputs.
+    .SYNOPSIS
+        Synopsis here
 
-#>
+    .DESCRIPTION
+        Regular Expression breakdown courtesy of https://regexr.com/:
+        ^(?= *?\b(Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$
+        ^   Matches the beginning of the string, or the beginning of a line if the multiline flag (m) is enabled. This matches a position, not a character.
+        (?=) Matches a group after the main expression without including it in the result.
+            Matches a SPACE character
+        *   Matches 0 or more of the preceding token
+        ?   Makes the preceding quantifier lazy, causing it to match as few characters as possible. By default, quantifiers are greedy, and will match as many characters as possible.
+        \b  Matches a word boundary position between a word character and non-word character or position (start / end of string).
+        ()  Capturing group 1. Groups multiple tokens together and creates a capture group for extracting a substring or using a backreference.
+        S   Matches S Character, etc.
+        |   Acts like a boolean OR. Matches the expression before or after the |
+        ()  Capturing group 2.
+        (?!) Specifies a group that can not match after the main expression (if it matches, the result is discarded).
+        .   Matches any character except line breaks
+        $   Matches the end of the string, or the end of a line if the multiline flag (m) is enabled.
+        (?m)^\s+
+        (?m) Mode Modifier
+        ^   Matches the beginning of the string, or the beginning of a line if the multiline flag (m) is enabled. This matches a position, not a character.
+        \s  Matches any whitespace character (spaces, tabs, line breaks)
+        +   Matches 1 or more of the preceding token.
+        '   Matches a """" character
 
-Function ConvertFrom-WE_RobocopyOutput {
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [CmdletBinding()]
     Param(

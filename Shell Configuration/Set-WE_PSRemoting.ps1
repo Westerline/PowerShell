@@ -1,15 +1,64 @@
-﻿<#
-.DESCRIPTION
-    Remote Endpoint Configuration
-    Step 1: Local Account Token
-    Step 2: Enable-PSRemoting
-    Step 3: Enable Legacy HTTP Listener on Port 80 (Optional)
-    Client-side
-    Configure the machines you the client can remote to.
-    To do: set-netconnectionprofile private
-#>
+﻿Function Set-WE_PSRemoting {
 
-Function Set-WE_PSRemoting {
+    <#
+
+    .SYNOPSIS
+        Enables PowerShell remoting with optional features.
+
+    .DESCRIPTION
+        Enables PowerShell remoting with optional features.
+        Step 1: Local Account Token
+        Step 2: Enable-PSRemoting
+        Step 3: Enable Legacy HTTP Listener on Port 80 (Optional)
+        Client-side
+        Configure the machines you the client can remote to.
+        To do: set-netconnectionprofile private
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [Cmdletbinding(SupportsShouldProcess)]
 

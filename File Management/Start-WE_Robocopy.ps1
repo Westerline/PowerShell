@@ -1,14 +1,63 @@
-﻿<#
--MIR: Mirror a directory tree
--COPY: Copy-only
--MOVE: Move files and directories (delete from source after copying).
--IPG: Inter-packet gap (ms), to free bandwidth on slow lines
--MT: Do multi-threaded copies with $MT threads (default 8). $MT must be at least 1 and not greater than 128.
+﻿Function Start-WE_Robocopy {
 
-To-do: Add $LastExitCode variable for error handling (https://blogs.msdn.microsoft.com/kebab/2013/06/09/an-introduction-to-error-handling-in-powershell/). Base robocopy statement which is appended with parameters based on switch statement. Create separate validate sets for IPG and MT. Other optional parameters.
-#>
+    <#
 
-Function Start-WE_Robocopy {
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        Command description here.
+
+    .PARAMETER
+        -Type [<String[]>]
+            -MIR: Mirror a directory tree
+            -COPY: Copy-only
+            -MOVE: Move files and directories (delete from source after copying).
+            -IPG: Inter-packet gap (ms), to free bandwidth on slow lines
+            -MT: Do multi-threaded copies with $MT threads (default 8). $MT must be at least 1 and not greater than 128.
+
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -Create separate validate sets for IPG and MT.
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [CmdletBinding(DefaultParameterSetName = 'Default')]
 

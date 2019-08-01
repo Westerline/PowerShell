@@ -1,10 +1,59 @@
-<#
-Source: modified from https://devblogs.microsoft.com/scripting/use-powershell-to-quickly-find-installed-software/
-.Notes
-    To Do: (1) Custom Format File for alphabetical sorting of output (2) Select default properties in output PS Module Manifest
-#>
-
 Function Get-WE_InstalledProgram {
+
+    <#
+
+    .SYNOPSIS
+        Synopsis here
+
+    .DESCRIPTION
+        Command description here.
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            - Custom Format File for alphabetical sorting of output
+            -Select default properties in output PS Module Manifest
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [Cmdletbinding()]
 

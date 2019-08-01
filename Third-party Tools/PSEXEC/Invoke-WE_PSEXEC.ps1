@@ -1,43 +1,110 @@
-﻿<#
-.DESCRIPTION
-    PSEXEC PowerShell Module; will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS.
-    Recommend adding the entire Sysinternals suite to your "Path" environment variable so all Sysinternals tools can be called from a relative path.
-.EXAMPLE
-    Example 1: Open Command Prompt on Remote Computer
-    --------------------------------------------------
-    & $PSScriptRoot\psexec.exe \\$ComputerName CMD
+﻿Function Invoke-WE_PSEXEC {
 
-    Example 2: Silent Install on Remote Computer
-    -----------------------------------------------------------------------------------------------------
-    & $PSScriptRoot\psexec.exe \\$ComputerName CMD /c C:\Temp\ChromeStandaloneSetup32.exe /Silent /Install
+    <#
 
-    Example 3: Run PowerShell script via Command Prompt on Remote Computer
-    ----------------------------------------------------------------------------
-    & $PSScriptRoot\psexec.exe \\$ComputerName -s PowerShell C:\temp\test.ps1
+    .SYNOPSIS
+        Synopsis here
 
-    Example 4: Run SQL CMD command on remote computer
-    ------------------------------------------------------------------------------------------------------------------------------
-    & $PSScriptRoot\psexec.exe  \\$ComputerName SQLCMD -S localhost -Q "BACKUP DATABASE [Master] TO DISK = "C:\Temp\$ComputerName.BAK""
+    .DESCRIPTION
+        PSEXEC PowerShell Module; will require the PSEXEC application to be included or processed in some way, will also be worthwhile to detect between 32 and 64 bit OS.
+        Recommend adding the entire Sysinternals suite to your "Path" environment variable so all Sysinternals tools can be called from a relative path.
 
-    Example 5: Run SQL Script via SQL CMD on remote computer
-    ---------------------------------------------------------------------------------
-    & $PSScriptRoot\psexec.exe  \\$ComputerName SQLCMD -S .\MSSQL -i "C:\temp\test.sql"
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
 
-    Example 6: Regedit on remote computer
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    & $PSScriptRoot\psexec.exe  \\$ComputerName reg add HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell /v ExecutionPolicy /t REG_SZ /d Restricted /f
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
 
-.NOTES
-    Author: Wesley Esterline
-    Resources:
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_pasteutm_campaign=growth
-    PS Tools available https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
-    Updated:
-    To Do:
-    Break each type of PSEXEC into its own module.
-#>
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
 
-Function Invoke-WE_PSEXEC {
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -Break each type of PSEXEC into its own module.
+        Misc:
+            -PS Tools available https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>Invoke-WE_PSEXEC -ComputerName Computer1 -Type CMD
+
+        Description
+
+        -----------
+
+        Open Command Prompt on remote computer.
+
+        -------------------------- EXAMPLE 2 --------------------------
+
+        C:\PS>Invoke-WE_PSEXEC -ComputerName Computer1 -Type Installer -ProgramPath 'C:\Temp\ChromeStandaloneSetup32.exe' -InstallationParameters /Silent /Install
+
+
+        Description
+
+        -----------
+
+        Install application on remote computer.
+
+        -------------------------- EXAMPLE 3 --------------------------
+
+        C:\PS>Invoke-WE_PSEXEC -ComputerName Computer1 -Type PSScript -PSScriptPath 'C:\temp\test.ps1'
+
+        Description
+
+        -----------
+
+        Run PowerShell script via Command Prompt on remote computer.
+
+        -------------------------- EXAMPLE 4 --------------------------
+
+        C:\PS>Invoke-WE_PSEXEC -ComputerName Computer1 -Type SQLQuery -SQLServer localhost -Query "BACKUP DATABASE [Master] TO DISK = "C:\Temp\$ComputerName.BAK""
+
+        Description
+
+        -----------
+
+        Run SQL CMD command on remote computer.
+
+        -------------------------- EXAMPLE 5 --------------------------
+
+        C:\PS>Invoke-WE_PSEXEC -ComputerName Computer1 -Type SQLCMD -SQLServer LocalHost -SQLScriptPath "C:\temp\test.sql"
+
+        Description
+
+        -----------
+
+        Run SQL Script via SQL CMD on remote computer.
+
+        -------------------------- EXAMPLE 6 --------------------------
+
+        C:\PS>Invoke-WE_PSEXEC -ComputerName Computer1 -Type Regedit -RegKey "HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell" -RegValueName ExecutionPolicy -RegValueType REG_SZ -RegValueData "Restricted /f"
+
+        Description
+
+        -----------
+
+        Regedit on remote computer.
+
+    #>
 
     [Cmdletbinding(DefaultParameterSetname = 'Default',
         SupportsShouldProcess)]
@@ -103,6 +170,14 @@ Function Invoke-WE_PSEXEC {
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'SQLQuery')]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $Query,
+
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'SQLScript')]
         [ValidateNotNullOrEmpty()]
         [String]
@@ -114,15 +189,15 @@ Function Invoke-WE_PSEXEC {
             ParameterSetName = 'Regedit')]
         [ValidateNotNullOrEmpty()]
         [String]
-        $RegKeyName,
+        $RegKey,
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'Regedit')]
-        [ValidateNotNullOrEmpty()]
+        [ValidateSet('REG_SZ', 'REG_MULTI_SZ', 'REG_DWORD_BIG_ENDIAN', 'REG_DWORD', 'REG_BINARY', 'REG_DWORD_LITTLE_ENDIAN', 'REG_LINK', 'REG_FULL_RESOURCE_DESCRIPTOR', 'REG_EXPAND_SZ')]
         [String]
-        $RegKeyType,
+        $RegValueType,
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
@@ -162,9 +237,9 @@ Function Invoke-WE_PSEXEC {
                     Installer { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer CMD /c $ProgramPath $InstallationParameters }
                     PowerShell { & $PSScriptRoot\psexec.exe \\$Computer PowerShell }
                     PSScript { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer -s PowerShell $PSScriptPath }
-                    SQLQuery { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer SQLCMD -S $SQLServer -Q $SQLQuery }
+                    SQLQuery { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer SQLCMD -S $SQLServer -Q $Query }
                     SQLScript { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer SQLCMD -S $SQLServer -i $SQLScriptPath }
-                    Regedit { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer reg add $RegKeyName /t $RegKeyType /v $RegValueName  /d $RegValueData }
+                    Regedit { & $PSScriptRoot\psexec.exe /accepteula /nobanner \\$Computer reg add $RegKey /t $RegValueType /v $RegValueName  /d $RegValueData }
 
                 }
 

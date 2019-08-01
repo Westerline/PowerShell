@@ -1,26 +1,59 @@
-﻿<#
-.SYNOPSIS
+﻿Function New-WE_VMNAT {
 
+    <#
 
-.DESCRIPTION
-    The following details how to create an isolated NAT'd network between your LAN, VM Server, and VM Clients
-    The newly created VM switch is assigned an IP in a different network than your LAN, i.e. 192.168.0.1, we then create a NAT between the physical NIC and this virtual NIC.
+    .SYNOPSIS
+        Synopsis here
 
+    .DESCRIPTION
+        The following details how to create an isolated NAT'd network between your LAN, VM Server, and VM Clients
+        The newly created VM switch is assigned an IP in a different network than your LAN, i.e. 192.168.0.1, we then create a NAT between the physical NIC and this virtual NIC.
 
-.PARAMETER UseExitCode
-    This is a detailed description of the parameters.
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
 
-.EXAMPLE
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
 
-.NOTES
-    Author: Wesley Esterline
-    Resources: https://www.petri.com/create-nat-rules-hyper-v-nat-virtual-switch
-    Updated:
-    Modified from Template Found on Spiceworks: https://community.spiceworks.com/scripts/show/3647-powershell-script-template?utm_source=copy_paste&utm_campaign=growth
-    To Do: Add NewSwitch logic if switch paramter enabled.
-#>
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
 
-Function New-WE_VMNAT {
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -Modified from: https://www.petri.com/create-nat-rules-hyper-v-nat-virtual-switch
+        To Do:
+            -Add NewSwitch logic if switch paramter enabled.
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [Cmdletbinding(SupportsShouldProcess)]
 

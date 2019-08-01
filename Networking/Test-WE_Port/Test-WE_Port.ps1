@@ -1,16 +1,60 @@
-﻿<#
-.Description
-    PortQryV2.exe included with this package.
-    https://support.microsoft.com/en-za/help/310099/description-of-the-portqry-exe-command-line-utility
-    Allows for testing of UDP and TCP ports, particularly useful for DNS name queries.
-    Well-known ports range from 0 through 1023.
-    Registered ports are 1024 to 49151
-    Can test on multiple ports
-.Notes
-    To Do:
-#>
+﻿Function Test-WE_Port {
 
-Function Test-WE_Port {
+    <#
+
+    .SYNOPSIS
+        Tests connections over UDP and TCP ports.
+
+    .Description
+        PortQryV2.exe included with this package (https://support.microsoft.com/en-za/help/310099/description-of-the-portqry-exe-command-line-utility)
+        Allows for testing of UDP and TCP ports, particularly useful for DNS name queries. Well-known ports range from 0 through 1023. Registered ports are 1024 to 49151
+        Can test on multiple ports.
+
+    .PARAMETER
+        -ParameterName [<String[]>]
+            Parameter description here.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
+
+        <CommonParameters>
+            This cmdlet supports the common parameters: Verbose, Debug,
+            ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+            OutBuffer, PipelineVariable, and OutVariable. For more information, see
+            about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+    .INPUTS
+        System.String[]
+            Input description here.
+
+    .OUTPUTS
+        System.Management.Automation.PSCustomObject
+
+    .NOTES
+        Version: 1.0
+        Author(s): Wesley Esterline
+        Resources:
+            -
+        To Do:
+            -
+        Misc:
+            -
+
+    .Example
+        -------------------------- EXAMPLE 1 --------------------------
+
+        C:\PS>WE_ModuleTemplate
+
+        Description
+
+        -----------
+
+        Insert here.
+
+    #>
 
     [Cmdletbinding(DefaultParameterSetName = 'Default')]
 
