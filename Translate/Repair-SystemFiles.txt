@@ -1,0 +1,6 @@
+::SFC Checks the integrity of any corrupted or missing protected system files with a known good version. The following DISM commands can be used to investigate image integrity issues in windows.
+::The commands should be used in this order: /CheckHealth (checks to see if any corruption exists), /ScanHealth (scans the Windows image for any corruption), /RestoreHealth (scans the Windows image for corruption and attempts repairs)
+
+SFC /Scannow
+DISM /Online /Cleanup-Image /CheckHealth /RestoreHealth
+DISM /Online /RestoreHealth

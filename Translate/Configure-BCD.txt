@@ -1,0 +1,25 @@
+::Commands to use If the Image is not Sysprepped (not recommended), or BCD needs to be configured for MBR booting.
+
+cd C:\boot>bcdedit.exe
+bcdedit.exe /store s:\boot\bcd /set {bootmgr} device partition=s:
+bcdedit.exe /store s:\boot\bcd /set {default} device partition=c:
+bcdedit.exe /store s:\boot\bcd /set {default} osdevice partition=c:
+
+::To view the contents of the BCD store, run the following command at the command prompt:
+
+bcdedit.exe /enum all /store <path to BCD store>
+
+::The following commands can be used to alter the BCD store for a mounted Virtual Hard Drive
+
+@echo off
+bcdedit /store v:\boot\bcd /set {bootmgr} device partition=v:
+bcdedit /store v:\boot\bcd /set {bootmgr} integrityservices enable
+bcdedit /store v:\boot\bcd /set {<Identifier>} device partition=w:
+bcdedit /store v:\boot\bcd /set {<Identifier>} integrityservices enable
+bcdedit /store v:\boot\bcd /set {<identifier>} recoveryenabled Off
+bcdedit /store v:\boot\bcd /set {<identifier>} osdevice partition=w:
+bcdedit /store v:\boot\bcd /set {<identifier>} bootstatuspolicy IgnoreAllFailures
+
+::Use the below to setup a WIndows to Go Hard Drive with MBR and UEFI booting capability. Requires the disk to be initialized as MBR, a 350 MB Fat32 partition for system files, and another partition with NTFS formatting for the Windows operating system files.
+
+bcdboot W:\Windows /s S: /f ALL

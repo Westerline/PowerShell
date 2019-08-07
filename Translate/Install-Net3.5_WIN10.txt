@@ -1,0 +1,5 @@
+::These functions can be used to install .NET 3.5 in Windows 10 
+::The first command attempts this using Windows Update, the second command installs .NET 3.5 from specified source, usually Windows 10 ISO mounted at D:
+
+DISM /Online /Enable-Feature /FeatureName:NetFx3 /All 
+DISM /Online /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:D:\sources\sxs

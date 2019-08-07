@@ -1,0 +1,3 @@
+:: Commands used to create a VHD file.
+$Path = .\temp\VHD.vhd
+diskpart.exe create vdisk file=$Path maximum=25000 type=expandable

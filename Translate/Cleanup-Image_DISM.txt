@@ -1,0 +1,10 @@
+::Using the /StartComponenetCleanup switch, previous versions of updated components will be immediately deleted (without a 30 day grace period).
+::Using the /StartCOmponentCleanup and /ResetBase switches, removes all superseded versions of every component in the component store.
+::Using the /SPSuperseded switch,  removes any backup components needed for uninstallation of service packs.
+
+
+Dism.exe /online /Cleanup-Image /StartComponentCleanup
+
+Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+
+Dism.exe /online /Cleanup-Image /SPSuperseded

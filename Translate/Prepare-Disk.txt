@@ -1,0 +1,13 @@
+:: Standard sequence to prepare a disk. Creates a windows and system partition which can be applied from an image, otherwise, these partitions are typically handled by the operating system installer.
+
+Diskpart
+List Volume
+Select Volume 0
+Clean
+Create Partition Primary Size=100
+Format FS=NTFS Quick Label="System"
+Assign Letter S
+Active
+Create Partition Primary 
+Format FS=NTFS Quick Label="Windows"
+Assign Letter C
