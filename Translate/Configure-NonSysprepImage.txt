@@ -1,7 +1,0 @@
-:: Commands for capturing and applying a Windows image file. This example can be used to apply a non-sysprepped image to a drive, but is strongly advised against (always sysprep).
-
-Dism /Capture-Image /ImageFile:c:\my-windows-partition.wim /CaptureDir:C:\ /Name:"My Windows partition" /compress:max
-Dism /Capture-Image /ImageFile:s:\my-system-partition.wim /CaptureDir:S:\ /Name:"My system partition"  /compress:max
-
-DISM /apply-image /imagefile:f:\Windows10.wim /index:1 /applydir:s:
-DISM /apply-image /imagefile:f:\Windows10.wim /index:1 /applydir:c:

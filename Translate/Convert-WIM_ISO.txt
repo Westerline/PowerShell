@@ -1,3 +1,0 @@
-::Commands used to convert a WIM to an ISO file. This specifies the source and the destination for the iso. The source must be a folder which contains the WIM file for this script to work in Windows Deployment Toolkit. 
-
-oscdimg.exe -n -d -m C:\source c:\destination\File.iso 
