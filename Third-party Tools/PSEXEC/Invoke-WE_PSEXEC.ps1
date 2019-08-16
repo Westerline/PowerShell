@@ -39,6 +39,7 @@
             -
         To Do:
             -Break each type of PSEXEC into its own module.
+            -Include PSEXEC as part of the module folder.
         Misc:
             -PS Tools available https://docs.microsoft.com/en-us/sysinternals/downloads/psexec
 

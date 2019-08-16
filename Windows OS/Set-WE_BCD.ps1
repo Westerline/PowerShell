@@ -40,7 +40,9 @@ Function Set-WE_BCD {
         ResourceS:
             -
         To Do:
-            -
+            -Add drive letter parameters
+            -Paramterize bootloader configurations
+            -Product standard output for each BCD edit type
         Misc:
             -
 
@@ -57,9 +59,20 @@ Function Set-WE_BCD {
 
     #>
 
-    [Cmdletbinding()]
+    [Cmdletbinding(SupportsShouldProcess)]
 
     Param (
+
+        [Parameter(Mandatory = $True,
+            ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'Installer')]
+        [Parameter(ParameterSetName = 'PSScript')]
+        [Parameter(ParameterSetName = 'SQLQuery')]
+        [Parameter(ParameterSetName = 'SQLScript')]
+        [Parameter(ParameterSetName = 'Regedit')]
+        [ValidateSet('MBR&UEFI', 'ViewStore', 'MBR', 'VHD')]
+        [String]
+        $Type
 
     )
 
@@ -72,6 +85,8 @@ Function Set-WE_BCD {
     Process {
 
         Try {
+
+            $ErrorActionPreference = 'Stop'
 
             Switch ($Type) {
 
@@ -94,9 +109,15 @@ Function Set-WE_BCD {
 
             }
 
+            $ErrorActionPreference = $StartErrorActionPreference
+
         }
 
-        Catch { }
+        Catch {
+
+            Write-Verbose "Unable to configure BCD settings for type $Type."
+
+        }
 
         Finally { }
 
