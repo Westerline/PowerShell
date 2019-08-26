@@ -12,6 +12,9 @@
 * Virtual Machine Environment for Testing (Optional)
 * Text Editor with Syntax Highlighting Such as Notepad++ (Optional)
 
+### Disclaimer
+Please test these tools thoroughly in your own environment before deploying them to a production environment. I have tested these tools in my own environment, but I cannot garuntee their effectiveness and/or safety in yours.
+
 ### Coding/Indentation Style
 
 * Pascal Case
