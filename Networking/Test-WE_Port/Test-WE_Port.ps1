@@ -42,6 +42,8 @@
             -
         Misc:
             -
+        Requirements:
+            -Windows PowerShell 3.0 or later
 
     .Example
         -------------------------- EXAMPLE 1 --------------------------
@@ -91,7 +93,7 @@
 
         [Parameter(Mandatory = $True,
             ParameterSetName = 'CommonPort')]
-        [ValidateSet('SMTP', 'HTTP', 'HTTPS', 'FTP', 'Telnet', 'IMAP', 'RDP', 'SSH', 'DNS', 'DHCP', 'POP3', 'PortRange', 'SourcePort')]
+        [ValidateSet('AD', 'SMTP', 'HTTP', 'HTTPS', 'FTP', 'Telnet', 'IMAP', 'RDP', 'SSH', 'DNS', 'DHCP', 'POP3', 'PortRange', 'SourcePort')]
         [String]
         $CommonPort
 
@@ -113,6 +115,7 @@
 
                 Switch ($CommonPort) {
 
+                    AD { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 445 }
                     SMTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 25 }
                     HTTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 80 }
                     HTTPS { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 443 }
@@ -142,6 +145,8 @@
             }
 
             Catch {
+
+                Write-Output $Error
 
                 $Property = @{
                     HostName   = $Hst
