@@ -123,8 +123,10 @@
 
             Write-Verbose "Unable to add windows credential for hostname $HostName."
             $Property = @{
-                Status             = "$CmdKey Null"
+                Status             = "Unsucessful"
                 CredentialHostName = & cmdkey.exe /List | findstr.exe $HostName
+                ExceptionMessage   = $_.Exception.Message
+                ExceptionItemName  = $_.Exception.ItemName
             }
 
         }

@@ -111,8 +111,10 @@ Function Install-WE_.Net3.5 {
             Write-Verbose "Unable to install .Net 3.5 on $Env:COMPUTERNAME.
             Please try the offline option or ensure the offline media contains the necessary source files for .Net 3.5."
             $Property = @{
-                Status      = 'Unsuccessful'
-                'DotNet3.5' = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

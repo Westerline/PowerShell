@@ -251,10 +251,21 @@
             Catch {
 
                 Write-Verbose "Unable to complete Invoke-WE_PSEXEC type $Type on $Computer"
+                $Property = @{
+                    Status            = 'Unsuccessful'
+                    PSEXECType        = $Type
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
+                }
 
             }
 
-            Finally { }
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
 
         }
 

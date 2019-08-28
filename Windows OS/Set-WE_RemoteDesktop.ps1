@@ -105,9 +105,10 @@ Function Set-WE_RemoteDesktop {
 
             Write-Verbose "Unable to set remote desktop connection settings on $Env:COMPUTERNAME."
             $Property = @{
-                RDPStatus                  = 'Null'
-                NetworkLevelAuthentication = 'Null'
-                FirewallStatus             = 'Null'
+                Status            = 'Unsucessful'
+                ComputerName      = $ComputerName
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

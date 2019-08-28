@@ -93,7 +93,12 @@ Function Get-WE_InstalledProgram {
         Catch {
 
             Write-Verbose "Unable to fetch installed programs on $Env:COMPUTERNAME. Please ensure you have administrator access to the registry and try running the cmdlet again."
-            $AllPrograms = "Unable to fetch installed programs on $Env:COMPUTERNAME. Please ensure you have administrator access to the registry and try running the cmdlet again."
+            $AllPrograms = @{
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
 
         }
 

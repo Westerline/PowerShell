@@ -79,10 +79,12 @@ Function Get-WE_PublicIP {
 
         Catch {
 
-            Write-Verbose "Unable to get public IP address for $LocalHost."
+            Write-Verbose "Unable to get public IP address for $Env:COMPUTERNAME."
             $Property = @{
-                'IPify-PublicIP'   = 'Null'
-                'OpenDNS-PublicIP' = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

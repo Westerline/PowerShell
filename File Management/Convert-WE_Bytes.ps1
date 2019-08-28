@@ -124,7 +124,12 @@
             Catch {
 
                 Write-Verbose "Unable to convert $Val to $To"
-                $Math = 'Null'
+                $Math = @{
+                    Status            = 'Unsuccessful'
+                    Value             = $Val
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
+                }
 
             }
 

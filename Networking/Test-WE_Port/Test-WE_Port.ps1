@@ -149,9 +149,10 @@
                 Write-Output $Error
 
                 $Property = @{
-                    HostName   = $Hst
-                    DNSResolve = 'Null'
-                    TestPort   = 'Null'
+                    Status            = 'Unsuccessful'
+                    HostName          = $Hst
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

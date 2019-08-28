@@ -36,6 +36,10 @@ Function Get-WE_CommonTransportDetails {
 
     #>
 
+    [Cmdletbinding(SupportsShouldProcess)]
+
+    Param ()
+
     Begin {
 
         $StartErrorActionPreference = $ErrorActionPreference
@@ -77,6 +81,11 @@ Function Get-WE_CommonTransportDetails {
         Catch {
 
             Write-Verbose "Unable to load required hash table for common TCP and UDP ports."
+            $Property = @{
+                Status            = 'Unsuccessful'
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
 
         }
 

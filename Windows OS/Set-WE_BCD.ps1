@@ -116,11 +116,21 @@ Function Set-WE_BCD {
         Catch {
 
             Write-Verbose "Unable to configure BCD settings for type $Type."
+            $Property = @{
+                Status            = 'Unsuccessful'
+                BCDType           = $Type
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
 
         }
 
-        Finally { }
+        Finally {
 
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
+
+        }
     }
 
     End {

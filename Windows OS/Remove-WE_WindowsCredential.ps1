@@ -97,8 +97,9 @@
                 Write-Verbose "Unable to remove windows credentials for host $N"
                 $Property = @{
                     Status             = 'Unsuccessful'
-                    CMDKey             = 'Null'
                     CredentialHostName = $N
+                    ExceptionMessage   = $_.Exception.Message
+                    ExceptionItemName  = $_.Exception.ItemName
                 }
 
             }

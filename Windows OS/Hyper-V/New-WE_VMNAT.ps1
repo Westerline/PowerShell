@@ -117,9 +117,10 @@
 
             Write-Verbose "Unable to create new VMNAT on interface $InterfaceAlias."
             $Property = @{
-                Status       = 'Unsuccessful'
-                NATAdapterIP = 'Null'
-                Nat          = 'Null'
+                Status            = 'Unsuccessful'
+                InterfaceAlias    = $InterfaceAlias
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

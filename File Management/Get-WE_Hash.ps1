@@ -110,7 +110,10 @@
 
                 Write-Verbose "Cannot find path $File."
                 $Property += @{
-                    $Alg = 'Null'
+                    Status            = 'Unsuccessful'
+                    File              = $File
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }
@@ -119,7 +122,10 @@
 
                 Write-Verbose "Could not get the hash on $File. Please ensure the path to the file is correct and try again."
                 $Property += @{
-                    'Null' = 'Null'
+                    Status            = 'Unsuccessful'
+                    File              = $File
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

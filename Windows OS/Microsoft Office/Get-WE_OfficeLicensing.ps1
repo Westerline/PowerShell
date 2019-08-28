@@ -83,8 +83,10 @@ Function Get-WE_OfficeLicensing {
 
             Write-Verbose "Unable to retrieve Microsoft Office activation status on $Env:COMPUTERNAME. Verify a path is available to OSPP.VBS."
             $Property = @{
-                OSPP              = 'Null'
-                ActivactionStatus = 'Null'
+                Status            = 'Unsuccessful'
+                Computer          = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

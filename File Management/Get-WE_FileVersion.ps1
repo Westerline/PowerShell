@@ -93,8 +93,10 @@
 
                 Write-Verbose "Unable to get file version for $P."
                 $Property = @{
-                    FullName    = $P
-                    FileVersion = 'Null'
+                    Status            = 'Unsuccessful'
+                    FullName          = $P
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

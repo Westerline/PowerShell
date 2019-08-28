@@ -120,14 +120,10 @@
 
                 Write-Verbose "Unable to parse Robocopy output."
                 $Property = [Ordered] @{
-                    Status      = 'Disconnected'
-                    Started     = 'Null'
-                    Source      = 'Null'
-                    Destination = 'Null'
-                    Columns     = 'Null'
-                    Dirs        = 'Null'
-                    Files       = 'Null'
-                    Ended       = 'Null'
+                    Status            = 'Unsuccessful'
+                    InputObject       = $InputObj
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

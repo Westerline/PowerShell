@@ -83,8 +83,10 @@ Function Reset-WE_MonitorLocation {
 
             Write-Verbose "Path to $Configuration or $Connectivity doesn't exist. Please reboot $Env:COMPUTERNAME to re-create the required registry keys and run the cmdlet again."
             $Property = @{
-                Status       = 'Unsuccessful'
-                ComputerName = $Env:COMPUTERNAME
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }
@@ -93,8 +95,10 @@ Function Reset-WE_MonitorLocation {
 
             Write-Verbose "Unable to reset monitor configuration on $Env:COMPUTERNAME. Please ensure you have administrator access to the registry and run the cmdlet again."
             $Property = @{
-                Status       = 'Unsuccessful'
-                ComputerName = $Env:COMPUTERNAME
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

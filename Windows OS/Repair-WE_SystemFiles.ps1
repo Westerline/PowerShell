@@ -89,10 +89,10 @@ Function Repair-WE_SystemFiles {
         Catch {
 
             $Property = @{
-                sfc           = 'Null'
-                CheckHealth   = 'Null'
-                ScanHealth    = 'Null'
-                RestoreHealth = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

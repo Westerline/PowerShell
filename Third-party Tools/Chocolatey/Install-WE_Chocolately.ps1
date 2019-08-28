@@ -93,7 +93,12 @@ Function Install-WE_Chocolatey {
         Catch {
 
             Write-Verbose "Unable to install chocolatey on $Env:COMPUTERNAME."
-            $Chocolatey = "Unable to install chocolatey on $Env:COMPUTERNAME."
+            $Chocolatey = @{
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
 
         }
 

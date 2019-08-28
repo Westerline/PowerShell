@@ -119,7 +119,10 @@ Function Import-WE_ScheduledTask {
         Catch {
 
             $Property = @{
-                Task = 'Null'
+                Status            = 'Unsuccessful'
+                TaskName          = $Name
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

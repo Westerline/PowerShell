@@ -106,6 +106,8 @@ Function Set-WE_Proxy {
             $ErrorActionPreference = $StartErrorActionPreference
 
             $Property = @{
+                Status        = 'Unsuccessful'
+                ComputerName  = $Env:COMPUTERNAME
                 ProxyStatus   = $ProxyStatus
                 ProxyOverride = $Proxy.ProxyOverride
             }
@@ -116,8 +118,8 @@ Function Set-WE_Proxy {
 
             Write-Verbose "Unable to change proxy settings."
             $Property = @{
-                ProxyStatus   = 'Null'
-                ProxyOverride = 'Null'
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

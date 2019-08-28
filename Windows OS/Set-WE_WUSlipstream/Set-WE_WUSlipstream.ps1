@@ -139,10 +139,10 @@ Function Set-WE_WUSlipstream {
 
             Write-Verbose "Unable to add Windows package to the windows image $ImagePath."
             $Property = @{
-                Status       = 'Unsuccessful'
-                MountedImage = 'Null'
-                AddPackage   = 'Null'
-                oscdimg      = 'Null'
+                Status            = 'Unsuccessful'
+                ImagePath         = $ImagePath
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

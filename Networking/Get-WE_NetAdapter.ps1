@@ -94,7 +94,12 @@ Function Get-WE_NetAdapter {
         Catch {
 
             Write-Verbose "Unable to find $Type network adapter."
-            $Adapter = "Unable to find $Type network adapter."
+            $Adapter = @{
+                Status            = 'Unsuccessful'
+                AdapterType       = $Type
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
 
         }
 

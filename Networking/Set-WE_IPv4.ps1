@@ -136,11 +136,10 @@
 
             Write-Verbose "Unable to configure IP settings for $InterfaceAlias."
             $Property = @{
-                InterfaceAlias = 'Null'
-                IPaddress      = 'Null'
-                Prefix         = 'Null'
-                DefaultGateway = 'Null'
-                DNS            = 'Null'
+                Status            = 'Unsuccessful'
+                InterfaceAlias    = $InterfaceAlias
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

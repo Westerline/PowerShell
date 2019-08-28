@@ -97,8 +97,10 @@ Function Uninstall-WE_Program {
 
                 Write-Verbose "Unable to uninstall the program $N."
                 $Property = @{
-                    Status           = 'Unsuccessful'
-                    UninstallCommand = 'Null'
+                    Status            = 'Unsuccessful'
+                    ProgramName       = $Name
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

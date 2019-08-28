@@ -94,7 +94,12 @@ Function New-WE_LogError {
 
             Catch {
 
-                $EventLog = "Unable to log error ($Error)."
+                $EventLog = @{
+                    Status            = 'Unsuccessful'
+                    Error             = $Err
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
+                }
 
             }
 

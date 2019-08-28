@@ -80,6 +80,8 @@
                 $ErrorName = $Error[$E]
                 $ErrorActionPreference = $StartErrorActionPreference
                 $Property = @{
+                    Status    = 'Unsuccessful'
+                    Error     = $E
                     ErrorName = $ErrorName.exception.gettype().fullname
                     Activity  = $ErrorName.CategoryInfo.Activity
                 }
@@ -90,8 +92,8 @@
 
                 Write-Verbose "Unable to capture error name. PLease try re-creating the error and rerunning this cmdlet."
                 $Property = @{
-                    ErrorName = 'Null'
-                    Activity  = 'Null'
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

@@ -95,8 +95,10 @@
 
                 Write-Verbose "Unable to analyze the string $Str."
                 $Property = @{
-                    String  = "$Str"
-                    Numeric = 'Null'
+                    Status            = 'Unsuccessful'
+                    String            = "$Str"
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

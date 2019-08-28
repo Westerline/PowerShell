@@ -87,7 +87,12 @@
             Catch {
 
                 Write-Verbose "Unable to parse IP from string $S."
-                $IPString = "Unable to parse IP from string $S."
+                $IPString = @{
+                    Status            = 'Unsuccessful'
+                    String            = $S
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
+                }
 
             }
 

@@ -116,11 +116,10 @@ Function New-WE_DeploymentShare {
 
             Write-Verbose "Unable to create the MDT Deployment Share $Name."
             $Property = @{
-                Status     = 'Unsuccessful'
-                Directory  = 'Null'
-                ShareState = 'Null'
-                PSDrive    = 'Null'
-                MDTDrive   = 'Null'
+                Status            = 'Unsuccessful'
+                Path              = $Path
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

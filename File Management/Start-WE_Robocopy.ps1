@@ -138,7 +138,12 @@
             Catch {
 
                 Write-Verbose "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
-                $Robocopy = "Unable to execute robocopy command with the given parameters. Please check that the source and destination paths are available."
+                $Robocopy = @{
+                    Status            = 'Unsuccessful'
+                    Destination       = $Dest
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
+                }
 
             }
 

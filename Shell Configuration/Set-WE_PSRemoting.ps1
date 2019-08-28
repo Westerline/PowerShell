@@ -134,12 +134,22 @@
 
             Write-Verbose "Network connection profile is set to Public. Please change your network connection profile to private and try again."
             $Property = @{
-                Status            = 'Unsuccessful: Public Network Profile'
-                PSRemoting        = $PSRemoting
-                AllowRemoteAccess = $AllowRemoteAccess.Value
-                TrustedHosts      = $PSRemotingHosts.Value
-                HTTPListener      = $PSRemotingHTTP.Value
-                HTTPSListener     = $PSRemotingHTTPS.Value
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
+
+        }
+
+        Catch {
+
+            Write-Verbose "Unable to set PS remoting."
+            $Property = @{
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

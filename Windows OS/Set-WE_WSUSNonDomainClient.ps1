@@ -59,14 +59,26 @@ Function Set-WE_WSUSNonDomainClient {
 
     Param (
 
-        [String] $HostName,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('ComputerName')]
+        [String[]]
+        $HostName,
 
         [ValidateNotNullOrEmpty()]
-        [Int] $Port = 8530,
+        [Int]
+        $Port = 8530,
 
-        [String] $WUGroup,
+        [Parameter(Mandatory = $True)]
+        [Alias('UpdateGroup', 'Group')]
+        [String]
+        $WUGroup,
 
-        [Switch] $Force
+        [Switch]
+        $Force
 
     )
 
@@ -113,14 +125,10 @@ Function Set-WE_WSUSNonDomainClient {
 
             Write-Verbose "Unable to set a conneciton to the WSUS server $HostName on client $Env:COMPUTERNAME."
             $Property = @{
-                WUServer           = 'Null'
-                WUStatusServer     = 'Null'
-                TargetGroup        = 'Null'
-                TargetGroupEnabled = 'Null'
-                AutoDownload       = 'Null'
-                OptionalRestart    = 'Null'
-                AutoUpdate         = 'Null'
-                UseWUServer        = 'Null'
+                Status            = 'Unsucessful'
+                ShortcutTarget    = $HostName
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

@@ -104,9 +104,11 @@
 
             }
 
-            $Property = [Ordered] @{
-                Status = 'Successful'
-                Scope  = $Scope
+            $Property = @{
+                Status            = 'Unsuccessful'
+                Scope             = $Scope
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
             $PSModulePath = $env:PSModulePath.Split(';', [System.StringSplitOptions]::RemoveEmptyEntries)
             $ErrorActionPreference = $StartErrorActionPreference
@@ -125,8 +127,10 @@
 
             Write-Verbose "Unable to set the PSModule path under scope $Scope. Verify you have permissions to write to the specified scope."
             $Property = [Ordered] @{
-                Status = 'Unsuccessful'
-                Scope  = $Scope
+                Status            = 'Unsuccessful'
+                Scope             = $Scope
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

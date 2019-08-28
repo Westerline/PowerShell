@@ -61,11 +61,11 @@ Function Format-WE_Disk {
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
-            HelpMessage = "Help. Message. Here.",
             Position = 0)]
         [ValidateNotNullOrEmpty()]
+        [Alias('DiskName', 'Name')]
         [String]
-        $DiskId,
+        $FriendlyName,
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
@@ -89,6 +89,7 @@ Function Format-WE_Disk {
         Try {
 
             $ErrorActionPreference = 'Stop'
+            $DiskId = Get-Disk -FriendlyName $FriendlyName | Select-Object -ExpandProperty Number
             $ClearDisk = Clear-Disk -RemoveData -UniqueId $DiskId
             $SystemPartition = New-Partition -DiskId $DiskId -Size 100 -DriveLetter 'S'
             $SystemVolume = Format-Volume -FileSystem NTFS -FileSystemLabel "System"
@@ -112,13 +113,10 @@ Function Format-WE_Disk {
 
             Write-Verbose "Error occurred formatting disk with Id: $DiskId."
             $Property = @{
-                Status           = 'Unsuccessful'
-                ClearDisk        = 'Null'
-                SystemPartition  = 'Null'
-                SystemVolume     = 'Null'
-                ActivePartition  = 'Null'
-                WindowsPartition = 'Null'
-                WindowsVolume    = 'Null'
+                Status            = 'Unsuccessful'
+                DiskID            = $FriendlyName
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

@@ -75,7 +75,11 @@
         Catch {
 
             Write-Verbose "Unable to fetch Win32 classes on $Env:COMPUTERNAME."
-            $Win32Classes = "Unable to fetch Win32 classes on $Env:COMPUTERNAME."
+            $Win32Classes = @{
+                Status            = 'Unsuccessful'
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
 
         }
 

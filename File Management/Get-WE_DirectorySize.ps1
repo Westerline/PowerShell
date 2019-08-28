@@ -94,8 +94,10 @@
 
                 Write-Verbose "Unable to get directory size for $Dir."
                 $Property = [Ordered] @{
-                    Directory   = $Dir
-                    'Size (MB)' = 'Null'
+                    Status            = 'Unsuccessful'
+                    Directory         = $Dir
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

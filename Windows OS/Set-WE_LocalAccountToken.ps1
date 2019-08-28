@@ -79,7 +79,10 @@ Function Set-WE_LocalAccountToken {
 
             Write-Verbose "Unable to set local account token filter policy on $Env:COMPUTERNAME."
             $Property = @{
-                LocalAccountTokenFilterPolicy = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:CommonProgramFiles
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

@@ -114,28 +114,22 @@
                 Non-ordered hash tables are more memory efficient
                 #>
                 $Property = @{
-
                     Computername = $ComputerName
                     Stauts       = 'Connected'
                     Property1    = $Property1
                     Property2    = $Property2
                     Property3    = $Property3
-
                 }
 
             }
 
             Catch {
 
-                Write-Verbose "Error occurred with $Computer..."
                 $Property = @{
-
-                    Computername = $ComputerName
-                    Stauts       = 'Connected'
-                    Property1    = 'Null'
-                    Property2    = 'Null'
-                    Property3    = 'Null'
-
+                    Stauts            = 'Disconnected'
+                    Computername      = $Computer
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

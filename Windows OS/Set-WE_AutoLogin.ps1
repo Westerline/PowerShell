@@ -113,12 +113,10 @@ Function Set-WE_AutoLogin {
 
             Write-Verbose "Unable to set the user account $UserName for autologin." -Verbose
             $Property = @{
-                AutoAdminLogon    = 'Null'
-                AutoLogonCount    = 'Null'
-                DefaultDomainName = 'Null'
-                DefaultUserName   = 'Null'
-                DefaultPassword   = 'Null'
-                DisableCAD        = 'Null'
+                Status            = 'Unsuccessful'
+                UserName          = $UserName
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

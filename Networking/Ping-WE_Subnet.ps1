@@ -97,8 +97,10 @@ Function Ping-WE_Subnet {
 
                 Write-Output "Unable to ping subnet $NetworkAddress in range $Range"
                 $Property = @{
-                    ComputerName  = "$NetworkAddress.$R"
-                    PingSucceeded = 'NULL'
+                    Status            = 'Unsuccessful'
+                    ComputerName      = "$NetworkAddress.$R"
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

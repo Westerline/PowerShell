@@ -91,12 +91,10 @@ Function Start-WE_Pre-Sysprep {
 
             Write-Verbose "Unable to complete pre-sysprep operations on $Env:COMPUTERNAME."
             $Property = @{
-                ShadowCopies         = $ShadowCopies
-                SoftwareDistribution = $SoftwareDistribution
-                Prefetch             = $Prefetch
-                DiskCleanup          = $DiskCleanup
-                ClearEventLog        = $ClearEventLog
-                DNSCache             = $DNSCache
+                Status            = 'Unsucessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

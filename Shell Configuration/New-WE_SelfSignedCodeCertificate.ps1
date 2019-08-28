@@ -101,9 +101,10 @@
 
             Write-Verbose "Unable to create self-signed coding certificate. Verify you have permissions to write to the root certificate store."
             $Property = @{
-                Thumbprint       = 'Null'
-                TrustedRoot      = 'Null'
-                TrustedPublisher = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

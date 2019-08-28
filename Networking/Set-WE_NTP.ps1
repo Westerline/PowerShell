@@ -98,10 +98,10 @@
 
             Write-Verbose "Unable to configure NTP settings for $Env:ComputerName, please check the network adapter DNS settings and try again."
             $Property = @{
-                Status         = 'Unsuccessful'
-                W32TimeService = 'Null'
-                W32TimeConfig  = 'Null'
-                W32TimeResync  = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:ComputerName
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

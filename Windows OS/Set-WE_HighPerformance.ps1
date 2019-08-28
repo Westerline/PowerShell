@@ -108,11 +108,10 @@ Function Set-WE_HighPerformance {
 
             Write-Verbose "Unable to set $Env:COMPUTERNAME's power plan to high performance."
             $Property = @{
-                PowerPlan = 'Null'
-                Monitor   = 'Null'
-                Disk      = 'Null'
-                Standby   = 'Null'
-                Hibernate = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

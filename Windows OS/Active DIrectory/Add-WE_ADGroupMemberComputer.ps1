@@ -92,8 +92,10 @@ Function Add-WE_ADGroupMemberComputer {
 
                 Write-Verbose "Unable to add $Computer to the desired Active Directory group."
                 $Property = @{
-                    Status              = 'Unsuccessful'
-                    GroupMemberComputer = $GroupMemberComputer
+                    Computer          = $Computer
+                    Status            = 'Unsuccessful'
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

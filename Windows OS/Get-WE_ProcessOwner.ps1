@@ -82,9 +82,9 @@
 
                 $Process = Get-WmiObject -Class Win32_Process -Filter "Name like '%$N%'" -ErrorAction Stop
                 $Property = @{
-                    Status = 'Successful'
-                    Name   = $Process.Name
-                    Owner  = ($Process.GetOwner()).User
+                    Status      = 'Successful'
+                    ProcessName = $Process.Name
+                    Owner       = ($Process.GetOwner()).User
                 }
 
             }
@@ -93,9 +93,10 @@
 
                 Write-Verbose "Unable to get process owner for process $N."
                 $Property = @{
-                    Status = 'Unsuccessful'
-                    Name   = $N
-                    Owner  = 'Null'
+                    Status            = 'Unsuccessful'
+                    ProcessName       = $N
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

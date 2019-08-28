@@ -117,11 +117,10 @@
 
             Write-Verbose "Unable to set Active Directory user $UserName phone details."
             $Property = @{
-                Status      = 'Unsuccessful'
-                User        = $ADUser.DisplayName
-                MobilePhone = $ADUser.MobilePhone
-                HomePhone   = $ADUser.HomePhone
-                OfficePhone = $ADUser.OfficePhone
+                Status            = 'Unsuccessful'
+                UserName          = $UserName
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

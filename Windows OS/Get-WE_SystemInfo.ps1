@@ -96,11 +96,11 @@ Function Get-WE_SystemInfo {
             Catch {
 
                 Write-Verbose "Unable to establish CIM instance to $Computer"
-                $Property = @{Computername = $ComputerName
-                    Status                 = 'Disconnected'
-                    SPVersion              = 'Null'
-                    OSVersion              = 'Null'
-                    Model                  = 'Null'
+                $Property = @{
+                    Status            = 'Unsuccessful'
+                    ComputerName      = $Computer
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

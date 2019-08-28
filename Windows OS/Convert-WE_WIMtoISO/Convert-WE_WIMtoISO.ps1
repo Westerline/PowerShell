@@ -106,8 +106,10 @@ Function Convert_WE_WIMtoISO {
 
             Write-Verbose "Unable to convert $Source to ISO."
             $Property = @{
-                Status  = 'Successful'
-                oscdimg = $oscdimg
+                Status            = 'Unsuccessful'
+                Source            = $Source
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

@@ -96,9 +96,10 @@ Function Set-WE_OfficeProductKey {
 
             Write-Verbose "Unable to activate product key $ProductKey on $Env:COMPUTERNAME. Verify a path is available to OSPP.VBS."
             $Property = @{
-                OSPP      = 'Null'
-                ChangeKey = 'Null'
-                Activate  = 'Null'
+                Status            = 'Unsuccessful'
+                Computer          = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

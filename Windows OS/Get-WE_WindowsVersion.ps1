@@ -81,9 +81,10 @@ Function Get-WE_WindowsVersion {
 
             Write-Verbose "Unable to get windows version on $Env:COMPUTERNAME."
             $Property = @{
-                ProductName = 'Null'
-                ReleaseID   = 'Null'
-                EditionID   = 'Null'
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

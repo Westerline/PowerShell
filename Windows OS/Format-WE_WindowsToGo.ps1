@@ -104,13 +104,10 @@
 
             Write-Verbose "Unable to format Windows-to-Go drive $FriendlyName."
             $Property = @{
-                Status           = 'Unsuccessful'
-                Initialization   = 'Null'
-                SystemPartition  = 'Null'
-                SystemVolume     = 'Null'
-                WindowsPartition = 'Null'
-                WindowsVolume    = 'Null'
-                BCD              = 'Null'
+                Status            = 'Unsuccessful'
+                FriendlyName      = $FriendlyName
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
         }

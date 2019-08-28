@@ -110,8 +110,10 @@
 
                 Write-Verbose "Unable to get set line content for $P."
                 $Property = @{
-                    Path       = $P
-                    NewContent = 'Null'
+                    Status            = 'Unsuccessful'
+                    Path              = $P
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

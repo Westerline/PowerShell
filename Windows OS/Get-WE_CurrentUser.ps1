@@ -95,9 +95,10 @@
 
                 Write-Verbose "Unable to get the currently logged in user for $Computer. Please ensure the computer is available on the network."
                 $Property = @{
-                    Status   = 'Unsuccessful'
-                    Computer = $Computer
-                    UserName = 'Null'
+                    Status            = 'Unsuccessful'
+                    ComputerName      = $Computer
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

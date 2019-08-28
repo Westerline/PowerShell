@@ -89,10 +89,21 @@ Function Start-WE_Gpedit {
             Catch {
 
                 Write-Verbose "Unable to open gpedit on $Computer."
+                $Property = @{
+                    Status            = 'Unsuccessful'
+                    Computer          = $Computer
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
+                }
 
             }
 
-            Finally { }
+            Finally {
+
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
+
+            }
 
         }
 

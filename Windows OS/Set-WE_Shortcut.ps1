@@ -123,9 +123,10 @@
 
                 Write-Verbose "Unable to create shortcut for $FileName."
                 $Property = @{
-                    FullName   = 'Null'
-                    TargetPath = 'Null'
-                    Arguments  = 'Null'
+                    Status            = 'Unsucessful'
+                    ShortcutTarget    = $Target
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

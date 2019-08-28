@@ -108,8 +108,10 @@ Function Get-WE_LogicalDisk {
 
                 Write-Verbose "Could not fetch the logical disks from $Computer."
                 $Property = [Ordered]@{
-                    ComputerName = $Computer
-                    Status       = 'Disconnected'
+                    Status            = 'Unsuccessful'
+                    ComputerName      = $Computer
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
                 }
 
             }

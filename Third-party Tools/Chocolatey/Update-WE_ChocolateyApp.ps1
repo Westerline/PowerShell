@@ -94,7 +94,12 @@
         Catch {
 
             Write-Verbose "Unable to upgrade chocolatey applications on $Env:COMPUTERNAME. Please verify that chocolatey is installed and that you are able to reach the target repository."
-            $Chocolatey = "Unable to upgrade chocolatey applications on $Env:COMPUTERNAME. Please verify that chocolatey is installed and that you are able to reach the target repository."
+            $Chocolatey = @{
+                Status            = 'Unsuccessful'
+                ComputerName      = $Env:COMPUTERNAME
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
+            }
 
         }
 
