@@ -65,7 +65,10 @@
         [validatenotnullorempty()]
         [Alias('Path')]
         [String[]]
-        $Directory
+        $Directory,
+
+        [Switch]
+        $Force
 
     )
 
@@ -81,7 +84,7 @@
 
             Try {
 
-                $Content = Get-ChildItem -Path $Dir -Recurse -ErrorAction Stop | Measure-Object -Property Length -Sum
+                $Content = Get-ChildItem -Path $Dir -Recurse -Force:$Force -ErrorAction Stop | Measure-Object -Property Length -Sum
 
                 $Property = [Ordered] @{
                     Directory   = $Dir

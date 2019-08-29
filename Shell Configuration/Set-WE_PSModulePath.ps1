@@ -73,7 +73,10 @@
         [Parameter(Mandatory = $True)]
         [validateset('Temporary', 'Profile-AllUsersAllHosts', 'Profile-AllUsersCurrentHost', 'Profile-CurrentUserCurrentHost', 'Profile-CurrentUsersAllHosts')]
         [String]
-        $Scope
+        $Scope,
+
+        [Switch]
+        $Force
 
     )
 
@@ -92,10 +95,10 @@
             Switch ($Scope) {
 
                 'Temporary' { $env:PSModulePath = $env:PSModulePath + ";$ModulePath" }
-                'Profile-AllUsersAllHosts' { Add-Content -Path $Profile.AllUsersAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
-                'Profile-AllUsersCurrentHost' { Add-Content -Path $Profile.AllUsersCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
-                'Profile-CurrentUsersAllHosts' { Add-Content -Path $Profile.CurrentUserAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
-                'Profile-CurrentUserCurrentHost' { Add-Content -Path $Profile.CurrentUserCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" }
+                'Profile-AllUsersAllHosts' { Add-Content -Path $Profile.AllUsersAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" -Force:$Force }
+                'Profile-AllUsersCurrentHost' { Add-Content -Path $Profile.AllUsersCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" -Force:$Force }
+                'Profile-CurrentUsersAllHosts' { Add-Content -Path $Profile.CurrentUserAllHosts -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" -Force:$Force }
+                'Profile-CurrentUserCurrentHost' { Add-Content -Path $Profile.CurrentUserCurrentHost -Value "$env:PSModulePath = $env:PSModulePath + ';$ModulePath'" -Force:$Force }
                 'EnvironmentVariable' {
                     $CurrentValue = [Environment]::GetEnvironmentVariable("PSModulePath")
                     [Environment]::SetEnvironmentVariable("PSModulePath", $CurrentValue + ";$ModulePath")

@@ -64,7 +64,10 @@ Function Set-WE_Proxy {
 
         [Parameter(ParameterSetName = "Disable")]
         [Switch]
-        $Disable
+        $Disable,
+
+        [Switch]
+        $Force
 
     )
 
@@ -83,13 +86,13 @@ Function Set-WE_Proxy {
 
             If ($Enable.IsPresent) {
 
-                Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1
+                Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 1 -Force:$Force
 
             }
 
             ElseIf ($Disable.IsPresent) {
 
-                Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0
+                Set-ItemProperty -Path $ProxyRegKey ProxyEnable -Value 0 -Force:$Force
 
             }
 

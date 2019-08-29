@@ -92,6 +92,7 @@
 
                 Write-Verbose "Unable to capture error name. PLease try re-creating the error and rerunning this cmdlet."
                 $Property = @{
+                    Status            = 'Unsuccessful'
                     ExceptionMessage  = $_.Exception.Message
                     ExceptionItemName = $_.Exception.ItemName
                 }

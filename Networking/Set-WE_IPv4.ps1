@@ -100,7 +100,10 @@
             ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
-        $SecondaryDNS
+        $SecondaryDNS,
+
+        [Switch]
+        $Force
 
     )
 
@@ -115,9 +118,9 @@
         Try {
 
             $ErrorActionPreference = 'Stop'
-            $DisableDHCP = Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0
+            $DisableDHCP = Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0 -Force:$Force
             $OldGateway = (Get-NetIPConfiguration -InterfaceAlias $InterfaceAlias).IPv4DefaultGateway.NextHop
-            $RemoveNetRoute = Remove-NetRoute -InterfaceAlias $InterfaceAlias -NExtHop $OldGateway -Confirm:$False
+            $RemoveNetRoute = Remove-NetRoute -InterfaceAlias $InterfaceAlias -NextHop $OldGateway -Confirm:$False
             $RemoveIPAddress = Remove-NetIPAddress -InterfaceAlias $InterfaceAlias -Confirm:$False
             $NewIPAddress = New-NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IPAddress -PrefixLength $Prefix -DefaultGateway $DefaultGateway
             $DNS = Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $PrimaryDNS, $SecondaryDNS

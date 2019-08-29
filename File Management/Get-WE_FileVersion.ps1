@@ -65,7 +65,10 @@
         [validatenotnullorempty()]
         [Alias('FileName')]
         [String[]]
-        $Path
+        $Path,
+
+        [Switch]
+        $Force
 
     )
 
@@ -81,7 +84,7 @@
 
             Try {
 
-                $Item = Get-Item -Path $P -ErrorAction Stop
+                $Item = Get-Item -Path $P -Force -ErrorAction Stop
                 $Property = @{
                     FullName    = $Item.FullName
                     FileVersion = $Item.VersionInfo.FileVersion

@@ -77,7 +77,10 @@
             ValueFromPipelineByPropertyName = $True)]
         [validatenotnullorempty()]
         [String]
-        $Value
+        $Value,
+
+        [Switch]
+        $Force
 
     )
 
@@ -94,7 +97,7 @@
             Try {
 
                 $ErrorActionPreference = 'Stop'
-                $Content = Get-Content -Path $P
+                $Content = Get-Content -Path $P -Force:$Force
                 $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
                 $Content[$LineIndex] = $Value
                 Set-Content -Path $P -Value $Content
