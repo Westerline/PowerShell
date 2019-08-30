@@ -56,7 +56,12 @@ Function Get-WE_OfficeLicensing {
 
     [CmdletBinding(SupportsShouldProcess)]
 
-    Param( )
+    Param(
+
+        [Switch]
+        $Force
+
+    )
 
     Begin {
 
@@ -68,7 +73,7 @@ Function Get-WE_OfficeLicensing {
 
         Try {
 
-            $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -ErrorAction SilentlyContinue
+            $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -Force:$Force  -ErrorAction SilentlyContinue
             $ErrorActionPreference = Stop
             $ActivactionStatus = cscript.exe $OSPP.FullName /dstatus
             $ErrorActionPreference = $StartErrorActionPreference

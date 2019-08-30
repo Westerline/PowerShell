@@ -57,7 +57,12 @@ Function Reset-WE_MonitorLocation {
 
     [Cmdletbinding(SupportsShouldProcess)]
 
-    Param ( )
+    Param (
+
+        [Switch]
+        $Force
+
+    )
 
     Begin {
 
@@ -71,7 +76,7 @@ Function Reset-WE_MonitorLocation {
 
             $Configuration = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Configuration'
             $Connectivity = 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Connectivity'
-            Remove-Item -Path $Configuration, $Connectivity -Recurse -ErrorAction Stop
+            Remove-Item -Path $Configuration, $Connectivity -Recurse -Force:$Force -ErrorAction Stop
             $Property = @{
                 Status       = 'Successful'
                 ComputerName = $Env:COMPUTERNAME

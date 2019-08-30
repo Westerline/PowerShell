@@ -38,6 +38,7 @@
             -
         To Do:
             -Expand function to allow CSV import as input (2) secure string parameter and then convert back to plaintext for CmdKey.
+            -Change findstring.exe to select-substring in @Property hash
         Misc:
             -
 

@@ -56,7 +56,12 @@ Function Set-WE_LocalAccountToken {
 
     [CmdletBinding(SupportsShouldProcess)]
 
-    Param ()
+    Param (
+
+        [Switch]
+        $Force
+
+    )
 
     Begin {
 
@@ -68,7 +73,7 @@ Function Set-WE_LocalAccountToken {
 
         Try {
 
-            $LocalAccountTokenFilterPolicy = New-ItemProperty -Name LocalAccountTokenFilterPolicy -Value 1 -PropertyType Dword -Force -ErrorAction Stop
+            $LocalAccountTokenFilterPolicy = New-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'  -Name LocalAccountTokenFilterPolicy -Value 1 -PropertyType Dword -Force:$Force -ErrorAction Stop
             $Property = @{
                 LocalAccountTokenFilterPolicy = $LocalAccountTokenFilterPolicy
             }

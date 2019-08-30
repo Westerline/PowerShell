@@ -74,7 +74,10 @@ Function Format-WE_Disk {
             Position = 0)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $PartitionNumber
+        $PartitionNumber,
+
+        [Switch]
+        $Force
 
     )
 
@@ -92,10 +95,10 @@ Function Format-WE_Disk {
             $DiskId = Get-Disk -FriendlyName $FriendlyName | Select-Object -ExpandProperty Number
             $ClearDisk = Clear-Disk -RemoveData -UniqueId $DiskId
             $SystemPartition = New-Partition -DiskId $DiskId -Size 100 -DriveLetter 'S'
-            $SystemVolume = Format-Volume -FileSystem NTFS -FileSystemLabel "System"
+            $SystemVolume = Format-Volume -FileSystem NTFS -FileSystemLabel "System" -Force:$Force
             $ActivePartition = Set-Partition -DriveLetter 'S' -IsActive $True
             $WindowsPartition = New-Partition -DiskId $DiskId -UseMaximumSize -DriveLetter 'C'
-            $WindowsVolume = Format-Volume -FileSystem NTFS -FileSystemLabel "Windows"
+            $WindowsVolume = Format-Volume -FileSystem NTFS -FileSystemLabel "Windows" -Force:$Force
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status           = 'Successful'

@@ -65,7 +65,10 @@ Function Set-WE_OfficeProductKey {
         [ValidateNotNullOrEmpty()]
         [Alias('LicenseKey')]
         [String[]]
-        $ProductKey
+        $ProductKey,
+
+        [Switch]
+        $Force
 
     )
 
@@ -79,7 +82,7 @@ Function Set-WE_OfficeProductKey {
 
         Try {
 
-            $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -ErrorAction SilentlyContinue
+            $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -Force:$Force -ErrorAction SilentlyContinue
             $ErrorActionPreference = Stop
             $ChangeKey = cscript.exe $OSPP.FullName /inpkey:$ProductKey
             $Activate = cscript.exe $OSPP.FullName /act

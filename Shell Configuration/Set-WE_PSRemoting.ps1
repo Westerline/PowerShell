@@ -114,10 +114,10 @@
 
             }
 
-            $PSRemotingHosts = Get-Item WSMan:\localhost\Client\TrustedHosts
-            $AllowRemoteAccess = Get-Item WSMan:\localhost\Service\AllowRemoteAccess
-            $PSRemotingHTTP = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener
-            $PSRemotingHTTPS = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener
+            $PSRemotingHosts = Get-Item WSMan:\localhost\Client\TrustedHosts -Force:$Force
+            $AllowRemoteAccess = Get-Item WSMan:\localhost\Service\AllowRemoteAccess -Force:$Force
+            $PSRemotingHTTP = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpListener -Force:$Force
+            $PSRemotingHTTPS = Get-Item WSMan:\localhost\Service\EnableCompatibilityHttpsListener -Force:$Force
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status            = 'Successful'

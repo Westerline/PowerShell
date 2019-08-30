@@ -65,7 +65,10 @@
         [ValidateNotNullOrEmpty()]
         [Alias('DiskName', 'Name')]
         [String]
-        $FriendlyName
+        $FriendlyName,
+
+        [String]
+        $Force
 
     )
 
@@ -83,9 +86,9 @@
             $WINTOGO_Drive = Get-Disk -FriendlyName $FriendlyName | Select-Object -ExpandProperty Number
             $Initialization = Initialize-Disk -Number $WINTOGO_Drive -PartitionStyle MBR
             $SystemPartition = New-Partition - -Size 350MB -DriveLetter 'S' -IsActive
-            $SystemVolume = Format-Volume -DriveLetter 'S' -FileSystem FAT32 -NewFileSystemLabel "System"
+            $SystemVolume = Format-Volume -DriveLetter 'S' -FileSystem FAT32 -NewFileSystemLabel "System" -Force:$Force
             $WindowsParition = New-Partition -DiskNumber $WINTOGO_Drive -UseMaximumSize -DriveLetter 'W'
-            $WindowsVolume = Format-Volume -DriveLetter 'W' -FileSystem NTFS -NewFileSystemLabel "Windows To Go"
+            $WindowsVolume = Format-Volume -DriveLetter 'W' -FileSystem NTFS -NewFileSystemLabel "Windows To Go" -Force:$Force
             $BCD = bcdboot.exe W:\Windows /s S: /f ALL
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{

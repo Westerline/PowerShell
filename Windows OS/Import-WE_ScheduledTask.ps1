@@ -95,7 +95,10 @@ Function Import-WE_ScheduledTask {
             ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $Password
+        $Password,
+
+        [Switch]
+        $Force
 
     )
 
@@ -109,7 +112,7 @@ Function Import-WE_ScheduledTask {
 
         Try {
 
-            $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password -ErrorAction Stop
+            $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password -Force:$Force -ErrorAction Stop
             $Property = @{
                 Task = $Task
             }

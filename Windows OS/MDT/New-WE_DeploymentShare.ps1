@@ -80,7 +80,10 @@ Function New-WE_DeploymentShare {
 
         [ValidateNotNullOrEmpty()]
         [String]
-        $FullAccess = 'Adinistrators'
+        $FullAccess = 'Adinistrators',
+
+        [Switch]
+        $Force
 
 
     )
@@ -96,11 +99,11 @@ Function New-WE_DeploymentShare {
         Try {
 
             $ErrorActionPreference = 'Stop'
-            Import-Module "C:\Program Files\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
-            $Directory = New-Item -Path $Path -ItemType directory
+            Import-Module "C:\Program Files\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1" -Force:$Force
+            $Directory = New-Item -Path $Path -ItemType directory -Force:$Force
             $SMBShare = New-SmbShare -Name $Name -Path $Path -FullAccess $FullAccess
             $PSDrive = New-PSDrive -Name $Name -PSProvider "MDTProvider" -Root $Path -Description $Description -NetworkPath "\\$Env:ComputerName\$Name"
-            $MDTDrive = Add-MDTPersistentDrive -Name $Name -InputObjetc $PSDrive
+            $MDTDrive = Add-MDTPersistentDrive -Name $Name -InputObjetc $PSDrive -Force:$Force
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 Status     = 'Successful'

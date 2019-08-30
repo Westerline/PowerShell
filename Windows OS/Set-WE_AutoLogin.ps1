@@ -76,7 +76,10 @@ Function Set-WE_AutoLogin {
             ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $Password
+        $Password,
+
+        [Switch]
+        $Force
 
     )
 
@@ -91,12 +94,12 @@ Function Set-WE_AutoLogin {
         Try {
 
             $ErrorActionPreference = 'Stop'
-            $AutoAdminLogon = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoAdminLogon -Value '1'
-            $AutoLogonCount = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoLogonCount -Value '999'
-            $DefaultDomainName = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultDomainName -Value "$DomainName"
-            $DefaultUserName = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultUserName -Value "$UserName"
-            $DefaultPassword = New-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultPassword -Value "$Password"  -PropertyType String
-            $DisableCAD = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DisableCAD -Value '1'
+            $AutoAdminLogon = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoAdminLogon -Value '1' -Force:$Force
+            $AutoLogonCount = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoLogonCount -Value '999' -Force:$Force
+            $DefaultDomainName = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultDomainName -Value "$DomainName" -Force:$Force
+            $DefaultUserName = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultUserName -Value "$UserName" -Force:$Force
+            $DefaultPassword = New-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DefaultPassword -Value "$Password"  -PropertyType String -Force:$Force
+            $DisableCAD = Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name DisableCAD -Value '1' -Force:$Force
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 AutoAdminLogon    = $AutoAdminLogon
