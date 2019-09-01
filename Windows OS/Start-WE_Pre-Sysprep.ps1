@@ -56,7 +56,12 @@ Function Start-WE_Pre-Sysprep {
 
     [Cmdletbinding(SupportsShouldProcess)]
 
-    Param ( )
+    Param (
+
+        [Switch]
+        $Force
+
+    )
 
     Begin {
 
@@ -70,8 +75,8 @@ Function Start-WE_Pre-Sysprep {
 
             $ErrorActionPreference = 'Stop'
             $ShadowCopies = & vssadmin.exe Delete Shadows /All
-            $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse
-            $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse
+            $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse -Force:$Force
+            $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse -Force:$Force
             $DiskCleanup = cleanmgr.exe /sagerun:1
             $ClearEventLog = Get-EventLog -LogName * | ForEach-Object { Clear-EventLog $_.Log }
             $DNSCache = Clear-DnsClientCache

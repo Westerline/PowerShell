@@ -74,7 +74,10 @@ Function Set-WE_RemoteDesktop {
         [Alias('HostName')]
         [ValidateNotNullorEmpty()]
         [Boolean]
-        $TerminalServices
+        $TerminalServices,
+
+        [Switch]
+        $Force
 
     )
 
@@ -89,8 +92,8 @@ Function Set-WE_RemoteDesktop {
         Try {
 
             $ErrorActionPreference = 'Stop'
-            $EnableRDP = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\‘ -Name “fDenyTSConnections” -Value 0
-            $NLA = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\‘ -Name “UserAuthentication” -Value 1
+            $EnableRDP = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\‘ -Name “fDenyTSConnections” -Value 0 -Force:$Force
+            $NLA = Set-ItemProperty ‘HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\‘ -Name “UserAuthentication” -Value 1 -Force:$Force
             $Firewall = Enable-NetFirewallRule -DisplayGroup “Remote Desktop”
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
