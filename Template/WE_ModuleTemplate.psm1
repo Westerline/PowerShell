@@ -130,6 +130,7 @@
                     Computername      = $Computer
                     ExceptionMessage  = $_.Exception.Message
                     ExceptionItemName = $_.Exception.ItemName
+                    Position          = $_.InvocationInfo.PositionMessage
                 }
 
             }
@@ -153,3 +154,6 @@
     }
 
 }
+
+
+$Property = $
