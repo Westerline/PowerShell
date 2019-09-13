@@ -7,12 +7,12 @@
 
     .DESCRIPTION
         Enables PowerShell remoting with optional features.
-        Step 1: Local Account Token
+        #Ensure the network firewall is running, otherwise can't create any other listeners
+        If you run into a "wsman-config access denied" error, try creating a new admin user or verify the existing user is part of the adminstrators group.
         Step 2: Enable-PSRemoting
-        Step 3: Enable Legacy HTTP Listener on Port 80 (Optional)
+        Step 3: Enable Legacy listeners (optional)
         Client-side
-        Configure the machines you the client can remote to.
-        To do: set-netconnectionprofile private
+        Configure the machines the client can connect to.
 
     .PARAMETER
         -ParameterName [<String[]>]
@@ -43,7 +43,13 @@
         Resources:
             -
         To Do:
-            -
+            -Set Firewall command -Enabled parameter to use a switch parameter
+            -Create a separate script with Command Prompt Compatability:
+                {
+                    sc config "MpsSvc" start= "auto"
+                    net start "MpsSvc"
+                    NetSh Advfirewall set allprofiles state on
+                }
         Misc:
             -
 
@@ -94,6 +100,8 @@
         Try {
 
             $ErrorActionPreference = 'Stop'
+            Set-Service -Name 'MpsSvc' -StartupType Automatic | Start-Service
+            Set-NetFirewallProfile -All -Enabled True
             $PSRemoting = Enable-PSRemoting -Force:$Force
 
             If ($TrustedHosts.IsPresent) {
