@@ -68,6 +68,10 @@ Function New-WE_LogError {
         [Int]
         $EventID,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String]
         $LogName = 'Windows PowerShell'

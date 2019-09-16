@@ -68,23 +68,31 @@
         [String]
         $InterfaceAlias,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [Alias('Name')]
         [String]
         $NATName,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
         $IPAddress,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
         $NetworkAddress,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 4)]
         [ValidateNotNullOrEmpty()]
         [Int]
         $PrefixLength

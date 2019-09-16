@@ -59,6 +59,7 @@ Function Reset-WE_MonitorLocation {
 
     Param (
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

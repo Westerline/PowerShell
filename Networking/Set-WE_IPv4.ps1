@@ -70,38 +70,42 @@
         $InterfaceAlias,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
         $IPAddress,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [Int]
         $Prefix,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
         $DefaultGateway,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 4)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
         $PrimaryDNS,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 5)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
         $SecondaryDNS,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

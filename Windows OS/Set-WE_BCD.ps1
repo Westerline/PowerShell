@@ -64,12 +64,14 @@ Function Set-WE_BCD {
     Param (
 
         [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0,
             ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'Installer')]
-        [Parameter(ParameterSetName = 'PSScript')]
-        [Parameter(ParameterSetName = 'SQLQuery')]
-        [Parameter(ParameterSetName = 'SQLScript')]
-        [Parameter(ParameterSetName = 'Regedit')]
+        [Parameter(ParameterSetName = 'MBR&UEFI')]
+        [Parameter(ParameterSetName = 'ViewStore')]
+        [Parameter(ParameterSetName = 'MBR')]
+        [Parameter(ParameterSetName = 'VHD')]
         [ValidateSet('MBR&UEFI', 'ViewStore', 'MBR', 'VHD')]
         [String]
         $Type
@@ -91,7 +93,7 @@ Function Set-WE_BCD {
             Switch ($Type) {
 
                 'MBR&UEFI' { bcdboot.exe W:\Windows /s S: /f ALL }
-                'ViewStore' { bcdedit.exe /enum all /store $Store }
+                'ViewStore' { bcdedit.exe /enum active }
                 'MBR' {
                     bcdedit.exe /store S:\boot\bcd /set { bootmgr } device partition=S:
                     bcdedit.exe /store S:\boot\bcd /set { default } device partition=C:

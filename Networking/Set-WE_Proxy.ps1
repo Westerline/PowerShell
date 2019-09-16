@@ -37,7 +37,7 @@ Function Set-WE_Proxy {
         Resources:
             -
         To Do:
-            -
+            -Determine method to require either Enable or Disable switch to be active.
         Misc:
             -
 
@@ -58,14 +58,17 @@ Function Set-WE_Proxy {
 
     Param(
 
-        [Parameter(ParameterSetName = "Enable")]
+        [Parameter(Mandatory = $True,
+            ParameterSetName = "Enable")]
         [Switch]
         $Enable,
 
-        [Parameter(ParameterSetName = "Disable")]
+        [Parameter(Mandatory = $True,
+            ParameterSetName = "Disable")]
         [Switch]
         $Disable,
 
+        [Parameter(Mandatory = $True)]
         [Switch]
         $Force
 

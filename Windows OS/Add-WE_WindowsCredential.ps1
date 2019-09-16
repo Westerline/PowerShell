@@ -69,22 +69,22 @@
         $HostName,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String[]]
         $UserName,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [String[]]
         $Password,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [ValidateSet('Domain', 'SmartCard', 'Generic')]
         [String[]]
         $Type

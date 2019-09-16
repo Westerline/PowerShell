@@ -64,7 +64,8 @@ Function Start-WE_Gpedit {
             Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias('HostName')]
-        [String[]] $ComputerName
+        [String[]]
+        $ComputerName
 
     )
 

@@ -58,6 +58,7 @@ Function Start-WE_Pre-Sysprep {
 
     Param (
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 
@@ -77,10 +78,10 @@ Function Start-WE_Pre-Sysprep {
             $ShadowCopies = & vssadmin.exe Delete Shadows /All
             $SoftwareDistribution = Remove-Item 'C:\Windows\SoftwareDistribution\Download\*.*' -Recurse -Force:$Force
             $Prefetch = Remove-Item 'C:\Windows\Prefetch\*.*' -Recurse -Force:$Force
-            & cleanmgr.exe /sagerun:1 
+            & cleanmgr.exe /sagerun:1
             Get-Process -Name 'cleanmgr' | Wait-Process
             $ClearEventLog = Get-EventLog -LogName * | ForEach-Object { Clear-EventLog $_.Log }
-            $DNSCache = ipconfig /flushdns
+            $DNSCache = ipconfig.exe /flushdns
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
                 ShadowCopies         = $ShadowCopies

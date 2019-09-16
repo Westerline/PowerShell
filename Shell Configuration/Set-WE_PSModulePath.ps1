@@ -70,11 +70,14 @@
         [String]
         $ModulePath,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [validateset('Temporary', 'Profile-AllUsersAllHosts', 'Profile-AllUsersCurrentHost', 'Profile-CurrentUserCurrentHost', 'Profile-CurrentUsersAllHosts')]
         [String]
         $Scope,
 
+        [Parameter(Mandatory = $True)]
         [Switch]
         $Force
 

@@ -58,26 +58,28 @@ Function Set-WE_AutoLogin {
 
     Param (
 
-        [Parameter(ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
-        [ValidateNotNullOrEmpty()]
-        [String]
-        $DomainName = '.',
-
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [String]
         $UserName,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Password,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $DomainName = '.',
+
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

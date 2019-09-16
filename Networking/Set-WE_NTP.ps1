@@ -58,7 +58,8 @@
 
     Param (
 
-        [Parameter(ValueFromPipeline = $True,
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
         [ValidateNotNullOrEmpty()]

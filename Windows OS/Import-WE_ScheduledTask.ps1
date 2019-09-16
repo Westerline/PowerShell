@@ -67,36 +67,42 @@ Function Import-WE_ScheduledTask {
         [String]
         $Path,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Name,
 
-        [Parameter(Mandatory = $False)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [String]
         $TaskPath,
 
-        [Parameter(ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [ValidateNotNullOrEmpty()]
         [String]
         $DomainName = '.',
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 4)]
         [ValidateNotNullOrEmpty()]
         [String]
         $User,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 5)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Password,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

@@ -69,17 +69,28 @@
         [Double[]]
         $Value,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateSet('B', 'KB', 'MB', 'GB', 'TB')]
         [String]
         $From,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateSet('B', 'KB', 'MB', 'GB', 'TB')]
-        [String]$To,
+        [String]
+        $To,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [validatenotnullorempty()]
-        [Int]$Precision = 4
+        [Int]
+        $Precision = 4
 
     )
 

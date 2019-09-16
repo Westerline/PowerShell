@@ -74,24 +74,31 @@
         $HostName,
 
         [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1,
             ParameterSetName = 'Default')]
         [ValidateSet('TCP', 'UDP', 'Both')]
         [String]
         $Protocol,
 
         [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2,
             ParameterSetName = 'Default')]
         [ValidateRange(0, 65535)]
         [Int]
         $Port,
 
         [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'CommonPort')]
         [ValidateRange(0, 65535)]
         [Int]
         $SourcePort = (Get-Random -Maximum 65535),
 
         [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'CommonPort')]
         [ValidateSet('AD', 'SMTP', 'HTTP', 'HTTPS', 'FTP', 'Telnet', 'IMAP', 'RDP', 'SSH', 'DNS', 'DHCP', 'POP3', 'PortRange', 'SourcePort')]
         [String]

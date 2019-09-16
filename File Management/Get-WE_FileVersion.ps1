@@ -67,6 +67,7 @@
         [String[]]
         $Path,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

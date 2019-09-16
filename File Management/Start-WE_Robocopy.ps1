@@ -42,7 +42,7 @@
         Resources:
             -
         To Do:
-            -Create separate validate sets for IPG and MT.
+            -Test separate validate sets for IPG and MT.
         Misc:
             -
 
@@ -64,17 +64,9 @@
     Param (
 
         [Parameter(Mandatory = $True,
-            Position = 0,
-            ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'IPG')]
-        [Parameter(ParameterSetName = 'MT')]
-        [ValidateSet('MIR_IPG', 'MIR_MT', 'COPY_IPG', 'COPY_MT', 'MOVE_IPG', 'MOVE_MT', 'J')]
-        [String[]]
-        $Type,
-
-        [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
+            Position = 0,
             ParameterSetName = 'Default')]
         [Parameter(ParameterSetName = 'IPG')]
         [Parameter(ParameterSetName = 'MT')]
@@ -83,8 +75,8 @@
         $Source,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
+            Position = 1,
             ParameterSetName = 'Default')]
         [Parameter(ParameterSetName = 'IPG')]
         [Parameter(ParameterSetName = 'MT')]
@@ -92,12 +84,27 @@
         [String[]]
         $Destination,
 
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2,
+            ParameterSetName = 'Default')]
         [Parameter(ParameterSetName = 'IPG')]
+        [Parameter(ParameterSetName = 'MT')]
+        [ValidateSet('MIR_IPG', 'MIR_MT', 'COPY_IPG', 'COPY_MT', 'MOVE_IPG', 'MOVE_MT', 'J')]
+        [String[]]
+        $Type,
+
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'IPG')]
         [validatenotnullorempty()]
         [Int]
         $IPG = 2,
 
-        [Parameter(ParameterSetName = 'MT')]
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
+            ParameterSetName = 'MT')]
         [validatenotnullorempty()]
         [Int]
         $MT = 8

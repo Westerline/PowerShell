@@ -68,15 +68,20 @@ Function Set-WE_WSUSNonDomainClient {
         [String[]]
         $HostName,
 
-        [ValidateNotNullOrEmpty()]
-        [Int]
-        $Port = 8530,
-
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [Alias('UpdateGroup', 'Group')]
         [String]
         $WUGroup,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [Int]
+        $Port = 8530,
+
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

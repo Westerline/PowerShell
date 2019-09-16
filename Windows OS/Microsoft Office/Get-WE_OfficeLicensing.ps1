@@ -58,6 +58,7 @@ Function Get-WE_OfficeLicensing {
 
     Param(
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

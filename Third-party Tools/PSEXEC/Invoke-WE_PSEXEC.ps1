@@ -128,6 +128,8 @@
         $ComputerName,
 
         [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1,
             ParameterSetName = 'Default')]
         [Parameter(ParameterSetName = 'Installer')]
         [Parameter(ParameterSetName = 'PSScript')]
@@ -139,7 +141,6 @@
         $Type,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'Installer')]
         [ValidateNotNullOrEmpty()]
@@ -147,12 +148,12 @@
         $ProgramPath,
 
         [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'Installer')]
         [String]
         $InstallationParameters,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'PSScript')]
         [ValidateNotNullOrEmpty()]
@@ -160,7 +161,6 @@
         $PSScriptPath,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'SQLQuery')]
         [Parameter(ParameterSetName = 'SQLScript')]
@@ -169,7 +169,6 @@
         $SQLServer,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'SQLQuery')]
         [ValidateNotNullOrEmpty()]
@@ -177,7 +176,6 @@
         $Query,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'SQLScript')]
         [ValidateNotNullOrEmpty()]
@@ -185,7 +183,6 @@
         $SQLScriptPath,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'Regedit')]
         [ValidateNotNullOrEmpty()]
@@ -193,7 +190,6 @@
         $RegKey,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'Regedit')]
         [ValidateSet('REG_SZ', 'REG_MULTI_SZ', 'REG_DWORD_BIG_ENDIAN', 'REG_DWORD', 'REG_BINARY', 'REG_DWORD_LITTLE_ENDIAN', 'REG_LINK', 'REG_FULL_RESOURCE_DESCRIPTOR', 'REG_EXPAND_SZ')]
@@ -201,7 +197,6 @@
         $RegValueType,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'Regedit')]
         [ValidateNotNullOrEmpty()]
@@ -209,7 +204,6 @@
         $RegValueName,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'Regedit')]
         [ValidateNotNullOrEmpty()]

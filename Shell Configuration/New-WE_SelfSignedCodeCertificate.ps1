@@ -59,18 +59,30 @@
 
     Param(
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Int]
         $Duration = 3,
 
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Subject = "PowerShell Code Signing Certificate",
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [String]
         $CertStoreLocation = "Cert:\LocalMachine\My",
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

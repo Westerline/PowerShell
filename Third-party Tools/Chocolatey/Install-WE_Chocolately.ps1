@@ -58,7 +58,9 @@ Function Install-WE_Chocolatey {
 
     Param (
 
-        [Switch] $Proxy
+        [Parameter(Mandatory = $False)]
+        [Switch]
+        $Proxy
 
     )
 

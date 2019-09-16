@@ -59,6 +59,8 @@ Function Get-WE_NetAdapter {
     Param (
 
         [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
             Position = 0)]
         [validateset('Ethernet', 'Wi-Fi', 'Bluetooth', 'Virtual')]
         [String]

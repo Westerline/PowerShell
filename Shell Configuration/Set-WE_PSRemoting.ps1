@@ -72,18 +72,22 @@
 
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias('HostName', 'ComputerName')]
         [String[]]
         $TrustedHosts,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $HttpListener,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $HttpsListener,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

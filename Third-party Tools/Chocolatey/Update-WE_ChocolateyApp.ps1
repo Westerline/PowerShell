@@ -59,7 +59,9 @@
 
     Param (
 
-        [Switch] $Proxy
+        [Parameter(Mandatory = $False)]
+        [Switch]
+        $Proxy
 
     )
 

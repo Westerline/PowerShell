@@ -60,28 +60,30 @@
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Target,
 
-        [Parameter(Mandatory = $False,
-            ValueFromPipelineByPropertyName = $True)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $Argument,
-
         [Parameter(Mandatory = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Path,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipelineByPropertyName = $True)]
-        [Alias('Test')]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [String]
-        $FileName
+        $FileName,
+
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Argument
 
     )
 

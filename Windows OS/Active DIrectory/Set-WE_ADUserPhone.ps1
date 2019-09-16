@@ -60,31 +60,32 @@
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias('LoginName', 'DisplayName')]
         [String[]]
         $UserName,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [Alias('CellPhone')]
         [String[]]
         $MobilePhone,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [Alias('Landline')]
         [String[]]
         $HomePhone,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [ValidateNotNullOrEmpty()]
         [Alias('WorkPhone')]
         [String[]]

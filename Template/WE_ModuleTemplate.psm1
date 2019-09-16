@@ -78,15 +78,29 @@
 
     Param (
 
+        #A paarameter can be part of multiple parameter sets.
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             HelpMessage = "Help. Message. Here.",
-            Position = 0)]
-        [ValidateNotNullOrEmpty()]
+            Position = 0,
+            ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'Description')]
+        [validatenotnullorempty()]
         [Alias('Test')]
         [String[]]
-        $ComputerName
+        $ComputerName,
+
+        #If using a default value for a parameter and valdinatenotnullorempty, mandatory must be false.
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
+            HelpMessage = "Help. Message. Here.",
+            Position = 1,
+            ParameterSetName = 'Description')]
+        [validatenotnullorempty()]
+        [Alias('Test 2')]
+        [String]
+        $Description = "Test 2"
 
     )
 
@@ -154,6 +168,3 @@
     }
 
 }
-
-
-$Property = $

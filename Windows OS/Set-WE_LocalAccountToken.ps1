@@ -58,6 +58,7 @@ Function Set-WE_LocalAccountToken {
 
     Param (
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

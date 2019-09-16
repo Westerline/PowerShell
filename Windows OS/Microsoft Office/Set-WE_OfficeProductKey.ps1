@@ -58,11 +58,12 @@ Function Set-WE_OfficeProductKey {
 
     Param(
 
-        [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-            HelpMessage = 'Product key must match the format XXXXX-XXXXX-XXXXX-XXXXX-XXXXX')]
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            HelpMessage = 'Product key must match the format XXXXX-XXXXX-XXXXX-XXXXX-XXXXX',
+            Position = 0)]
         [ValidatePattern('\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w-\w\w\w\w\w')]
-        [ValidateNotNullOrEmpty()]
         [Alias('LicenseKey')]
         [String[]]
         $ProductKey,

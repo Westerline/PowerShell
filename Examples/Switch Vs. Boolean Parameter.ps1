@@ -10,9 +10,14 @@ function SwitchParameter {
     [CmdletBinding()]
 
     Param (
-        [string] $foo,
-        [string] $bar,
-        [switch] $someVariable
+        [string]
+        $foo,
+
+        [string]
+        $bar,
+
+        [switch]
+        $someVariable
 
     )
 

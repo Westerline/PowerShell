@@ -58,18 +58,27 @@ Function Set-WE_HighPerformance {
 
     Param (
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [Int]
         $MonitorTimeout = 15,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [Int]
         $DiskTimeout = 20,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [Int]
         $StandbyTimeout = 30,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [Int]
         $HibernateTimeout = 30

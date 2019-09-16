@@ -58,6 +58,10 @@
 
     Param (
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Int[]]
         $ErrorIndex = 0

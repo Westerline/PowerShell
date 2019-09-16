@@ -67,18 +67,21 @@
         [String[]]
         $Path,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [validatenotnullorempty()]
         [String]
         $Pattern,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [validatenotnullorempty()]
         [String]
         $Value,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

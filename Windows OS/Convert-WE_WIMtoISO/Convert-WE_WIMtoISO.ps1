@@ -68,14 +68,15 @@ Function Convert_WE_WIMtoISO {
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [validatenotnullorempty()]
         [String]
         $Source,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateScript( { $_.EndsWith('.iso') })]
         [String]
         $Destination

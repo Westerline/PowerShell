@@ -64,7 +64,8 @@ Function Uninstall-WE_Program {
             Position = 0)]
         [ValidateNotNullOrEmpty()]
         [Alias('ProgramName')]
-        [String[]] $Name
+        [String[]]
+        $Name
 
     )
 

@@ -64,18 +64,16 @@ Function Set-WE_RemoteDesktop {
 
     Param (
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
         [Alias('HostName')]
         [ValidateNotNullorEmpty()]
         [string[]]
         $ComputerName,
 
         [Parameter(Mandatory = $False)]
-        [Alias('HostName')]
-        [ValidateNotNullorEmpty()]
-        [Boolean]
-        $TerminalServices,
-
         [Switch]
         $Force
 

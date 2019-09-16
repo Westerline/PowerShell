@@ -67,6 +67,7 @@
         [String[]]
         $Directory,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

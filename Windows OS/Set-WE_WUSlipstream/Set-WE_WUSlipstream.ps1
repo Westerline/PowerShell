@@ -74,35 +74,37 @@ Function Set-WE_WUSlipstream {
         $Path,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [validatenotnullorempty()]
         [String]
         $ImagePath,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [validatenotnullorempty()]
         [String]
         $Name,
 
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [validatenotnullorempty()]
         [String]
         $PackagePath,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 4)]
         [validatenotnullorempty()]
         [String]
         $BootSectorFile,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 5)]
         [validatenotnullorempty()]
         [String]
         $ISOPath

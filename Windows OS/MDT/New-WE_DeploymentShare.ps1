@@ -67,21 +67,27 @@ Function New-WE_DeploymentShare {
         $Path,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True)]
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Name,
 
-        [Parameter(Mandatory = $False)]
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 2)]
         [ValidateNotNullOrEmpty()]
         [String]
         $Description,
 
+        [Parameter(Mandatory = $False,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 3)]
         [ValidateNotNullOrEmpty()]
         [String]
         $FullAccess = 'Adinistrators',
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 

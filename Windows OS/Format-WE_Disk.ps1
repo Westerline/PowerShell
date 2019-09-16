@@ -68,14 +68,13 @@ Function Format-WE_Disk {
         $FriendlyName,
 
         [Parameter(Mandatory = $True,
-            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
-            HelpMessage = "Help. Message. Here.",
-            Position = 0)]
+            Position = 1)]
         [ValidateNotNullOrEmpty()]
         [String]
         $PartitionNumber,
 
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 
