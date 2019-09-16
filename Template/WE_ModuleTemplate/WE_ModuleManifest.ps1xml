@@ -1,0 +1,76 @@
+<Configuration>
+	<ViewDefinitions>
+		<View>
+			<Name>
+				<!-- Arbitrary name -->
+				CustomViewExample
+			</Name>
+			<ViewSelectedBy>
+				<TypeName>
+					<!-- Should correspond to the output object produced by your function/commandlet. -->
+					WE.ModuleManifest
+				</TypeName>
+			</ViewSelectedBy>
+			<!-- Example table view -->
+			<TableControl>
+				<TableHeaders>
+					<!-- "<TableColumnHeader />" will automatically determine label (property name), width, and alignment. -->
+					<!-- The column header should match the property name of your output. -->
+					<TableColumnHeader>
+						<Label>
+							Label1
+						</Label>
+						<Width>
+							6
+						</Width>
+						<Alignment>
+							Right
+						</Alignment>
+					</TableColumnHeader>
+					<TableColumnHeader>
+						<Label>
+							Label2
+						</Label>
+						<Width>
+							14
+						</Width>
+						<Alignment>
+							Left
+						</Alignment>
+					</TableColumnHeader>
+				</TableHeaders>
+				<!--
+				The actual data going into your rows.
+				Make sure you have the same number of headers as you do rows.
+				This is the best practice for ordering your property output (better than using ordered hash tables).
+				-->
+				<TableRowEntries>
+					<TableRowEntry>
+						<!--
+						You can
+						<TableColumnItem>
+						<ScriptBlock>
+						If ($_.Label1 -ne $()) {
+						$_.Label1.ToString("No")
+						}
+						</ScriptBlock>
+						</TableColumnItem>
+						-->
+						<TableColumnItems>
+							<TableColumnItem>
+								<PropertyName>
+									Label1
+								</PropertyName>
+							</TableColumnItem>
+							<TableColumnItem>
+								<PropertyName>
+									Label2
+								</PropertyName>
+							</TableColumnItem>
+						</TableColumnItems>
+					</TableRowEntry>
+				</TableRowEntries>
+			</TableControl>
+		</View>
+	</ViewDefinitions>
+</Configuration>

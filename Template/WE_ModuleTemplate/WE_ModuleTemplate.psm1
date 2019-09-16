@@ -153,6 +153,7 @@
             Finally {
 
                 $Object = New-Object -TypeName PSObject -Property $Property
+                $Object.PSObject.TypeNames.Insert(0, 'WE.ModuleManifest')
                 Write-Output $Object
 
             }

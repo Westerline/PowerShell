@@ -8,7 +8,7 @@
 
 @{
 
-    # Script module or binary module file associated with this manifest.
+    # Script module or binary module file associated with this manifest. First thing that gets loaded.
     RootModule        = 'WE_ModuleTemplate.psm1'
 
     # Version number of this module.
@@ -33,7 +33,7 @@
     # Description = ''
 
     # Minimum version of the Windows PowerShell engine required by this module
-    # PowerShellVersion = ''
+    PowerShellVersion = '5.0'
 
     # Name of the Windows PowerShell host required by this module
     # PowerShellHostName = ''
