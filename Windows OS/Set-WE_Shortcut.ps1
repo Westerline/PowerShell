@@ -63,14 +63,14 @@
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [String]
         $Target,
 
         [Parameter(Mandatory = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [String]
         $Path,
 
         [Parameter(Mandatory = $True,
@@ -82,7 +82,7 @@
         [Parameter(Mandatory = $False,
             ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
-        [string]
+        [String]
         $Argument
 
     )

@@ -65,16 +65,14 @@ Function Ping-WE_Subnet {
 
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 0)]
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [String]
         $NetworkAddress = '192.168.1',
 
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 1)]
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateRange(0, 255)]
         [Int]
         $Range = 1..40

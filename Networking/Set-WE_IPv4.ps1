@@ -99,8 +99,7 @@
         $PrimaryDNS,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 5)]
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [IPAddress]
         $SecondaryDNS,

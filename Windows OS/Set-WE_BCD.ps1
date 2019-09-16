@@ -66,12 +66,7 @@ Function Set-WE_BCD {
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
-            Position = 0,
-            ParameterSetName = 'Default')]
-        [Parameter(ParameterSetName = 'MBR&UEFI')]
-        [Parameter(ParameterSetName = 'ViewStore')]
-        [Parameter(ParameterSetName = 'MBR')]
-        [Parameter(ParameterSetName = 'VHD')]
+            Position = 0)]
         [ValidateSet('MBR&UEFI', 'ViewStore', 'MBR', 'VHD')]
         [String]
         $Type

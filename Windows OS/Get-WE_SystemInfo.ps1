@@ -61,8 +61,9 @@ Function Get-WE_SystemInfo {
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
-            HelpMessage = "The. Computer. Name.")]
+            Position = 0)]
         [Alias('HostName', 'CN')]
+        [ValidateNotNullOrEmpty()]
         [String[]]$ComputerName
 
     )

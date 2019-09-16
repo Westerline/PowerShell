@@ -73,7 +73,7 @@ Function New-WE_DeploymentShare {
         [String]
         $Name,
 
-        [Parameter(Mandatory = $False,
+        [Parameter(Mandatory = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 2)]
         [ValidateNotNullOrEmpty()]
@@ -81,8 +81,7 @@ Function New-WE_DeploymentShare {
         $Description,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 3)]
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [String]
         $FullAccess = 'Adinistrators',

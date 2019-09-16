@@ -92,10 +92,10 @@
         $ComputerName,
 
         #If using a default value for a parameter and valdinatenotnullorempty, mandatory must be false.
+        #Avoid using the Position option on non-mandatory parameters or parameters that are already initialized.
         [Parameter(Mandatory = $False,
             ValueFromPipelineByPropertyName = $True,
             HelpMessage = "Help. Message. Here.",
-            Position = 1,
             ParameterSetName = 'Description')]
         [validatenotnullorempty()]
         [Alias('Test 2')]

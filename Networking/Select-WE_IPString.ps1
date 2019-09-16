@@ -81,13 +81,18 @@
             Try {
 
                 $IPString = (Select-String -InputObject $S -Pattern "\d{1,3}(\.\d{1,3}){3}" -AllMatches -ErrorAction Stop).Matches.Value
+                $Property = @{
+                    Status   = 'Successful'
+                    String   = $S
+                    IPString = $IPString
+                }
 
             }
 
             Catch {
 
                 Write-Verbose "Unable to parse IP from string $S."
-                $IPString = @{
+                $Property = @{
                     Status            = 'Unsuccessful'
                     String            = $S
                     ExceptionMessage  = $_.Exception.Message
@@ -98,7 +103,8 @@
 
             Finally {
 
-                Write-Output $IPString
+                $Object = New-Object -TypeName psobject -Property $Property
+                Write-Output $Object
 
             }
 

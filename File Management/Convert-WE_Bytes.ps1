@@ -86,8 +86,7 @@
 
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 3)]
+            ValueFromPipelineByPropertyName = $True)]
         [validatenotnullorempty()]
         [Int]
         $Precision = 4

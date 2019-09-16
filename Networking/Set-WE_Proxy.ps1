@@ -68,7 +68,7 @@ Function Set-WE_Proxy {
         [Switch]
         $Disable,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 
@@ -112,7 +112,7 @@ Function Set-WE_Proxy {
             $ErrorActionPreference = $StartErrorActionPreference
 
             $Property = @{
-                Status        = 'Unsuccessful'
+                Status        = 'Successful'
                 ComputerName  = $Env:COMPUTERNAME
                 ProxyStatus   = $ProxyStatus
                 ProxyOverride = $Proxy.ProxyOverride

@@ -67,8 +67,7 @@
         $InputFile,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 1)]
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateSet('SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160', 'All')]
         [String]
         $Algorithm = 'All'

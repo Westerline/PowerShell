@@ -76,8 +76,7 @@
         $Subject = "PowerShell Code Signing Certificate",
 
         [Parameter(Mandatory = $False,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 2)]
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [String]
         $CertStoreLocation = "Cert:\LocalMachine\My",

@@ -91,6 +91,7 @@
         $NetworkAddress,
 
         [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 4)]
         [ValidateNotNullOrEmpty()]

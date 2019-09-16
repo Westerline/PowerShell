@@ -1,4 +1,6 @@
-<#
+Function New-WE_Fixture {
+
+    <#
 
     .SYNOPSIS
         Synopsis here
@@ -52,76 +54,78 @@
 
 #>
 
-[CmdletBinding()]
+    [CmdletBinding()]
 
-Param (
+    Param (
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipeline = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 0)]
-    [validatenotnullorempty()]
-    [String[]]
-    $Path,
+        [Parameter(Mandatory = $True,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 0)]
+        [validatenotnullorempty()]
+        [String[]]
+        $Path,
 
-    [Parameter(Mandatory = $True,
-        ValueFromPipelineByPropertyName = $True,
-        Position = 1)]
-    [validatenotnullorempty()]
-    [String]
-    $Filter
+        [Parameter(Mandatory = $True,
+            ValueFromPipelineByPropertyName = $True,
+            Position = 1)]
+        [validatenotnullorempty()]
+        [String]
+        $Filter
 
-)
+    )
 
-Begin {
+    Begin {
 
-    $StartErrorActionPreference = $ErrorActionPreference
+        $StartErrorActionPreference = $ErrorActionPreference
 
-}
+    }
 
-Process {
+    Process {
 
-    $Modules = Get-ChildItem $Path -Filter $Filter -Recurse -ErrorAction Stop
+        $Modules = Get-ChildItem $Path -Filter $Filter -Recurse -ErrorAction Stop
 
-    Foreach ($Module in $Modules) {
+        Foreach ($Module in $Modules) {
 
-        Try {
+            Try {
 
-            $Fixture = New-Fixture -Path $Module.DirectoryName -Name $Module.Name -ErrorAction Stop
-            $Property = @{
-                Stauts        = 'Successful'
-                Fixture       = $Fixture
-                DirectoryName = $Module.DirectoryName
-                Name          = $Moodule.Name
+                $Fixture = New-Fixture -Path $Module.DirectoryName -Name $Module.Name -ErrorAction Stop
+                $Property = @{
+                    Stauts        = 'Successful'
+                    Fixture       = $Fixture
+                    DirectoryName = $Module.DirectoryName
+                    Name          = $Moodule.Name
+                }
+
             }
 
-        }
+            Catch {
 
-        Catch {
+                $Property = @{
+                    Stauts            = 'Unsuccessful'
+                    Computername      = $Env:COMPUTERNAME
+                    ExceptionMessage  = $_.Exception.Message
+                    ExceptionItemName = $_.Exception.ItemName
+                    Position          = $_.InvocationInfo.PositionMessage
+                }
 
-            $Property = @{
-                Stauts            = 'Unsuccessful'
-                Computername      = $Env:COMPUTERNAME
-                ExceptionMessage  = $_.Exception.Message
-                ExceptionItemName = $_.Exception.ItemName
-                Position          = $_.InvocationInfo.PositionMessage
             }
 
-        }
+            Finally {
 
-        Finally {
+                $Object = New-Object -TypeName PSObject -Property $Property
+                Write-Output $Object
 
-            $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Output $Object
+            }
 
         }
 
     }
 
-}
+    End {
 
-End {
+        $ErrorActionPreference = $StartErrorActionPreference
 
-    $ErrorActionPreference = $StartErrorActionPreference
+    }
 
 }

@@ -68,7 +68,7 @@
         $FriendlyName,
 
         [Parameter(Mandatory = $False)]
-        [String]
+        [Switch]
         $Force
 
     )

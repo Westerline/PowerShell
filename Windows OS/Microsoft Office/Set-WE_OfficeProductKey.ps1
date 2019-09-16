@@ -68,6 +68,7 @@ Function Set-WE_OfficeProductKey {
         [String[]]
         $ProductKey,
 
+        [Parameter(Mandatory = $True)]
         [Switch]
         $Force
 

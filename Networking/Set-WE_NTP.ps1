@@ -60,8 +60,7 @@
 
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
-            ValueFromPipelineByPropertyName = $True,
-            Position = 0)]
+            ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [Alias('ServerName', 'NTPServer', 'TimeServer')]
         [String[]]
