@@ -86,7 +86,7 @@ Function Import-WE_ScheduledTask {
             Position = 3)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $User,
+        $UserName,
 
         [Parameter(Mandatory = $True,
             ValueFromPipelineByPropertyName = $True,
