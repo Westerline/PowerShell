@@ -99,7 +99,7 @@ Function Import-WE_ScheduledTask {
             ValueFromPipelineByPropertyName = $True)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $DomainName = '.',
+        $DomainName = ".",
 
         [Parameter(Mandatory = $False)]
         [Switch]
@@ -117,7 +117,7 @@ Function Import-WE_ScheduledTask {
 
         Try {
 
-            $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User $DomainName\$UserName –Password $Password -Force:$Force -ErrorAction Stop
+            $Task = Register-ScheduledTask -Xml (Get-Content -Path $Path | Out-String) -TaskName $Name -TaskPath $TaskPath -User ($DomainName + "\" + $UserName) -Password $Password -Force:$Force -ErrorAction Stop
             $Property = @{
                 Task = $Task
             }
@@ -135,7 +135,7 @@ Function Import-WE_ScheduledTask {
 
         }
 
-        FInally {
+        Finally {
 
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object
