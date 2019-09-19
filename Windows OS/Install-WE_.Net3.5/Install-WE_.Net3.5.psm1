@@ -119,7 +119,7 @@ Function Install-WE_.Net3.5 {
 
         }
 
-        Finaly {
+        Finally {
 
             $Object = New-Object -TypeName PSObject -Property $Property
             Write-Output $Object

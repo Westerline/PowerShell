@@ -105,6 +105,8 @@
 
             Try {
 
+                $ErrorActionPreference = 'Stop'
+
                 Switch ($From) {
 
                     'B' { $Val = $Val }
@@ -125,18 +127,22 @@
 
                 }
 
-                $ErrorActionPreference = 'Stop'
                 $Math = [Math]::Round($Val, $Precision, [MidPointRounding]::AwayFromZero)
                 $ErrorActionPreference = $StartErrorActionPreference
+                $Property = @{
+                    Value = $Math
+                    Unit  = $To
+                }
 
             }
 
             Catch {
 
                 Write-Verbose "Unable to convert $Val to $To"
-                $Math = @{
+                $Property = @{
                     Status            = 'Unsuccessful'
                     Value             = $Val
+                    To                = $To
                     ExceptionMessage  = $_.Exception.Message
                     ExceptionItemName = $_.Exception.ItemName
                 }
@@ -145,7 +151,7 @@
 
             Finally {
 
-                Write-Output $Math$To
+                Write-Output $Property
 
             }
 

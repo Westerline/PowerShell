@@ -1,17 +1,118 @@
 #Requires -Modules Pester
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests.ps1", ".psm1")
-$file = Get-ChildItem "$here\$sut"
+<#
+.SYNOPSIS
+    Tests a module for all needed components
+.EXAMPLE
+    Invoke-Pester
+.NOTES
+    This is a very generic set of tests that should apply to all modules.
+#>
 
-Describe $file.BaseName -Tags Unit {
 
-    #This is the first test you should run in most cases, this will check that there are no errors in the script syntax.
-    It "is valid Powershell (Has no script errors)" {
+$Here = Split-Path -Parent $MyInvocation.MyCommand.Path
+$Module = Split-Path -Leaf $Here
 
-        $contents = Get-Content -Path $file -ErrorAction Stop
-        $errors = $null
-        $null = [System.Management.Automation.PSParser]::Tokenize($contents, [ref]$errors)
-        $errors | Should -HaveCount 0
+Describe "Module: $Module" -Tags Unit {
+
+    Context "Module Configuration" {
+
+        It "Has a root module file ($Module.psm1)" {
+
+            "$Here\$Module.psm1" | Should -Exist
+
+        }
+
+        It "Has a manifest file ($Module.psd1)" {
+
+            "$Here\$Module.psd1" | Should -Exist
+
+        }
+
+        It "Has a Pester test" {
+
+            "$Here\$Module.tests.ps1" | Should -Exist
+
+        }
+
+
+        It "Contains a root module path in the manifest (RootModule = '.\$Module.psm1')" {
+
+            "$Here\$Module.psd1" | Should -Exist
+            "$Here\$Module.psd1" | Should -FileContentMatch "\.\\$Module.psm1"
+
+        }
+
+        It "Can be imported" {
+
+            { Import-Module "$Here\$Module.psd1" } | Should -Not -Throw
+
+        }
+
+    }
+
+    Context "Build Tests" {
+
+        It "Is valid Powershell (Has no script errors)" {
+
+            $Contents = Get-Content -Path "$Here\$Module.psm1" -ErrorAction Stop
+            $Errors = $Null
+            $Null = [System.Management.Automation.PSParser]::Tokenize($Contents, [ref]$Errors)
+            $Errors | Should -HaveCount 0
+        }
+
+        It "Has show-help comment block" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch '<#'
+            "$Here\$Module.psm1" | Should -FileContentMatch '#>'
+        }
+
+        It "Has show-help comment block has a synopsis" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch '\.SYNOPSIS'
+        }
+
+        It "Has show-help comment block has an example" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch '\.EXAMPLE'
+        }
+
+        It "Is an advanced function" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch 'function'
+            "$Here\$Module.psm1" | Should -FileContentMatch 'cmdletbinding'
+            "$Here\$Module.psm1" | Should -FileContentMatch 'param'
+        }
+
+        It "Has Begin/Process/End blocks" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch 'begin'
+            "$Here\$Module.psm1" | Should -FileContentMatch 'process'
+            "$Here\$Module.psm1" | Should -FileContentMatch 'end'
+        }
+
+        It "Has Try/Catch/Finally blocks" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch 'try'
+            "$Here\$Module.psm1" | Should -FileContentMatch 'catch'
+            "$Here\$Module.psm1" | Should -FileContentMatch 'finally'
+        }
+
+        It "Has error action preferences" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch "$($StartErrorActionPreference)"
+
+        }
+
+        It "explicitly writes the object to output" {
+
+            "$Here\$Module.psm1" | Should -FileContentMatch "Write-Output $($Object)"
+
+        }
+
+    }
+
+    Context "Function Tests: $Module" {
+
     }
 
 }

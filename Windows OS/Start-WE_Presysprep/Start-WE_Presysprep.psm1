@@ -1,4 +1,4 @@
-Function Start-WE_Pre-Sysprep {
+Function Start-WE_Presysprep {
 
     <#
 

@@ -112,7 +112,7 @@ Function Set-WE_OfficeProductKey {
         Finally {
 
             $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Verbose $Object
+            Write-Output $Object
 
         }
 

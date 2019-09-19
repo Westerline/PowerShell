@@ -100,7 +100,7 @@ Function Get-WE_OfficeLicensing {
         Finally {
 
             $Object = New-Object -TypeName PSObject -Property $Property
-            Write-Verbose $Object
+            Write-Output $Object
 
         }
 
