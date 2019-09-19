@@ -103,7 +103,7 @@ Describe "Module: $Module" -Tags Unit {
 
         }
 
-        It "explicitly writes the object to output" {
+        It "Explicitly writes the object to output" {
 
             "$Here\$Module.psm1" | Should -FileContentMatch "Write-Output $($Object)"
 
@@ -112,6 +112,44 @@ Describe "Module: $Module" -Tags Unit {
     }
 
     Context "Function Tests: $Module" {
+
+        It "Output is of hash table type" {
+
+            Convert-WE_Bytes -Value 5 -From MB -To GB | Should -BeOfType System.Collections.Hashtable
+
+        }
+
+        It "Converts Bytes to any other Unit" {
+
+            (Convert-WE_Bytes -Value 10 -From B -To B).Value | Should Be 10
+            (Convert-WE_Bytes -Value 10 -From B -To B).Unit | Should Be "B"
+
+            (Convert-WE_Bytes -Value 100 -From B -To KB).Value | Should Be .1
+            (Convert-WE_Bytes -Value 100 -From B -To KB).Unit | Should Be "KB"
+
+            (Convert-WE_Bytes -Value 100 -From B -To MB).Value | Should Be .1
+            (Convert-WE_Bytes -Value 100 -From B -To MB).Unit | Should Be "KB"
+
+            <#
+            Convert-WE_Bytes -Value 15 -From B -To KB
+            Convert-WE_Bytes -Value 20 -From B -To MB
+            Convert-WE_Bytes -Value 25 -From B -To GB
+            Convert-WE_Bytes -Value 30 -From B -To TB
+            #>
+
+        }
+
+        <#
+        It "Converts Kilobytes to any other Unit" { }
+
+        It "Converts Megabytes to any other Unit" { }
+
+        It "Converts Gigabytes to any other Unit" { }
+
+        It "Converts Terabytes to any other Unit" { }
+
+        It "Converts multiple values" { }
+        #>
 
     }
 
