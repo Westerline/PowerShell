@@ -127,15 +127,33 @@ Describe "Module: $Module" -Tags Unit {
             (Convert-WE_Bytes -Value 100 -From B -To KB).Value | Should Be .1
             (Convert-WE_Bytes -Value 100 -From B -To KB).Unit | Should Be "KB"
 
-            (Convert-WE_Bytes -Value 100 -From B -To MB).Value | Should Be .1
-            (Convert-WE_Bytes -Value 100 -From B -To MB).Unit | Should Be "KB"
+            (Convert-WE_Bytes -Value 10000000 -From B -To MB).Value | Should Be 10
+            (Convert-WE_Bytes -Value 10000000 -From B -To MB).Unit | Should Be "MB"
 
-            <#
-            Convert-WE_Bytes -Value 15 -From B -To KB
-            Convert-WE_Bytes -Value 20 -From B -To MB
-            Convert-WE_Bytes -Value 25 -From B -To GB
-            Convert-WE_Bytes -Value 30 -From B -To TB
-            #>
+            (Convert-WE_Bytes -Value 1000000000 -From B -To GB).Value | Should Be 1
+            (Convert-WE_Bytes -Value 1000000000 -From B -To GB).Unit | Should Be "GB"
+
+            (Convert-WE_Bytes -Value 1000000000000 -From B -To TB).Value | Should Be 1
+            (Convert-WE_Bytes -Value 1000000000000 -From B -To TB).Unit | Should Be "TB"
+
+        }
+
+        It "Converts Kilobytes to any other Unit" {
+
+            (Convert-WE_Bytes -Value 10 -From KB -To B).Value | Should Be 10000
+            (Convert-WE_Bytes -Value 10 -From KB -To B).Unit | Should Be "B"
+
+            (Convert-WE_Bytes -Value 100 -From KB -To KB).Value | Should Be 100
+            (Convert-WE_Bytes -Value 100 -From KB -To KB).Unit | Should Be "KB"
+
+            (Convert-WE_Bytes -Value 10000000 -From KB -To MB).Value | Should Be 10000
+            (Convert-WE_Bytes -Value 10000000 -From KB -To MB).Unit | Should Be "MB"
+
+            (Convert-WE_Bytes -Value 1000000000 -From KB -To GB).Value | Should Be 953.6
+            (Convert-WE_Bytes -Value 1000000000 -From KB -To GB).Unit | Should Be "GB"
+
+            (Convert-WE_Bytes -Value 1000000000000 -From KB -To TB).Value | Should Be 931
+            (Convert-WE_Bytes -Value 1000000000000 -From KB -To TB).Unit | Should Be "TB"
 
         }
 
