@@ -111,7 +111,54 @@ Describe "Module: $Module" -Tags Unit {
 
     }
 
-    Context "Function Tests: $Module" {
+    Context "Basic features $Module" {
+
+        BeforeAll {
+
+            $InputObject = "
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows
+-------------------------------------------------------------------------------
+
+  Started : Wednesday, 2 October 2019 9:58:18 AM
+   Source : C:\temp2\
+     Dest : C:\temp3\
+
+    Files : *.*
+
+  Options : *.* /DCOPY:DA /COPY:DAT /R:1000000 /W:30
+
+------------------------------------------------------------------------------
+
+	                   3	C:\temp2\
+	  *EXTRA File 		       0	test.txt
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         3         0         3         0         0         1
+   Bytes :    18.6 k         0    18.6 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Wednesday, 2 October 2019 9:58:18 AM
+"
+
+        }
+
+        It "Can convert robocopy output from a file." {
+
+            $Result = ConvertFrom-WE_RobocopyOutput -InputObject $InputObject
+            $Result | Should -Not -BeNull
+            $Result.Status | Should -Be 'Connected'
+            #$Result.Started | Should -Be 'Wednesday, 2 October 2019 9:58:18 AM'
+            $Result.Source | Should -Be 'C:\temp2\'
+            $Result.Destination | Should -Be 'C:\temp3\'
+            #$Result.Columns | Should -Be 'Total    Copied   Skipped  Mismatch    FAILED    Extras'
+            #$Result.Dirs | Should -Be '1         0         1         0         0         0'
+            #$Result.Files | Should -Be '3         0         3         0         0         1'
+            #$Result.Ended | Should -Be 'Wednesday, 2 October 2019 9:58:18 AM'
+
+        }
 
     }
 

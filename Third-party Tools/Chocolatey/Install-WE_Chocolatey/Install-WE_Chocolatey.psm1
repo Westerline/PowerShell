@@ -78,7 +78,7 @@ Function Install-WE_Chocolatey {
 
             If ($Proxy.IsPresent) {
 
-                [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+                $Chocolatey = [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
             }
 
@@ -88,6 +88,12 @@ Function Install-WE_Chocolatey {
 
             }
 
+            $Property = @{
+
+                Status       = 'Successful'
+                Installation = $Chocolatey
+
+            }
             $ErrorActionPreference = $StartErrorActionPreference
 
         }
@@ -95,7 +101,7 @@ Function Install-WE_Chocolatey {
         Catch {
 
             Write-Verbose "Unable to install chocolatey on $Env:COMPUTERNAME."
-            $Chocolatey = @{
+            $Property = @{
                 Status            = 'Unsuccessful'
                 ComputerName      = $Env:COMPUTERNAME
                 ExceptionMessage  = $_.Exception.Message
@@ -106,7 +112,8 @@ Function Install-WE_Chocolatey {
 
         Finally {
 
-            Write-Output $Chocolatey
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
 
         }
 
