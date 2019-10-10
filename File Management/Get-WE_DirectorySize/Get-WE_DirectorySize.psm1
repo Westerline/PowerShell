@@ -37,7 +37,9 @@
         Resources:
             -
         To Do:
-            -
+            -Add option to exclude hidden or operating system only files
+            -Add option to enumerate through all sub-directories and get their size as well.
+            -Scale measurement size automatically
         Misc:
             -
 
@@ -54,6 +56,8 @@
 
     #>
 
+    #Requires -RunAsAdministrator
+
     [CmdletBinding()]
 
     Param (
@@ -63,9 +67,16 @@
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
         [validatenotnullorempty()]
-        [Alias('Path')]
+        [Alias('Directory')]
         [String[]]
-        $Directory,
+        $Path,
+
+        [Parameter(Mandatory = $False,
+            ValueFromPipeline = $True,
+            ValueFromPipelineByPropertyName = $True)]
+        [ValidateRange(0, 15)]
+        [Int]
+        $Precision = 2,
 
         [Parameter(Mandatory = $False)]
         [Switch]
@@ -81,25 +92,24 @@
 
     Process {
 
-        ForEach ($Dir in $Directory) {
+        ForEach ($P in $Path) {
 
             Try {
 
-                $Content = Get-ChildItem -Path $Dir -Recurse -Force:$Force -ErrorAction Stop | Measure-Object -Property Length -Sum
-
-                $Property = [Ordered] @{
-                    Directory   = $Dir
-                    'Size (MB)' = ($Content.Sum / 1MB -as [Int])
+                $Content = Get-ChildItem -Path $P -Recurse -Force:$Force -ErrorAction Stop | Measure-Object -Property Length -Sum
+                $Property = @{
+                    Directory = $P
+                    SizeMB    = [Math]::Round($Content.Sum / 1MB, $Precision, [MidPointRounding]::AwayFromZero)
                 }
 
             }
 
             Catch {
 
-                Write-Verbose "Unable to get directory size for $Dir."
+                Write-Verbose "Unable to get directory size for $P."
                 $Property = [Ordered] @{
                     Status            = 'Unsuccessful'
-                    Directory         = $Dir
+                    Directory         = $P
                     ExceptionMessage  = $_.Exception.Message
                     ExceptionItemName = $_.Exception.ItemName
                 }

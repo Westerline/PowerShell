@@ -87,7 +87,7 @@
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True)]
-        [validatenotnullorempty()]
+        [ValidateRange(0, 15)]
         [Int]
         $Precision = 4
 

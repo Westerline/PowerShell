@@ -103,7 +103,7 @@ Describe "Module: $Module" -Tags Unit {
 
         }
 
-        It "explicitly writes the object to output" {
+        It "Explicitly writes the object to output" {
 
             "$Here\$Module.psm1" | Should -FileContentMatch "Write-Output $($Object)"
 
@@ -112,6 +112,62 @@ Describe "Module: $Module" -Tags Unit {
     }
 
     Context "Function Tests: $Module" {
+
+        It "Output is of hash table type" {
+
+            Convert-WE_Bytes -Value 5 -From MB -To GB | Should -BeOfType System.Collections.Hashtable
+
+        }
+
+        It "Converts Bytes to any other Unit" {
+
+            (Convert-WE_Bytes -Value 10 -From B -To B).Value | Should Be 10
+            (Convert-WE_Bytes -Value 10 -From B -To B).Unit | Should Be "B"
+
+            (Convert-WE_Bytes -Value 100 -From B -To KB).Value | Should Be .1
+            (Convert-WE_Bytes -Value 100 -From B -To KB).Unit | Should Be "KB"
+
+            (Convert-WE_Bytes -Value 10000000 -From B -To MB).Value | Should Be 10
+            (Convert-WE_Bytes -Value 10000000 -From B -To MB).Unit | Should Be "MB"
+
+            (Convert-WE_Bytes -Value 1000000000 -From B -To GB).Value | Should Be 1
+            (Convert-WE_Bytes -Value 1000000000 -From B -To GB).Unit | Should Be "GB"
+
+            (Convert-WE_Bytes -Value 1000000000000 -From B -To TB).Value | Should Be 1
+            (Convert-WE_Bytes -Value 1000000000000 -From B -To TB).Unit | Should Be "TB"
+
+        }
+
+        It "Converts Kilobytes to any other Unit" {
+
+            (Convert-WE_Bytes -Value 10 -From KB -To B).Value | Should Be 10000
+            (Convert-WE_Bytes -Value 10 -From KB -To B).Unit | Should Be "B"
+
+            (Convert-WE_Bytes -Value 100 -From KB -To KB).Value | Should Be 100
+            (Convert-WE_Bytes -Value 100 -From KB -To KB).Unit | Should Be "KB"
+
+            (Convert-WE_Bytes -Value 10000000 -From KB -To MB).Value | Should Be 10000
+            (Convert-WE_Bytes -Value 10000000 -From KB -To MB).Unit | Should Be "MB"
+
+            (Convert-WE_Bytes -Value 1000000000 -From KB -To GB).Value | Should Be 953.6
+            (Convert-WE_Bytes -Value 1000000000 -From KB -To GB).Unit | Should Be "GB"
+
+            (Convert-WE_Bytes -Value 1000000000000 -From KB -To TB).Value | Should Be 931
+            (Convert-WE_Bytes -Value 1000000000000 -From KB -To TB).Unit | Should Be "TB"
+
+        }
+
+        <#
+        It "Converts Kilobytes to any other Unit" { }
+
+        It "Converts Megabytes to any other Unit" { }
+
+        It "Converts Gigabytes to any other Unit" { }
+
+        It "Converts Terabytes to any other Unit" { }
+
+        It "Converts multiple values" { }
+        #>
 
     }
 

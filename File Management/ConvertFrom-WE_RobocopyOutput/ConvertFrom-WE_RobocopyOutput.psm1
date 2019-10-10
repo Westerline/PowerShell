@@ -75,14 +75,15 @@
     #>
 
     [CmdletBinding()]
+
     Param(
 
         [Parameter(Mandatory = $True,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
-        [validatenotnullorempty()]
         [Alias('FileName', 'FullName', 'Path')]
+        [AllowEmptyString()]
         [String[]]
         $InputObject
 
@@ -96,44 +97,40 @@
 
     Process {
 
-        Foreach ($InputObj in $InputObject) {
+        Try {
 
-            Try {
-
-                $ErrorActionPreference = 'Stop'
-                $Robo_Content = $InputObj -match '^(?= *?\b(Source|Dest|Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$'
-                $ErrorActionPreference = $StartErrorActionPreference
-                $Property = [Ordered] @{
-                    Status      = 'Connected'
-                    Started     = $Robo_Content[0] -replace 'Started :' -replace '(?m)^\s+'
-                    Source      = $Robo_Content[1] -replace 'Source :' -replace '(?m)^\s+'
-                    Destination = $Robo_Content[2] -replace 'Dest :' -replace '(?m)^\s+'
-                    Columns     = $Robo_Content[3] -replace '(?m)^\s+'
-                    Dirs        = $Robo_Content[4] -replace 'Dirs :' -replace '(?m)^\s+'
-                    Files       = $Robo_Content[5] -replace 'Files :' -replace '(?m)^\s+'
-                    Ended       = $Robo_Content[6] -replace 'Ended :' -replace '(?m)^\s+'
-                }
-
+            $ErrorActionPreference = 'Stop'
+            $Robo_Content = $InputObject -match '^(?= *?\b(Source|Dest|Started|Total|Dirs|Files|Ended)\b)((?!    Files).)*$'
+            $ErrorActionPreference = $StartErrorActionPreference
+            $Property = [Ordered] @{
+                Status      = 'Connected'
+                Started     = $Robo_Content[0] -replace 'Started :' -replace '(?m)^\s+'
+                Source      = $Robo_Content[1] -replace 'Source :' -replace '(?m)^\s+'
+                Destination = $Robo_Content[2] -replace 'Dest :' -replace '(?m)^\s+'
+                Columns     = $Robo_Content[3] -replace '(?m)^\s+'
+                Dirs        = $Robo_Content[4] -replace 'Dirs :' -replace '(?m)^\s+'
+                Files       = $Robo_Content[5] -replace 'Files :' -replace '(?m)^\s+'
+                Ended       = $Robo_Content[6] -replace 'Ended :' -replace '(?m)^\s+'
             }
 
-            Catch {
+        }
 
-                Write-Verbose "Unable to parse Robocopy output."
-                $Property = [Ordered] @{
-                    Status            = 'Unsuccessful'
-                    InputObject       = $InputObj
-                    ExceptionMessage  = $_.Exception.Message
-                    ExceptionItemName = $_.Exception.ItemName
-                }
+        Catch {
 
+            Write-Verbose "Unable to parse Robocopy output."
+            $Property = [Ordered] @{
+                Status            = 'Unsuccessful'
+                InputObject       = $InputObject
+                ExceptionMessage  = $_.Exception.Message
+                ExceptionItemName = $_.Exception.ItemName
             }
 
-            Finally {
+        }
 
-                $Object = New-Object -TypeName PSObject -Property $Property
-                Write-Output $Object
+        Finally {
 
-            }
+            $Object = New-Object -TypeName PSObject -Property $Property
+            Write-Output $Object
 
         }
 
