@@ -111,7 +111,25 @@ Describe "Module: $Module" -Tags Unit {
 
     }
 
-    Context "Function Tests: $Module" {
+    Context "Basic features" {
+
+        BeforeAll {
+
+
+
+        }
+
+        It "Can get the size of a single directory." {
+
+            & fsutil file createnew 'C:\temp1\test.dat' 1228800
+            $Result = Get-WE_DirectorySize -Path 'C:\temp1'
+            $Result | Should -Not -BeNullOrEmpty
+            $Result.Directory | Should -Be 'C:\temp1'
+            $Result.SizeMB | Should -Be 1.23
+
+        }
+
+        #It "Can get the size of multiple directories." { }
 
     }
 
