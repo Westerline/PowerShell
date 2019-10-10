@@ -37,7 +37,9 @@
         Resources:
             -
         To Do:
+            -Add option to exclude hidden or operating system only files
             -Add option to enumerate through all sub-directories and get their size as well.
+            -Scale measurement size automatically
         Misc:
             -
 
@@ -53,6 +55,8 @@
         Insert here.
 
     #>
+
+    #Requires -RunAsAdministrator
 
     [CmdletBinding()]
 
@@ -70,7 +74,7 @@
         [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True)]
-        [validatenotnullorempty()]
+        [ValidateRange(0, 15)]
         [Int]
         $Precision = 2,
 
