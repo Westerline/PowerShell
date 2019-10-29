@@ -9,8 +9,8 @@ Function Set-WE_WSUSNonDomainClient {
         Command description here.
 
     .PARAMETER
-        -ParameterName [<String[]>]
-            Parameter description here.
+        -HostName [<String[]>]
+            Host name or IP address of the remote WSUS server, used by the client for fetching updates.
 
             Required?                    true
             Position?                    named
@@ -23,6 +23,15 @@ Function Set-WE_WSUSNonDomainClient {
             ErrorAction, ErrorVariable, WarningAction, WarningVariable,
             OutBuffer, PipelineVariable, and OutVariable. For more information, see
             about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
+
+        -HostName [<String[]>]
+            Host name or IP address of the remote WSUS server, used by the client for fetching updates.
+
+            Required?                    true
+            Position?                    named
+            Default value                None
+            Accept pipeline input?       false
+            Accept wildcard characters?  false
 
     .INPUTS
         System.String[]
@@ -37,7 +46,9 @@ Function Set-WE_WSUSNonDomainClient {
         Resources:
             -Modified from https://community.spiceworks.com/how_to/85392-wsus-targeting-for-non-domain-computers
         To Do:
+            -Backup original registry settings
             -Option to restore default settings via : rem REG DELETE "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
+            -Set $WUGroup as an optional parameter, set $TargetGroup and $TargetGroupEnabled as "if exists $WUGroup"
             -Post tool to Spiceworks.
         Misc:
             -
@@ -68,12 +79,12 @@ Function Set-WE_WSUSNonDomainClient {
         [String[]]
         $HostName,
 
-        [Parameter(Mandatory = $True,
+        [Parameter(Mandatory = $False,
             ValueFromPipelineByPropertyName = $True,
             Position = 1)]
         [Alias('UpdateGroup', 'Group')]
         [String]
-        $WUGroup,
+        $WUGroup = 'Unassigned Computers',
 
         [Parameter(Mandatory = $False,
             ValueFromPipelineByPropertyName = $True)]
