@@ -6,7 +6,7 @@ Function Get-WE_LogicalDisk {
         Synopsis here
 
     .DESCRIPTION
-        Command description here.
+        WINRM must be configured on the computers you're running this command against. For WINRM to work properly, ensure the computer's network profile type is set to domainauthenticated or private.
 
     .PARAMETER
         -ParameterName [<String[]>]
@@ -94,9 +94,7 @@ Function Get-WE_LogicalDisk {
                     $Property += @{
                         "Name[$Index]"            = $Disk.Name
                         "Partitions[$Index]"      = $Disk.Partitions
-                        "Size[$Index] (GB)"       = $Disk.Size
-                        "FreeSpace[$Index] (GB)"  = $Disk.FreeSpace
-                        "Used Space[$Index] (GB)" = $Disk.UsedSpace
+                        "Size[$Index] (GB)"       = [math]::Round($Disk.Size / 1GB,2)
                         "DeviceID[$Index]"        = $Disk.DeviceID
                     }
 
