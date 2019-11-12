@@ -86,17 +86,17 @@
 
             Try {
 
-                $Property = [Ordered]@{
+                $Property = @{
                     File = $File
                 }
 
                 If ($Algorithm -eq 'All') {
 
-                    $Algorithm = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160'
+                    $HashAlgorithms = 'SHA1', 'SHA256', 'SHA384', 'SHA512', 'MACTripleDES', 'MD5', 'RIPEMD160'
 
                 }
 
-                Foreach ($Alg in $Algorithm) {
+                Foreach ($Alg in $HashAlgorithms) {
 
                     $Hash = Get-FileHash -Path $File -Algorithm $Alg -ErrorAction Stop
                     $Property += @{
@@ -112,7 +112,6 @@
                 Write-Verbose "Cannot find path $File."
                 $Property += @{
                     Status            = 'Unsuccessful'
-                    File              = $File
                     ExceptionMessage  = $_.Exception.Message
                     ExceptionItemName = $_.Exception.ItemName
                 }
@@ -124,7 +123,6 @@
                 Write-Verbose "Could not get the hash on $File. Please ensure the path to the file is correct and try again."
                 $Property += @{
                     Status            = 'Unsuccessful'
-                    File              = $File
                     ExceptionMessage  = $_.Exception.Message
                     ExceptionItemName = $_.Exception.ItemName
                 }
