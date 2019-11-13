@@ -37,7 +37,7 @@ Function Set-WE_OfficeProductKey {
         Resources:
             -
         To Do:
-            -
+            -Fix repeated Product ID: ProductID =, develop better method for selecting the substring
         Misc:
             -Requires -runasadministrator
 
@@ -68,7 +68,7 @@ Function Set-WE_OfficeProductKey {
         [String[]]
         $ProductKey,
 
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $False)]
         [Switch]
         $Force
 
@@ -85,14 +85,17 @@ Function Set-WE_OfficeProductKey {
         Try {
 
             $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -Force:$Force -ErrorAction SilentlyContinue
-            $ErrorActionPreference = Stop
+            $ErrorActionPreference = 'Stop'
             $ChangeKey = cscript.exe $OSPP.FullName /inpkey:$ProductKey
-            $Activate = cscript.exe $OSPP.FullName /act
+            $ActivationStatus = cscript.exe $OSPP.FullName /act
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
-                OSPP      = $OSPP
-                ChangeKey = $ChangeKey
-                Activate  = $Activate
+                InputKey = $ProductKey
+                ProductKeyInstallStatus = $ChangeKey | Select-String '<'
+                ActivationStatus = $ActivationStatus | Select-String '<'
+                LicenseName = $ActivationStatus | Select-String 'LICENSE NAME'
+                LicenseDescription = $ActivationStatus | Select-String 'LICENSE DESCRIPTION'
+                Last5Characters = $ActivationStatus | Select-String 'Last 5 characters of installed product key'
             }
 
         }
@@ -103,6 +106,7 @@ Function Set-WE_OfficeProductKey {
             $Property = @{
                 Status            = 'Unsuccessful'
                 Computer          = $Env:COMPUTERNAME
+                InputKey = $ProductKey
                 ExceptionMessage  = $_.Exception.Message
                 ExceptionItemName = $_.Exception.ItemName
             }
