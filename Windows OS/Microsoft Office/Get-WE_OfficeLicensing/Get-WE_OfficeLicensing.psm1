@@ -37,7 +37,7 @@ Function Get-WE_OfficeLicensing {
         Resources:
             -
         To Do:
-            -
+            -Fix repeated Product ID: ProductID =, develop better method for selecting the substring
         Misc:
             -
 
@@ -75,12 +75,15 @@ Function Get-WE_OfficeLicensing {
         Try {
 
             $OSPP = Get-ChildItem 'C:\Program Files\', 'C:\Program Files (x86)\' -File -Recurse -Filter 'OSPP.VBS' -Force:$Force  -ErrorAction SilentlyContinue
-            $ErrorActionPreference = Stop
-            $ActivactionStatus = cscript.exe $OSPP.FullName /dstatus
+            $ErrorActionPreference = 'Stop'
+            $ActivationStatus = cscript.exe $OSPP.FullName /dstatus
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
-                OSPP              = $OSPP
-                ActivactionStatus = $ActivactionStatus
+                ProductID = $ActivationStatus | Select-String 'PRODUCT ID'
+                LicenseName = $ActivationStatus | Select-String 'LICENSE NAME'
+                LicenseDescription = $ActivationStatus | Select-String 'LICENSE DESCRIPTION'
+                LicenseStatus = $ActivationStatus | Select-String 'LICENSE STATUS'
+                Last5Characters = $ActivationStatus | Select-String 'Last 5 characters of installed product key'
             }
 
         }
