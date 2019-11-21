@@ -75,42 +75,44 @@
 
     Process {
 
-        Foreach ($E in $ErrorIndex) {
+        Foreach ($E in $ErrorName) {
+            
+                Try {
 
-            Try {
+                    $ErrorActionPreference = 'Stop'
+                    $ErrorName = $Error[$ErrorIndex]
+                    $ErrorActionPreference = $StartErrorActionPreference
+                    $Property = @{
+                        Status    = 'Unsuccessful'
+                        ErrorIndex     = $E
+                        ErrorName = $Errorname.Exception.GetType().FullName
+                        CategoryInfo = $ErrorName.CategoryInfo
+                        ErrorID = $ErrorName.FullyQualifiedErrorId
+                        Activity  = $ErrorName.CategoryInfo.Activity
+                    }
 
-                $ErrorActionPreference = 'Stop'
-                $ErrorName = $Error[$E]
-                $ErrorActionPreference = $StartErrorActionPreference
-                $Property = @{
-                    Status    = 'Unsuccessful'
-                    Error     = $E
-                    ErrorName = $ErrorName.exception.gettype().fullname
-                    Activity  = $ErrorName.CategoryInfo.Activity
                 }
 
-            }
+                Catch {
 
-            Catch {
+                    Write-Verbose "Unable to capture error name. PLease try re-creating the error and rerunning this cmdlet."
+                    $Property = @{
+                        Status            = 'Unsuccessful'
+                        ExceptionMessage  = $_.Exception.Message
+                        ExceptionItemName = $_.Exception.ItemName
+                    }
 
-                Write-Verbose "Unable to capture error name. PLease try re-creating the error and rerunning this cmdlet."
-                $Property = @{
-                    Status            = 'Unsuccessful'
-                    ExceptionMessage  = $_.Exception.Message
-                    ExceptionItemName = $_.Exception.ItemName
                 }
 
-            }
+                Finally {
 
-            Finally {
+                    $Object = New-Object -TypeName PSObject -Property $Property
+                    Write-Output $Object
 
-                $Object = New-Object -TypeName PSObject -Property $Property
-                Write-Output $Object
-
-            }
+                }
 
         }
-
+    
     }
 
     End {
