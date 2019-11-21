@@ -58,11 +58,11 @@ Function Get-WE_NetAdapter {
 
     Param (
 
-        [Parameter(Mandatory = $True,
+        [Parameter(Mandatory = $False,
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True,
             Position = 0)]
-        [validateset('Ethernet', 'Wi-Fi', 'Bluetooth', 'Virtual')]
+        [validateset('Ethernet', 'Wi-Fi', 'Bluetooth', 'Virtual', 'All')]
         [String]
         $Type
 
@@ -82,10 +82,12 @@ Function Get-WE_NetAdapter {
 
             Switch ($Type) {
 
-                Ethernet { $Adapter = Get-NetAdapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.3*' } }
-                Wi-Fi { $Adapter = Get-NetAdapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.11*' } }
-                Bluetooth { $Adapter = Get-NetAdapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Bluetooth*' } }
-                Virtual { $Adapter = Get-NetAdapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Unspecified*' } }
+                Ethernet { $Object = Get-NetAdapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.3*' } }
+                Wi-Fi { $Object = Get-NetAdapter -Physical -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*802.11*' } }
+                Bluetooth { $Object = Get-NetAdapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Bluetooth*' } }
+                Virtual { $Object = Get-NetAdapter -IncludeHidden | Where-Object { $_.PhysicalMediaType -like '*Unspecified*' } }
+                All { $Object = Get-NetAdapter -IncludeHidden }
+                Default { $Object = Get-NetAdapter -IncludeHidden }
 
             }
 
@@ -96,7 +98,7 @@ Function Get-WE_NetAdapter {
         Catch {
 
             Write-Verbose "Unable to find $Type network adapter."
-            $Adapter = @{
+            $Object = @{
                 Status            = 'Unsuccessful'
                 AdapterType       = $Type
                 ExceptionMessage  = $_.Exception.Message
@@ -107,7 +109,7 @@ Function Get-WE_NetAdapter {
 
         Finally {
 
-            Write-Output $Adapter
+            Write-Output $Object
 
         }
 

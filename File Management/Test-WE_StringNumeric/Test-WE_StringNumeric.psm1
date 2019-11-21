@@ -3,7 +3,7 @@
     <#
 
     .SYNOPSIS
-        Synopsis here
+        Tests whether or not a string contains only integer characters.
 
     .DESCRIPTION
         Command description here.

@@ -17,7 +17,7 @@ Function Get-WE_CommonTransportDetail {
         Resources:
             -
         To Do:
-            -
+            -Add parameter to select from individual protocols
         Misc:
             -
 

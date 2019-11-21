@@ -6,6 +6,10 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
+    Test 1 = Test-WE_StringNumeric -String "abc123" = false
+    Test 2 = Test-WE_StringNumeric -String "123" = true
+    Test 3 = $String = "1234"
+             $String | Test-WE_StringNumeric
 #>
 
 

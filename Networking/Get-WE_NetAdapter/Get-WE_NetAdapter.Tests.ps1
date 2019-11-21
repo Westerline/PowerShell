@@ -6,6 +6,12 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
+    Test1 = Get-WE_NetAdapter
+    Test 1 = Get-WE_NetAdapter -Type All
+    Test2 = Get-WE_NetAdapter -Type Ethernet
+    Test3 = Get-WE_NetAdapter -Type Wi-Fi
+    Test4 = Get-WE_NetAdapter -Type Bluetooth
+    Test5 = Get-WE_NetAdapter -Type Virtual
 #>
 
 
