@@ -70,9 +70,16 @@ Function Get-WE_PublicIP {
 
             $IPify = Invoke-RestMethod -Uri 'https://api.ipify.org' -ErrorAction Stop
             $OpenDNS = ((nslookup.exe myip.opendns.com. resolver1.opendns.com 2>$Null)[4]).substring(10)
+            $IPify_PingTest = Test-NetConnection -ComputerName $IPify -InformationLevel Quiet
+            $OpenDNS_PingTest = Test-NetConnection -ComputerName $OpenDNS -InformationLevel Quiet
             $Property = @{
+                "Status" = "Successful"
+                "ComputerName" = $Env:COMPUTERNAME
                 'IPify-PublicIP'   = $IPify
+                'IPify Ping Succeeded' = $IPify_PingTest
                 'OpenDNS-PublicIP' = $OpenDNS
+                'OpenDNS Ping Succeeded' = $OpenDNS_PingTest
+
             }
 
         }
