@@ -6,7 +6,18 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
-#>
+    Test1 = Set-WE_IPv4 -InterfaceAlias Ethernet0 -IPAddress 192.168.1.68 -Prefix 24 -DefaultGateway 192.168.1.1 -PrimaryDNS 1.0.0.1 -SecondaryDNS 1.1.1.1 -Force
+    Test 2 = $Property = @{
+>> InterfaceAlias = 'Ethernet0'
+>> IPAddress = '192.168.1.40'
+>> Prefix = '24'
+>> DefaultGateway = '192.168.1.1'
+>> PrimaryDNS = '1.0.0.1'
+>> SecondaryDNS = '1.1.1.1'
+>> AddressFamily = 'IPv4'
+>> }
+    Set-WE_IPv4 @Property
+    #>
 
 
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path

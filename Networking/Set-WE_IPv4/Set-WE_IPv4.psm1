@@ -56,6 +56,8 @@
 
     #>
 
+    #Requires -RunAsAdministrator
+
     [cmdletbinding(SupportsShouldProcess)]
 
     Param(
@@ -104,6 +106,12 @@
         [IPAddress]
         $SecondaryDNS,
 
+        [Parameter(Mandatory = $False,
+        ValueFromPipelineByPropertyName = $True)]
+        [ValidateSet('IPv4','IPv6')]
+        [String[]]
+        $AddressFamily = 'IPv4',
+
         [Parameter(Mandatory = $False)]
         [Switch]
         $Force
@@ -121,19 +129,21 @@
         Try {
 
             $ErrorActionPreference = 'Stop'
-            $DisableDHCP = Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0 -Force:$Force
+            Set-ItemProperty -Path “HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$((Get-NetAdapter -InterfaceAlias $InterfaceAlias).InterfaceGuid)” -Name EnableDHCP -Value 0 -Force:$Force
             $OldGateway = (Get-NetIPConfiguration -InterfaceAlias $InterfaceAlias).IPv4DefaultGateway.NextHop
-            $RemoveNetRoute = Remove-NetRoute -InterfaceAlias $InterfaceAlias -NextHop $OldGateway -Confirm:$False
-            $RemoveIPAddress = Remove-NetIPAddress -InterfaceAlias $InterfaceAlias -Confirm:$False
-            $NewIPAddress = New-NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IPAddress -PrefixLength $Prefix -DefaultGateway $DefaultGateway
-            $DNS = Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $PrimaryDNS, $SecondaryDNS
+            Remove-NetRoute -InterfaceAlias $InterfaceAlias -NextHop $OldGateway -Confirm:$False
+            Remove-NetIPAddress -InterfaceAlias $InterfaceAlias -Confirm:$False
+            $SetIPAddress = New-NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IPAddress -PrefixLength $Prefix -DefaultGateway $DefaultGateway -AddressFamily $AddressFamily
+            Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $PrimaryDNS, $SecondaryDNS
+            $NetIPConfiguration = Get-NetIPConfiguration -InterfaceAlias $InterfaceAlias
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{
-                InterfaceAlias = $NewIPAddress.InterfaceAlias
-                IPaddress      = $NewIPAddress.IPaddress
-                Prefix         = $NewIPAddress.Prefix
-                DefaultGateway = $NewIPAddress.DefaultGateway
-                DNS            = $DNS.ServerAddresses
+                InterfaceAlias = $NetIPConfiguration.InterfaceAlias
+                IPAddress      = $NetIPConfiguration.IPv4Address.IPAddress
+                Prefix         = $NetIPConfiguration.IPv4Address.PrefixLength
+                DefaultGateway = $NetIPConfiguration.IPv4DefaultGateway.NextHop
+                PrimaryDNS            = $NetIPConfiguration.DNSServer.ServerAddresses[0]
+                SecondaryDNS            = $NetIPConfiguration.DNSServer.ServerAddresses[1]
             }
 
         }
