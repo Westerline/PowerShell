@@ -74,8 +74,8 @@ Function Ping-WE_Subnet {
             ValueFromPipeline = $True,
             ValueFromPipelineByPropertyName = $True)]
         [ValidateRange(0, 255)]
-        [Int]
-        $Range = 1..40
+        [Int[]]
+        $Range = 1..255
 
     )
 

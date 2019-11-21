@@ -6,7 +6,8 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
-#>
+    Test1 = Ping-WE_Subnet
+    #>
 
 
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
