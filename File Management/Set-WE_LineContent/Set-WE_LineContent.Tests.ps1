@@ -6,6 +6,14 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
+    Created Test File Set-WE_LineContent1.txt:
+        "This is line one"
+        "This is line two"
+        "This is line three"
+        "Not a test"
+     Created Test File Set-WE_LineContent2.txt:
+        "This is line one"
+    Set-WE_LineContent -Path C:\temp\Set-WE_LineContent.txt -Pattern "Line" -Value "Please replace with different text" -Force | Select-Object -Property Path
 #>
 
 

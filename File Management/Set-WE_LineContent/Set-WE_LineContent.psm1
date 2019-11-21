@@ -100,15 +100,60 @@
             Try {
 
                 $ErrorActionPreference = 'Stop'
-                $Content = Get-Content -Path $P -Force:$Force
-                $LineIndex = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber) - 1
-                $Content[$LineIndex] = $Value
-                Set-Content -Path $P -Value $Content
-                $ErrorActionPreference = $StartErrorActionPreference
-                $Property = @{
-                    Path       = $P
-                    NewContent = $Content[$LineIndex]
+                $Content = Get-Content -Path $P -Force:$Force 
+
+                Switch ($Content.ReadCount.Count) {
+
+                    {!($Content | Select-String -Pattern "$Pattern")} {
+
+                        Write-Verbose "No strings found matching the pattern $Pattern on the input file $P."
+                        $OldLine = $Content
+                        $Property = [Ordered] @{
+                            "Status" = "No changes have been made to the file."
+                            "Path" = "$P"
+                        }
+
+                    }
+
+                    {($_ -le 1) -and ($Content | Select-String -Pattern "$Pattern")} {
+
+                        $OldLine = $Content
+                        $Content = $Value
+                        Set-Content -Path $P -Value $Content
+                        $Property = [Ordered] @{
+                            "Status" = "Changes have been made to the file."
+                            "Path" = "$P"
+                            "OldLine" = "$OldLine"
+                            "NewLine" = "$Value"
+                        }
+
+                    }
+
+                    {($_ -gt 1) -and ($Content | Select-String -Pattern "$Pattern")} {
+
+                        $LineNumber = ($Content | Select-String -Pattern "$Pattern" | Select-Object -ExpandProperty LineNumber)
+
+                        $Property = [Ordered] @{
+                            "Status" = "Changes have been made to the file."
+                            "Path" = "$P"
+                        }
+                        Foreach ($Line in $LineNumber) {
+                            $LineIndex = $Line - 1
+                            $OldLine = $Content[$LineIndex]
+                            $Content[$LineIndex] = $Value
+                            $Property += [Ordered] @{
+                                "OldLine[$LineIndex]" = "$OldLine" 
+                                "NewLine[$LineIndex]" = "$Value"
+                            }
+                        }
+
+                        Set-Content -Path $P -Value $Content                       
+                        
+                    }
+
                 }
+
+                $ErrorActionPreference = $StartErrorActionPreference
 
             }
 
