@@ -6,7 +6,16 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
-#>
+    Test1 = Select-WE_IPString -String "fdsajklsfd 192.192.192.192 fadksljfasdjkl;fsad"
+    Test2 = Select-WE_IPString -String "fdsajklsfd 192.192.192.192 fadksljfasdjkl;fsad
+            fdsfsdaasfdfsda
+            DFsasfdfsaaaaa
+            192.168.1.1
+            192.168.1.2
+            192.168.2.1"
+    Test3 = $String = "fdsajklsfd 192.192.192.192 fadksljfasdjkl;fsa fdsfsdaasfdfsda"
+            $String | Select-WE_IPString
+    #>
 
 
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path

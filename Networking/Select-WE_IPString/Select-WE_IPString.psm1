@@ -83,7 +83,7 @@
                 $IPString = (Select-String -InputObject $S -Pattern "\d{1,3}(\.\d{1,3}){3}" -AllMatches -ErrorAction Stop).Matches.Value
                 $Property = @{
                     Status   = 'Successful'
-                    String   = $S
+                    Input   = $S
                     IPString = $IPString
                 }
 
