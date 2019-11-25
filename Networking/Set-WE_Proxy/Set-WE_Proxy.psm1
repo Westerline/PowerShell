@@ -37,7 +37,9 @@ Function Set-WE_Proxy {
         Resources:
             -
         To Do:
-            -Determine method to require either Enable or Disable switch to be active.
+            -Add option for manual proxy settings
+            -Add option for proxy setup script
+            -Add option to toggle automatic detection settings
         Misc:
             -
 

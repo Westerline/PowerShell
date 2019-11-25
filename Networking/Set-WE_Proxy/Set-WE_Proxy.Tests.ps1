@@ -6,7 +6,8 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
-#>
+    Manual Test 1: Set-WE_Proxy 
+    #>
 
 
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
