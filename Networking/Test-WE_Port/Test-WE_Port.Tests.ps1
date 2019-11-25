@@ -6,7 +6,23 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
-#>
+    Manual Test 1: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort AD
+    Manual Test 2: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort SMTP
+    Manual Test 3: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort HTTP
+    Manual Test 4: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort HTTPS
+    Manual Test 5: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort FTP
+    Manual Test 6: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort Telnet
+    Manual Test 7: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort IMAP
+    Manual Test 8: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort RDP
+    Manual Test 9: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort SSH
+    Manual Test 10: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort DNS
+    Manual Test 11: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort DHCP
+    Manual Test 12: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort POP3
+    Manual Test 13: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -CommonPort PortRange -PortRange 65534:65535
+    Manual Test 14: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -Protocol Both -Port 80
+    Manual Test 14: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -Protocol TCP -Port 81
+    Manual Test 14: Test-WE_Port -HostName 8.8.8.8, 1.1.1.1, 1.0.0.1 -Protocol UDP -Port 82
+    #>
 
 
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path

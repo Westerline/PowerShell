@@ -39,7 +39,10 @@
         Resources:
             -
         To Do:
-            -
+            -Change $CustomPort switch to $Option switch and include options for manual port/protocol selection (different parameter sets as required)
+            -Add $Sourceport as an optional parameter for all other tests.
+            -Add error handling if the portqry.exe application returns its help menu.
+            -Add regex validate pattern for $PortRange parameter (0-65535)
         Misc:
             -
         Requirements:
@@ -91,16 +94,16 @@
         $Port,
 
         [Parameter(Mandatory = $False,
-            ValueFromPipelineByPropertyName = $True,
-            ParameterSetName = 'CommonPort')]
-        [ValidateRange(0, 65535)]
-        [Int]
-        $SourcePort = (Get-Random -Maximum 65535),
+        ValueFromPipelineByPropertyName = $True,
+        ParameterSetName = 'CommonPort')]
+        [ValidatePattern("\d+[0-65535]:\d+[0-65535]")]
+        [String]
+        $PortRange,
 
         [Parameter(Mandatory = $True,
             ValueFromPipelineByPropertyName = $True,
             ParameterSetName = 'CommonPort')]
-        [ValidateSet('AD', 'SMTP', 'HTTP', 'HTTPS', 'FTP', 'Telnet', 'IMAP', 'RDP', 'SSH', 'DNS', 'DHCP', 'POP3', 'PortRange', 'SourcePort')]
+        [ValidateSet('AD', 'SMTP', 'HTTP', 'HTTPS', 'FTP', 'Telnet', 'IMAP', 'RDP', 'SSH', 'DNS', 'DHCP', 'POP3', 'PortRange')]
         [String]
         $CommonPort
 
@@ -126,16 +129,15 @@
                     SMTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 25 }
                     HTTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 80 }
                     HTTPS { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 443 }
-                    FTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 20, 21 }
+                    FTP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 20,21 }
                     Telnet { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 23 }
                     IMAP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 143 }
                     RDP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 3389 }
                     SSH { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'TCP' -o 22 }
                     DNS { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'Both' -o 53 }
-                    DHCP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -o 67, 68 }
+                    DHCP { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -o 67,68 }
                     POP3 { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -o 110 }
-                    PortRange { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -r $Port }
-                    SourcePort { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -sp $SourcePort -p 'UDP' -o $Port }
+                    PortRange { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p 'UDP' -r $PortRange }
                     Default { $PortQry = & "$PSScriptRoot\PortQryV2\PortQry.exe" -n $Hst -p $Protocol -o $Port }
 
                 }
@@ -153,8 +155,7 @@
 
             Catch {
 
-                Write-Output $Error
-
+                Write-Verbose $Error
                 $Property = @{
                     Status            = 'Unsuccessful'
                     HostName          = $Hst
