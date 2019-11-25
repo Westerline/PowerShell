@@ -37,7 +37,7 @@
         Resources:
             -
         To Do:
-            -
+            -Add error handling for w32tm command when the sync doesn't complete.
         Misc:
             -Useful for managing NTP servers on non-domain computers.
 
@@ -53,6 +53,8 @@
         Insert here.
 
     #>
+
+    #Requires -RunAsAdministrator
 
     [CmdletBinding(SupportsShouldProcess)]
 
@@ -83,6 +85,7 @@
             Start-Service -Name W32Time
             $W32TimeService = Get-Service -Name W32Time
             $W32TimeConfig = & w32tm.exe /config /syncfromflags:manual /manualpeerlist:$NTPPeerList /update
+            $W32TimeResync = & w32tm.exe /resync /rediscover
             $W32TimeResync = & w32tm.exe /resync /rediscover
             $ErrorActionPreference = $StartErrorActionPreference
             $Property = @{

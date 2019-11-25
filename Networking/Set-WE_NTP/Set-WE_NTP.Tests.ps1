@@ -6,7 +6,9 @@
     Invoke-Pester
 .NOTES
     This is a very generic set of tests that should apply to all modules.
-#>
+    Manual Test 1: Set-WE_NTP
+    Manual Test 2: Set-WE_NTP -NTPPeerList '0.nz.pool.ntp.org', '1.nz.pool.ntp.org', '2.nz.pool.ntp.org', '3.nz.pool.ntp.org' 
+    #>
 
 
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
