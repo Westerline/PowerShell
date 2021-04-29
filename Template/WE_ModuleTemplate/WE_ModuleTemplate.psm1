@@ -151,9 +151,10 @@
 
             #Reset error action preference before beginning the next ForEach loop or ending the script.
             Finally {
-
+                
+                $ErrorActionPreference = 'Continue'
                 $Object = New-Object -TypeName PSObject -Property $Property
-                $Object.PSObject.TypeNames.Insert(0, 'WE.ModuleManifest')
+                $Object.PSObject.TypeNames.Insert(0, 'WE.ModuleManifest.PSCustomObject')
                 Write-Output $Object
 
             }
