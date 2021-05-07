@@ -2,14 +2,14 @@
 
     <#
 
-    .SYNOPSIS
+    .Synopsis
         Synopsis here
 
-    .DESCRIPTION
+    .Description
         Command description here.
 
-    .PARAMETER
-        -ParameterName [<String[]>]
+    .Parameter Parameter1
+        -Parameter1 [<String[]>]
             Parameter description here.
 
             Required?                    true
@@ -18,20 +18,20 @@
             Accept pipeline input?       false
             Accept wildcard characters?  false
 
-        <CommonParameters>
+    .Parameter CommonParameters
             This cmdlet supports the common parameters: Verbose, Debug,
             ErrorAction, ErrorVariable, WarningAction, WarningVariable,
             OutBuffer, PipelineVariable, and OutVariable. For more information, see
             about_CommonParameters (https:/go.microsoft.com/fwlink/?LinkID=113216).
 
-    .INPUTS
+    .Inputs
         System.String[]
             Input description here.
 
-    .OUTPUTS
+    .Outputs
         System.Management.Automation.PSCustomObject
 
-    .NOTES
+    .Notes
         Version: 1.0
         Author(s): Wesley Esterline
         Resources:
@@ -42,9 +42,8 @@
             -
 
     .Example
-        -------------------------- EXAMPLE 1 --------------------------
 
-        C:\PS>WE_ModuleTemplate
+       WE_ModuleTemplate -Parameter1 Test
 
         Description
 
