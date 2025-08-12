@@ -30,7 +30,6 @@ Please test these tools thoroughly in your own environment before deploying them
 ## Authors
 
 * **Wesley Esterline**
-* **Ted Payne**
 
 ## Acknowledgments
 
